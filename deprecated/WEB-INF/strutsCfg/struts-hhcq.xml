@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="gangkouForm" type="com.saille.hhcq.web.form.GangkouForm" />
+        <form-bean name="shangpinForm" type="com.saille.hhcq.web.form.ShangpinForm" />
+        <form-bean name="jiageForm" type="com.saille.hhcq.web.form.JiageForm" />
+        <form-bean name="queryForm" type="com.saille.hhcq.web.form.QueryForm" />
+    </form-beans>
+
+    <action-mappings>
+        <action path="/hhcq/gangkou"
+                type="com.saille.hhcq.web.GangkouAction"
+                name="gangkouForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/hhcq/gangkou/listGangkou.jsp"/>
+        </action>
+
+        <action path="/hhcq/shangpin"
+                type="com.saille.hhcq.web.ShangpinAction"
+                name="shangpinForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/hhcq/shangpin/listShangpin.jsp"/>
+        </action>
+
+        <action path="/hhcq/jiage"
+                type="com.saille.hhcq.web.JiageAction"
+                name="jiageForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/hhcq/jiage/listJiage.jsp"/>
+        </action>
+
+        <action path="/hhcq/query"
+                type="com.saille.hhcq.web.QueryAction"
+                name="queryForm"
+                parameter="method"
+                scope="request">
+            <forward name="listJiage" path="/hhcq/query/listAllJiage.jsp"/>
+            <forward name="listJuli" path="/hhcq/query/listAllJuli.jsp"/>
+        </action>
+    </action-mappings>
+</struts-config>

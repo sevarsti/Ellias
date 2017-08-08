@@ -1,0 +1,542 @@
+html {
+    zoom: expression( function( ele ) { ele . style . zoom = "1";
+    document . execCommand( "BackgroundImageCache", false, true )
+}
+
+(
+this
+
+)
+)
+}
+html, body {
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+    padding: 0;
+    margin: 0
+}
+
+body {
+    font: 12px / 1.231 Tahoma, Arial, Helvetica, simsun, sans-serif;
+    color: #575757;
+    word-wrap: break-word;
+    word-break: break-all;
+    background: #fff url( ../images/body_bg.png ) repeat-x;
+    min-width: 1000px;
+    width: expression(( document . documentElement . clientWidth < = 1000 | | document . body . clientWidth < = 1000 ) ? "1000px": "" )
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+:focus {
+    outline: 0
+}
+
+ol, ul {
+    list-style: none outside
+}
+
+h1, h2, h3, h4, h5, h6, font {
+    font-size: 12px
+}
+
+em {
+    font-style: normal
+}
+
+q:before, q:after {
+    content: ''
+}
+
+abbr, acronym, fieldset, img {
+    border: 0
+}
+
+label {
+    cursor: pointer;
+    color: #000
+}
+
+i {
+    font-style: normal
+}
+
+u {
+    text-decoration: none
+}
+
+a {
+    text-decoration: none;
+    color: #0058a6
+}
+
+a:hover {
+    text-decoration: underline
+}
+
+a:focus {
+    outline: 0
+}
+
+input, textarea {
+    padding: 2px;
+    font-size: 12px
+}
+
+input, select, textarea {
+    font-family: Tahoma, Arial, simsun
+}
+
+.font_warning {
+    color: #f00
+}
+
+.clearfix:after {
+    content: ".";
+    height: 0;
+    visibility: hidden;
+    display: block;
+    clear: both
+}
+
+.clearfix {
+    display: inline-block
+}
+
+.clearfix {
+    display: block
+}
+
+.none {
+    display: none
+}
+
+html.html_bg {
+    background: #fff url( "../images/ln_html_bg.jpg" ) repeat-x;
+    overflow-y: auto
+}
+
+body.body_bg {
+    background: url( "../images/ln_body_bg.jpg" ) no-repeat 950px 0;
+    min-height: 570px;
+    _height: expression(( document . documentElement . clientHeight < = 570 | | document . body . clientHeight < = 570 ) ? "570px": "" )
+}
+
+.wrap {
+    width: 950px;
+    background: url( "../images/ln_wrap_bg.jpg" ) no-repeat
+}
+
+.ln_top {
+    height: 30px;
+    overflow: hidden;
+    position: relative
+}
+
+.ln_logo {
+    position: absolute;
+    width: 86px;
+    height: 25px;
+    left: 260px;
+    top: 3px;
+    z-index: 999
+}
+
+.ln_logo a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    text-indent: -999px
+}
+
+.ln_top_nav {
+    float: right
+}
+
+.ln_top_nav li {
+    float: left;
+    line-height: 30px
+}
+
+.ln_top_nav a {
+    color: #99ceeb;
+    margin: 0 8px
+}
+
+.ln_main {
+    height: 471px;
+    position: relative;
+    background: url( "../images/ln_main_bg.jpg" ) no-repeat 470px 0;
+    top: -1px;
+    z-index: 10
+}
+
+.ln_words {
+    position: absolute;
+    left: 479px;
+    top: 250px;
+    line-height: 20px;
+    color: #fff
+}
+
+.ln_error {
+    position: absolute;
+    bottom: 300px;
+    left: 763px;
+    color: #f00;
+    padding: 5px;
+    width: 170px;
+    background: #ff9;
+    border: 1px solid #bbb
+}
+
+.ln_login {
+    position: absolute;
+    width: 230px;
+    top: 170px;
+    left: 710px
+}
+
+.ln_login tbody th {
+    width: 55px;
+    height: 36px;
+    line-height: 36px;
+    text-align: right;
+    color: #000;
+    vertical-align: top
+}
+
+.ln_login tbody td {
+    width: 177px;
+    color: #000
+}
+
+.ln_text {
+    border: 0;
+    width: 156px;
+    height: 25px;
+    line-height: 22px;
+* line-height : 22 px;
+    background: url( "../images/ln_input_166.jpg" ) no-repeat;
+    padding-left: 10px;
+    color: #000
+}
+
+.ln_text_74 {
+    width: 64px;
+    background: url( "../images/ln_input_74.jpg" ) no-repeat;
+    margin-right: 3px;
+    position: relative;
+    top: -4px;
+* top : 1 px
+}
+
+.ln_code {
+    cursor: pointer;
+    position: relative;
+    vertical-align: middle;
+    margin-top: 5px;
+    height: 28px;
+    width: 86px
+}
+
+.ln_change_code {
+    margin-left: 13px
+}
+
+a.ln_btn_login {
+    display: inline-block;
+    width: 104px;
+    height: 38px;
+    background: url( "../images/ln_btn_login.jpg" ) no-repeat;
+    margin-bottom: 5px
+}
+
+a:hover.ln_btn_login {
+    background-position: 0 -38px
+}
+
+.ln_status {
+    position: relative;
+    margin-left: 9px;
+    color: #000;
+    top: -12px;
+    cursor: pointer;
+    font-size: 12px
+}
+
+.ln_more {
+    color: #000;
+    text-align: center;
+    margin-top: 20px
+}
+
+.co_b6 {
+    color: #b6b6b6
+}
+
+.va_m {
+    vertical-align: middle;
+    margin-right: 5px;
+* margin-right : 3 px
+}
+
+.password {
+    position: relative;
+    top: -2px;
+* top : - 1 px
+}
+
+.ln_footer {
+    width: 100%;
+    height: 40px;
+    padding-top: 60px;
+    background: url( "../images/ln_footer_bg.jpg" ) repeat-x;
+    position: absolute;
+    bottom: 0
+}
+
+.ln_footer_content {
+    width: 950px;
+    line-height: 40px;
+    text-align: right;
+    color: #868a9e
+}
+
+.ln_footer_content a {
+    color: #868a9e;
+    margin: 0 12px
+}
+
+.ln_footer_content span {
+    margin-left: 10px
+}
+
+.login_bgcolor {
+    background: #fdfdfd
+}
+
+.titlebar_box {
+    overflow: hidden;
+    zoom: 1;
+    padding-top: 20px;
+    width: 960px;
+    margin: 0 auto
+}
+
+.titlebar_box h2 {
+    float: left
+}
+
+.titlebar_box .ln_top_nav {
+    margin-top: 10px;
+    padding-right: 40px
+}
+
+.titlebar_box .ln_top_nav a {
+    color: #666;
+    margin: 0 8px
+}
+
+.login_box {
+    position: relative;
+    width: 960px;
+    margin: 44px auto 0;
+    z-index: 9
+}
+
+.login_box .ad_img {
+    float: left
+}
+
+.login_box .login_C {
+    width: 324px;
+    float: right;
+    padding-right: 40px;
+* padding-right : 40 px
+}
+
+.login_box .login_C .top {
+    background: url( ../images/login20120903/border.png ) no-repeat;
+    height: 2px;
+    font-size: 0
+}
+
+.login_box .login_C .bottom {
+    background: url( ../images/login20120903/border.png ) no-repeat 0 -5px;
+    height: 10px;
+    font-size: 0
+}
+
+.login_box .login_C .cont {
+    background: #ebf4fb;
+    border-right: 1px solid #c6d1e5;
+    border-left: 1px solid #c6d1e5
+}
+
+.login_box .info {
+    position: absolute;
+    left: 624px;
+    bottom: 332px;
+    width: 262px;
+    padding: 5px;
+    border: 1px solid #BBB;
+    background: #FF9;
+    color: #f00;
+    z-index: 9
+}
+
+.login_box .login {
+    width: 322px
+}
+
+.login_box .login thead th {
+    text-align: left;
+    padding: 20px 0 10px 27px
+}
+
+.login_box .login tbody td {
+    width: 296px;
+    color: #000;
+    padding-left: 27px
+}
+
+.login_box .login tfoot td {
+    border-top: 1px dashed #c1cce0
+}
+
+.login_box .login .h54 {
+    height: 54px
+}
+
+.login_box .login .h40 {
+    height: 40px
+}
+
+.login_box .login .h50 {
+    height: 60px
+}
+
+.login_box .input1 {
+    width: 264px;
+    border: 0;
+    background: url( ../images/login20120903/input_bg.png ) no-repeat;
+    color: #000;
+    vertical-align: middle;
+    height: 18px;
+    line-height: 18px;
+    padding: 14px 0 13px 10px
+}
+
+.login_box .input2 {
+    width: 117px;
+    border: 0;
+    background: url( ../images/login20120903/input_bg.png ) no-repeat 0 -110px;
+    color: #000;
+    vertical-align: middle;
+    height: 18px;
+    line-height: 18px;
+    padding: 14px 0 13px 10px
+}
+
+.login_box .on {
+    background-position: 0 -55px
+}
+
+.login_box .on2 {
+    background-position: 0 -165px
+}
+
+.login_box .co_b6 {
+    color: #b6b6b6
+}
+
+.login_box .ln_code {
+    cursor: pointer;
+    height: 40px;
+    width: 95px;
+    margin: 4px 0 0 5px;
+    vertical-align: top
+}
+
+.login_box a.ln_btn_login {
+    display: inline-block;
+    width: 152px;
+    height: 43px;
+    background: url( ../images/login20120903/btn.png ) no-repeat;
+    vertical-align: middle;
+    margin-right: 10px
+}
+
+.login_box a:hover.ln_btn_login {
+    background-position: 0 -44px
+}
+
+.login_box a:active.ln_btn_login {
+    background-position: 0 -88px
+}
+
+.login_box .ln_more {
+    color: #000;
+    text-align: right;
+    margin: 12px 20px 12px 0
+}
+
+.footer_wrap {
+    padding-top: 60px;
+    clear: both
+}
+
+.footer_wrap .footer_con {
+    width: 960px;
+    margin: 0 auto;
+    color: #7e8294;
+    text-align: center
+}
+
+.footer_wrap .footer_con a {
+    margin: 0 12px;
+    color: #7e8294
+}
+
+.footer_wrap .footer_con span {
+    margin-left: 10px
+}
+
+.fx_ajax .fxDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    position: relative;
+    background: transparent url( ../images/loading.gif ) no-repeat center
+}
+
+.fx_ajax .fxColor {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-image: none;
+    background-color: #fff;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.fx_ajax .fxTransp {
+    filter: alpha( opacity = 60 );
+    opacity: .6;
+    -moz-opacity: .6;
+    zoom: 1
+}

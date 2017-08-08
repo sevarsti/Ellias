@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd" >
+<beans>
+    <bean id="core" class="java.lang.String">
+        <constructor-arg>
+            <value>java:comp/env/SinitekOtterapp</value>
+        </constructor-arg>
+    </bean>
+    <bean id="orcl" class="java.lang.String">
+        <constructor-arg>
+            <value>java:comp/env/Oracle</value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="mysql_ds"
+          class="org.springframework.jndi.JndiObjectFactoryBean" singleton="true">
+        <property name="jndiName">
+            <ref local="core"/>
+        </property>
+    </bean>
+    <bean id="orcl_ds"
+          class="org.springframework.jndi.JndiObjectFactoryBean" singleton="true">
+        <property name="jndiName">
+            <ref local="orcl"/>
+        </property>
+    </bean>
+
+    <bean id="dbSessionFactory3" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" singleton="true">
+        <property name="dataSource">
+            <ref bean="mysql_ds"/>
+        </property>
+        <property name="mappingDirectoryLocations">
+            <list>
+                <value>WEB-INF/classes/hbm/</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean class="servlet.GlobalContext">
+        <property name="threads">
+            <list>
+                <value>com.saille.rm.loop.LimitSongThread</value>
+                <value>com.saille.rm.loop.StarmallExchangeThread</value>
+                <value>com.saille.rm.loop.TeamchallengeThread</value>
+                <value>com.saille.rm.loop.FriendsongThread</value>
+                <value>com.saille.rm.loop.UpdateScoreThread</value>
+                <value>com.saille.rm.loop.ScoreChangeThread</value>
+                <value>com.saille.rm.loop.WeekSThread</value>
+                <value>com.saille.baidu.bos.SynchronizeExcel</value>
+                <value>com.saille.bbs.yssy.LoginLoop</value>
+                <value>com.saille.sys.loop.DatabaseBackupThread</value>
+            </list>
+        </property>
+        <property name="threadsInterval">
+            <map>
+                <entry key="com.saille.baidu.bos.SynchronizeExcel" value="30"/>
+            </map>
+        </property>
+    </bean>
+    <bean class="com.GlobalConstant">
+        <property name="EDU">
+            <value>false</value>
+        </property>
+        <property name="TARGETIDPATH">
+            <value>D:\\vbs\\target.txt</value>
+        </property>
+    </bean>
+
+    <!--<bean id="testDao" class="com.saille.test.TestDao">-->
+        <!--<property name="sessionFactory">-->
+            <!--<ref bean="dbSessionFactory3"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+</beans>

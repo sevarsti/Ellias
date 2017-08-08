@@ -1,0 +1,61 @@
+<%@LANGUAGE="VBSCRIPT" CODEPAGE="936"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+</head>
+<body>
+
+
+<script type="text/javascript">
+	<!--
+	
+	var focus_width = 375;	// 图片宽度
+	var focus_height= 500;	// 图片高度
+	var text_height = 20;	// 显示的文字高度
+	var swf_height = focus_height + text_height;
+	
+	var pics ="3643603.jpg|3644310.jpg|3647102.jpg|3649097.jpg|3646832.jpg|3649095.jpg|3649096.jpg";
+	var links="3643603.jpg|3644310.jpg|3647102.jpg|3649097.jpg|3646832.jpg|3649095.jpg|3649096.jpg";
+	var texts="3643603.jpg|3644310.jpg|3647102.jpg|3649097.jpg|3646832.jpg|3649095.jpg|3649096.jpg";
+	
+	document.write('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" ');
+	document.write('codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" ');
+	document.write('width="'+ focus_width +'" ');
+	document.write('height="'+ swf_height +'">');
+	document.write('<param name="allowScriptAccess" value="sameDomain">');
+	document.write('<param name="movie" value="focus.swf">');
+	document.write('<param name="quality" value="high">');
+	document.write('<param name="bgcolor" value="#ffffff">');
+	document.write('<param name="menu" value="false">');
+	document.write('<param name=wmode value="opaque">');
+	document.write('<param name="FlashVars" ');
+	document.write('value="pics='+pics);
+	document.write(		'&links='+links);
+	document.write(		'&texts='+texts);
+	document.write(		'&borderwidth='+focus_width);
+	document.write(		'&borderheight='+focus_height);
+	document.write(		'&textheight='+text_height+'">');
+	document.write('<embed src="focus.swf" ');
+	document.write('wmode="opaque" ');
+	document.write('FlashVars="pics='+pics);
+	document.write(		'&links='+links);
+	document.write(		'&texts='+texts);
+	document.write(		'&borderwidth='+focus_width);
+	document.write(		'&borderheight='+focus_height);
+	document.write(		'&textheight='+text_height+'" ');
+	document.write('menu="false" ');
+	document.write('bgcolor="#ffffff" ');
+	document.write('quality="high" ');
+	document.write('width="'+ focus_width +'" ');
+	document.write('height="'+ focus_height +'" ');
+	document.write('allowScriptAccess="sameDomain" ');
+	document.write('type="application/x-shockwave-flash" ');
+	document.write('pluginspage="http://www.macromedia.com/go/getflashplayer" />');
+	document.write('</object>');
+	
+	//-->
+	</script>
+</body>
+</html>

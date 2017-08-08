@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Ellias Common Library</description>
+    <display-name>Ellias Common</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>ellias</short-name>
+    <uri>http://www.ellias.com/taglib/common</uri>
+
+    <function>
+        <description>Cut Too Long String</description>
+        <name>cutString</name>
+        <function-class>com.saille.util.UtilFunctions</function-class>
+        <function-signature>java.lang.String cutString(java.lang.String, int)</function-signature>
+   </function>
+
+    <function>
+        <name>greaterThan</name>
+        <function-class>com.saille.util.UtilFunctions</function-class>
+        <function-signature>boolean greaterThan(java.lang.String, double)</function-signature>
+    </function>
+
+    <function>
+        <name>lessThan</name>
+        <function-class>com.saille.util.UtilFunctions</function-class>
+        <function-signature>boolean lessThan(java.lang.String, double)</function-signature>
+    </function>
+
+    <function>
+       <description>Cut Too Long String</description>
+       <name>reptString</name>
+       <function-class>com.saille.util.UtilFunctions</function-class>
+       <function-signature>java.lang.String reptString(java.lang.String,int)</function-signature>
+   </function>
+</taglib>

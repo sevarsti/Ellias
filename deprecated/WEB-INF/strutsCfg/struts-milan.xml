@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="milanPlayerForm" type="com.saille.milan.form.MilanPlayerForm" />
+        <form-bean name="milanMatchForm" type="com.saille.milan.form.MilanMatchForm" />
+        <form-bean name="matchPlayerForm" type="com.saille.milan.form.MatchPlayerForm" />
+        <form-bean name="milanGoalForm" type="com.saille.milan.form.MilanGoalForm" />
+    </form-beans>
+
+    <action-mappings>
+        <action path="/milan/milanPlayer"
+                type="com.saille.milan.action.MilanPlayerAction"
+                name="milanPlayerForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/milan/listMilanPlayers.jsp"/>
+            <forward name="edit" path="/milan/editMilanPlayer.jsp"/>
+        </action>
+        <action path="/milan/milanMatch"
+                type="com.saille.milan.action.MilanMatchAction"
+                name="milanMatchForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/milan/listMilanMatchs.jsp"/>
+            <forward name="edit" path="/milan/editMilanMatch.jsp"/>
+        </action>
+        <action path="/milan/matchPlayer"
+                type="com.saille.milan.action.MatchPlayerAction"
+                name="matchPlayerForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/milan/listMatchPlayers.jsp"/>
+            <forward name="edit" path="/milan/editMatchPlayer.jsp"/>
+        </action>
+        <action path="/milan/milanGoal"
+                type="com.saille.milan.action.MilanGoalAction"
+                name="milanGoalForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/milan/listMilanGoals.jsp"/>
+            <forward name="edit" path="/milan/editMilanGoal.jsp"/>
+        </action>
+    </action-mappings>
+</struts-config>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="wujiangForm" type="com.saille.bwdl.web.form.WuJiangForm" />
+        <form-bean name="wuqiForm" type="com.saille.bwdl.web.form.WuQiForm" />
+        <form-bean name="fangjuForm" type="com.saille.bwdl.web.form.FangJuForm" />
+        <form-bean name="chengshiForm" type="com.saille.bwdl.web.form.ChengShiForm" />
+        <form-bean name="dituForm" type="com.saille.bwdl.web.form.DiTuForm" />
+        <form-bean name="versionForm" type="com.saille.bwdl.web.form.VersionForm" />
+        <form-bean name="shiliForm" type="com.saille.bwdl.web.form.ShiLiForm" />
+    </form-beans>
+
+    <action-mappings>
+        <action path="/bwdl/wujiang"
+                type="com.saille.bwdl.web.WuJiangAction"
+                name="wujiangForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/bwdl/listWuJiangs.jsp"/>
+            <forward name="edit" path="/bwdl/editWuJiang.jsp"/>
+        </action>
+
+        <action path="/bwdl/wuqi"
+                type="com.saille.bwdl.web.WuQiAction"
+                name="wuqiForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/bwdl/listWuQis.jsp"/>
+            <forward name="edit" path="/bwdl/editWuQi.jsp"/>
+        </action>
+
+        <action path="/bwdl/fangju"
+                type="com.saille.bwdl.web.FangJuAction"
+                name="fangjuForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/bwdl/listFangJus.jsp"/>
+            <forward name="edit" path="/bwdl/editFangJu.jsp"/>
+        </action>
+
+        <action path="/bwdl/chengshi"
+                type="com.saille.bwdl.web.ChengShiAction"
+                name="chengshiForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/bwdl/listChengShis.jsp"/>
+            <forward name="edit" path="/bwdl/editChengShi.jsp"/>
+        </action>
+
+        <action path="/bwdl/ditu"
+                type="com.saille.bwdl.web.DiTuAction"
+                name="dituForm"
+                parameter="method"
+                scope="request">
+            <forward name="edit" path="/bwdl/editDiTu.jsp"/>
+        </action>
+
+        <action path="/bwdl/version"
+                type="com.saille.bwdl.web.VersionAction"
+                name="versionForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/bwdl/admin.jsp"/>
+        </action>
+
+        <action path="/bwdl/shili"
+                type="com.saille.bwdl.web.ShiLiAction"
+                name="shiliForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/bwdl/listShiLis.jsp"/>
+            <forward name="edit" path="/bwdl/editShiLi.jsp"/>
+        </action>
+    </action-mappings>
+</struts-config>

@@ -1,0 +1,20 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Ellias
+  Date: 2011-9-19
+  Time: 23:43:43
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ include file="../include/include.jsp"%>
+<html>
+    <head>
+        <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
+        <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
+        <script type='text/javascript' src='../include/json.js'> </script>
+        <script type='text/javascript' src='<%=request.getContextPath()%>/dwr/engine.js'> </script>
+        <script type='text/javascript' src='<%=request.getContextPath()%>/dwr/util.js'> </script>
+        <script type='text/javascript' src='<%=request.getContextPath()%>/dwr/interface/RxqqDwr.js'></script>
+    </head>
+    <body>
+    </body>
+</html>

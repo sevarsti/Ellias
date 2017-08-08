@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <LINK href="../include/demo.css" type="text/css" rel="stylesheet">
+</head>
+<body bgcolor="EEEEEE">
+<div class="body">
+    <table width="90%" cellpadding="0" cellspacing="1" border="0" align="center">
+        <tr>
+            <td colspan="3" width="100%">
+                <img src="logo.bmp" alt="" width="100%"/>
+            </td>
+        </tr>
+        <!--<tr>-->
+            <!--<td colspan="3" width="100%" align="center">-->
+                <!--<textarea rows="5" cols="120"></textarea>-->
+                <!--<input type="button" value="留言"/>-->
+            <!--</td>-->
+        <!--</tr>-->
+        <tr>
+            <td colspan="3" align="center" style="font-weight:bold;">
+                <a style="cursor:pointer;" onclick="alert('todo')">首&nbsp;&nbsp;页</a>
+                |
+                <a style="cursor:pointer;" onclick="alert('todo')">新闻动态</a>
+                |
+                <a style="cursor:pointer;" onclick="alert('todo')">金融服务</a>
+                |
+                <a style="cursor:pointer;" onclick="alert('todo')">非金融服务</a>
+                |
+                <a style="cursor:pointer;" onclick="alert('todo')">服务案例</a>
+                |
+                <a style="cursor:pointer;" onclick="alert('todo')">服务团队</a>
+                |
+                <a style="cursor:pointer;" onclick="alert('todo')">在线申请</a>
+                |
+                <a style="cursor:pointer;" onclick="alert('todo')">关于合作社</a>
+            </td>
+        </tr>
+        <tr>
+            <td width="10%">
+                <DIV id="dplayer2" style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: #ffffff; PADDING-BOTTOM: 0px; MARGIN: 0px auto; WIDTH: 286px; PADDING-TOP: 0px; HEIGHT: 229px"></DIV>
+            </td>
+            <td width="70%" valign="top" class="headnews">
+                第一条新闻
+                <br/>
+                第二条新闻
+            </td>
+            <td width="20%" valign="top">
+                联系方式<br/>
+                电话：xxxxxxx<br/>
+                传真：xxxxxxx<br/>
+                地址：xxxxxxxxxxx<br/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <table width="100%">
+                    <tr bgcolor="EEEEEE">
+                        <td width="30%" class="column">
+                            <ul>
+                                <li>无担保信用产品</li>
+                                <li>联保产品</li>
+                                <li>互保产品</li>
+                                <li>共同担保</li>
+                                <li>标准抵押</li>
+                            </ul>
+                        </td>
+                        <td width="50%" valign="top">
+                            小标题1
+                            |
+                            小标题2
+                            |
+                            小标题3
+                            <br/>
+                            小小标题1<br/>
+                            小小标题2<br/>
+                            小小标题3<br/>
+                        </td>
+                        <td width="20%">
+                            案例1<br/>
+                            案例2<br/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                友情连接：
+            </td>
+            <td colspan="2" align="center">
+                饮水思源 | 上海交大 | sony报告我
+            </td>
+        </tr>
+    </table>
+<script language='javascript' src='swf.js'></script>
+<SCRIPT language=javascript type=text/javascript>
+    var pic_arr = new Array();
+    var link_arr = new Array();
+    var text_arr = new Array();
+    var i = 0;
+    pic_arr[i] = "1.jpg";
+    link_arr[i] = "http://weibo.com/changning";
+    text_arr[i] = "“上海长宁”微博平台";
+    i++;
+    pic_arr[i] = "2.jpg";
+    link_arr[i] = "http://app.changning.sh.cn/col/col311/index.html";
+    text_arr[i] = "创建全国文明城区纪实";
+    i++;
+    var f = "focus1.swf";
+    var titles = text_arr.join("|");
+    var imgs = pic_arr.join("|");
+    var urls = link_arr.join("|");
+    var pw = 286;
+    var ph = 229;
+    var sizes = 14;
+    var Times = 4000;
+    var umcolor = 0xFFFFFF;
+    var btnbg = 0xFF7E00;
+    var txtcolor = 0xFFFFFF;
+    var txtoutcolor = 0x000000;
+    var flash = new SWFObject(f, 'mymovie', pw, ph, '7', '');
+    flash.addParam('allowFullScreen', 'true');
+    flash.addParam('allowScriptAccess', 'always');
+    flash.addParam('quality', 'high');
+    flash.addParam('wmode', 'Transparent');
+    flash.addVariable('pw', pw);
+    flash.addVariable('ph', ph);
+    flash.addVariable('sizes', sizes);
+    flash.addVariable('umcolor', umcolor);
+    flash.addVariable('btnbg', btnbg);
+    flash.addVariable('txtcolor', txtcolor);
+    flash.addVariable('txtoutcolor', txtoutcolor);
+    flash.addVariable('urls', urls);
+    flash.addVariable('Times', Times);
+    flash.addVariable('titles', titles);
+    flash.addVariable('imgs', imgs);
+    flash.write('dplayer2');
+</SCRIPT>
+</div>
+</body>
+</html>

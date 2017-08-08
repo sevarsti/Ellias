@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd" >
+<beans>
+    <bean id="newbbs" class="com.saille.newBBS.telnet.Daemon" destroy-method="destroy">
+        <property name="port">
+            <value>4089</value>
+        </property>
+    </bean>
+
+    <bean id="newBBSService" class="com.saille.newBBS.service.NewBBSService">
+        <property name="userDao">
+            <ref local="userInfoDao"/>
+        </property>
+    </bean>
+    <bean id="userInfoDao" class="com.saille.newBBS.dao.jdbc.UserInfoDaoImpl">
+        <property name="dataSource">
+            <ref bean="mysql_ds"/>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd" >
+<beans>
+    <bean id="pampersService" class="com.saille.pampers.PampersService"/>
+
+    <bean id="pampersDao" class="com.saille.pampers.PampersDao">
+        <property name="dataSource">
+            <ref bean="mysql_ds"/>
+        </property>
+    </bean>
+
+    <bean id="pampersDetect" class="com.saille.pampers.DetectPampers">
+    </bean>
+</beans>

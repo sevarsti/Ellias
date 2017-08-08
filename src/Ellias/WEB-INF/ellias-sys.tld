@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Ellias sys Library</description>
+    <display-name>Ellias sys</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>sys</short-name>
+    <uri>http://www.ellias.com/taglib/sys</uri>
+
+    <tag>
+        <name>CheckMenuRightTag</name>
+        <tag-class>com.saille.sys.tag.CheckMenuRightTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>resourceId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>resourcePath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>resSelect</name>
+        <tag-class>com.saille.sys.tag.ResourceSelectionTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>rootId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>orgSelect</name>
+        <tag-class>com.saille.sys.tag.OrganizationSelectionTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>includeEmployee</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>rootId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>multiPositionSelectionTag</name>
+        <tag-class>com.saille.sys.tag.MultiPositionSelectionTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>rootId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>size</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>select</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <function>
+       <name>getResource</name>
+       <function-class>com.saille.sys.util.SysUtils</function-class>
+       <function-signature>com.saille.sys.Resource getResource(int)</function-signature>
+    </function>
+    <function>
+       <name>getEmployee</name>
+       <function-class>com.saille.sys.util.SysUtils</function-class>
+       <function-signature>com.saille.sys.Employee getEmployee(int)</function-signature>
+    </function>
+    <function>
+       <name>getPosition</name>
+       <function-class>com.saille.sys.util.SysUtils</function-class>
+       <function-signature>com.saille.sys.Position getPosition(int)</function-signature>
+    </function>
+    <function>
+       <name>getPositionNames</name>
+       <function-class>com.saille.sys.util.SysUtils</function-class>
+       <function-signature>java.lang.String getPositionNames(java.lang.String)</function-signature>
+    </function>
+    <function>
+       <name>getEmployeeNames</name>
+       <function-class>com.saille.sys.util.SysUtils</function-class>
+       <function-signature>java.lang.String getEmployeeNames(java.lang.String)</function-signature>
+   </function>
+</taglib>

@@ -1,0 +1,2866 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link href="/script/page.css" type=text/css rel=stylesheet>
+<script language="javascript" src="/module/jslib/jquery/jquery.js"></script>
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+<link rel="shortcut icon" href="/favicon.ico">
+
+<title>上海长宁区门户网站</title>
+<meta name="Keywords"
+      content="内容管理、内容管理发布（CMS）系统、信息发布、新闻采编发系统、知识管理、知识门户、政府门户、教育门户、企业门户、竞争情报系统、抓取系统、信息采集、信息雷达系统、电子政务、电子政务解决方案、办公系统、OA、网站办公系统">
+<meta name='Generator' content='大汉版通'>
+<meta name='Author' content='大汉网络'>
+<meta name='Maketime' content='2012-03-22 16:23:16'>
+<meta name="sitename" content="上海长宁区门户网站">
+<meta name="siteurl" content="http://www.changning.sh.cn/index.html">
+
+<meta name="guild" content="政府">
+<meta name="district" content="上海">
+<meta name="sitecatalog" content="上海政府">
+
+<link href="/images/1/css.css" rel="stylesheet" type="text/css"/>
+<script src="/images/1/jquery1.4.2.js" language="javascript"></script>
+<script src="/images/1/MSClass.js" language="javascript"></script>
+<script language="javascript">
+    //兼容IE6.0顶层浮动窗定位,需要jquery.js支持
+    if ($.browser.msie && (parseInt($.browser.version) < 7)) {
+        $(document).ready(
+                function() {
+                    $(window).bind("scroll", function() {
+                        bodyTop = document.documentElement.scrollTop + document.body.scrollTop;
+                        $("#ff").css("top", bodyTop + "px");
+                    });
+                });
+    }
+</script>
+<script language="javascript">
+    //生成从cookie
+    function setCookie(name, value, days) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
+        var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+        document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+    }
+    function getCookie(name) {
+        var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+        if (arr != null) {
+            return unescape(arr[2]);
+            return null;
+        }
+    }
+    function delCookie(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval = getCookie(name);
+        if (cval != null) {
+            document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+        }
+    }
+    //如果是第一次访问，则弹出浮动层
+    function out() {
+        if (getCookie("out") != "yes") {
+            setCookie("out", "yes", 1);
+            document.onLoad = abc();
+            //abc()调用浮动层
+        }
+    }
+</script>
+<style type="text/css">
+.box, .banner, .DH {
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: url( /images/1/ty_01.jpg ) repeat-x top;
+}
+
+.top {
+    width: 992px;
+    height: 29px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login {
+    width: 478px;
+    height: 19px;
+    float: left;
+    text-align: center;
+    line-height: 19px;
+    padding-top: 3px;
+}
+
+.top-tip {
+    width: 500px;
+    height: 29px;
+    float: left;
+    text-align: right;
+    line-height: 29px;
+}
+
+.banner {
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: url( /images/1/ty_06.jpg ) repeat-x
+}
+
+.banner img {
+    width: 992px;
+    text-align: center;
+    height: 95px;
+}
+
+.DH {
+    width: 100%;
+    height: 45px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: url( /images/1/ty_08.jpg ) repeat-x;
+}
+
+.DH1 {
+    width: 992px;
+    height: 45px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: url( /images/1/ty_09.jpg ) no-repeat top right;
+}
+
+.DH2 {
+    width: 992px;
+    height: 45px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: url( /images/1/ty_10.jpg ) repeat-x bottom;
+}
+
+/*导航切换样式*/
+#ul {
+    width: 680px;
+    position: relative;
+    margin: auto auto;
+    list-style: none;
+    float: left;
+    overflow: hidden;
+}
+
+/*  #ul{width:600px;position:relative;margin:auto auto;list-style:none; float:left; overflow:hidden;}*/
+#ul li {
+    width: 92px;
+    height: 45px;
+    float: left;
+    cursor: pointer;
+    line-height: 44px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    background: url( /images/1/ty_11.jpg ) left center no-repeat;
+    position: relative;
+    z-index: 100;
+}
+
+#ul li a {
+    color: #FFF;
+}
+
+#ul li a:hover {
+    color: #FFF;
+}
+
+#ul li a:visited {
+    color: #FFF;
+}
+
+#ul .li {
+    height: 45px;
+    background-image: url( /images/1/change1.gif );
+    width: 92px;
+    position: absolute;
+    left: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+    /*.jsearch{ width:372px; float:right; height:25px; line-height:25px; padding-top:9px;}
+.jsearch input{ width:140px; border:1px solid #A8A8A8; height:16; line-height:16px; vertical-align:middle; background:url(/images/1/ty_12.jpg) no-repeat 5px top #FFFFFF; color:#989898; padding-left:20px;}*/
+.jsearch {
+    width: 312px;
+    float: right;
+    height: 25px;
+    line-height: 25px;
+    padding-top: 9px;
+}
+
+.jsearch input {
+    width: 120px;
+    border: 1px solid #A8A8A8;
+    height: 16;
+    line-height: 16px;
+    vertical-align: middle;
+    background: url( /images/1/ty_12.jpg ) no-repeat 5px top #FFFFFF;
+    color: #989898;
+    padding-left: 20px;
+}
+
+.jsearch select {
+    width: 60px;
+    margin-left: 5px;
+    height: 16;
+    line-height: 16px;
+    border: 1px solid #A8A8A8;
+    vertical-align: middle;
+}
+
+.jsearch img {
+    vertical-align: middle;
+}
+
+/*底部样式*/
+/*主体样式*/
+.bg {
+    width: 972px;
+    height: auto;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    background: #FFFFFF;
+    padding: 10px;
+}
+
+.tzgg {
+    width: 874px;
+    border: 1px solid #D2D2D2;
+    height: 24px;
+    line-height: 24px;
+    text-align: left;
+    background: #F4F5F7 url( /images/1/ty_13-1.jpg ) no-repeat 9px 4px;
+    padding-left: 96px;
+}
+
+.tzgg-a {
+    width: 255px;
+    padding-left: 25px;
+    line-height: 24px;
+    float: left;
+    overflow: hidden;
+    background: url( /images/1/ty_14.jpg ) no-repeat 15px 12px;
+    text-align: left;
+}
+
+.tzgg-a span {
+    width: 50px;
+    height: 24px;
+    line-height: 24px;
+    float: right;
+    color: #999999;
+}
+
+.bg2 {
+    width: 972px;
+    height: auto;
+    background: url( /images/1/index_02.jpg ) no-repeat right bottom;
+    height: auto;
+    overflow: hidden;
+}
+
+.bg1 {
+    width: 972px;
+    margin-top: 10px;
+    height: auto;
+    background: url( /images/1/index_01.jpg ) repeat-y right;
+    height: auto;
+    overflow: hidden;
+}
+
+/*--------------------------------------------------------------------------------*/
+.b-left {
+    width: 756px;
+    height: auto;
+    overflow: hidden;
+    float: left;
+}
+
+.b-flash {
+    width: 286px;
+    height: 229px;
+    float: left;
+}
+
+.b-left-box {
+    width: 458px;
+    height: 227px;
+    float: right;
+    border: 1px solid #D2D2D2;
+    background: #FAFAFA url( /images/1/index_03.jpg ) no-repeat top right;
+}
+
+.b-left-box-tit {
+    width: 90px;
+    height: 227px;
+    padding-left: 7px;
+    padding-right: 7px;
+    background: #FFFFFF;
+    float: left;
+}
+
+.b-left-box-tit ul {
+    width: 90px;
+    height: auto;
+    overflow: hidden;
+}
+
+.b-left-box-tit ul li {
+    width: 65px;
+    float: left;
+    height: 26px;
+    margin-top: 5px;
+    text-align: left;
+    padding-left: 25px;
+    line-height: 26px;
+    background: url( /images/1/index_04.jpg ) no-repeat;
+    cursor: pointer;
+}
+
+.b-left-box-tit ul li a:hover {
+    color: #CC0000;
+}
+
+.b-left-box-link {
+    width: 354px;
+    height: 222px;
+    float: left;
+}
+
+.b-left-box-link-tip {
+    width: 330px;
+    height: 78px;
+    border-bottom: 1px dotted #C7C7C7;
+    margin-left: 7px;
+    text-align: left;
+}
+
+.b-left-box-link-tip p {
+    width: 281px;
+    height: 26px;
+    line-height: 26px;
+    color: #CC0000;
+    text-align: left;
+    font-size: 14px;
+}
+
+.b-left-box-link-tip ul {
+    width: 281px;
+    height: 52px;
+    overflow: hidden;
+    text-align: left;
+    overflow: hidden;
+}
+
+.b-left-box-link-tip ul li {
+    width: 281px;
+    float: left;
+    height: 26px;
+    line-height: 26px;
+    color: #CC0000;
+    font-size: 14px;
+    padding-right: 5px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.b-left-box-link-tip ul li a {
+    color: #CC0000;
+    font-size: 14px;
+}
+
+.b-left-box-link-tip ul li a:hover {
+    color: #CC0000;
+    font-size: 14px;
+}
+
+.b-left-box-link-tip ul li a:visited {
+    color: #CC0000;
+    font-size: 14px;
+}
+
+.b-left-box-link-x {
+    width: 330px;
+    height: 144px;
+    margin-left: 7px;
+}
+
+.b-left-box-link-x ul {
+    width: 330px;
+    height: auto;
+    overflow: hidden;
+}
+
+.b-left-box-link-x ul li {
+    float: left;
+    width: 330px;
+    height: 24px;
+    text-align: left;
+    line-height: 24px;
+    color: #666666;
+    font-size: 14px;
+    padding-right: 10px;
+    overflow: hidden;
+}
+
+.b-left-box-link-x a {
+    color: #666666;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.b-left-box-link-x a:hover {
+    color: #666666;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.b-left-box-link-x a:visited {
+    color: #666666;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/*------------------------------------------------------------------------------------------*/
+.b-left2 {
+    width: 755px;
+    border: 1px solid #D2D2D2;
+    border-left: none;
+    margin-top: 10px;
+    height: 243px;
+    overflow: hidden;
+    float: left;
+    text-align: left;
+}
+
+.xxgk {
+    width: 184px;
+    height: 243px;
+    background: #F7F7F7 url( /images/1/index_05.jpg ) top left no-repeat;
+    float: left;
+}
+
+.xxgk1 {
+    width: 183px;
+    height: 211px;
+    border-left: 1px solid #D2D2D2;
+    padding-top: 32px;
+}
+
+.xxgk1 ul {
+    width: 180px;
+    height: 211px;
+    overflow: hidden;
+    padding-left: 3px;
+}
+
+.xxgk1 ul li {
+    width: 124px;
+    border-bottom: 1px dashed #ACACAC;
+    height: 28px;
+    line-height: 28px;
+    background: url( /images/1/index_06.jpg ) no-repeat 32px center;
+    padding-left: 48px;
+    float: left;
+    text-align: left;
+}
+
+.xxgk2 {
+    width: 565px;
+    height: 243px;
+    float: left;
+    border-left: 1px solid #D2D2D2;
+    text-align: center;
+}
+
+.tab {
+    width: 570px;
+    height: 27px;
+    overflow: hidden;
+    background: #EAEAEA;
+}
+
+.li-no {
+    text-align: center;
+    float: left;
+    height: 26px;
+    line-height: 26px;
+    background: #EAEAEA;
+    border-bottom: 1px solid #D2D2D2;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.li-yes {
+    text-align: center;
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    background: #FFFFFF;
+    font-size: 14px;
+    font-size: 14px;
+    color: #1E4D9B;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.li-no a:hover {
+    color: #FF0000;
+    text-decoration: underline;
+}
+
+.li-yes a:hover {
+    color: #FF0000;
+    text-decoration: underline;
+}
+
+.xxgk-mu {
+    width: 555px;
+    height: 80px;
+    border-bottom: 1px dashed #B1B1B1;
+    padding-left: 10px;
+}
+
+.xxgk-mu ul {
+    height: 54px;
+    overflow: hidden;
+    float: left;
+    background: url( /images/1/index_07.jpg ) right center no-repeat;
+    padding: 10px;
+}
+
+.xxgk-mu ul li {
+    width: 70px;
+    height: 22px;
+    margin-top: 5px;
+    line-height: 22px;
+    border: 1px solid #C4C5A6;
+    background: #FBFDF0;
+    text-align: center;
+    color: #650101;
+}
+
+.xxgk-mu ul li a:hover {
+    text-decoration: underline;
+    color: #FF0000;
+}
+
+.con {
+    width: 555px;
+    height: auto;
+    overflow: hidden;
+    clear: both;
+    padding-left: 10px;
+}
+
+.li-link {
+    width: 260px;
+    text-align: left;
+    padding-left: 15px;
+    height: 25px;
+    overflow: hidden;
+    float: left;
+    line-height: 25px;
+    background: url( /images/1/ty_14.jpg ) no-repeat 5px center;
+}
+
+/*----------------------------------*/
+.zwdt {
+    width: 184px;
+    height: 243px;
+    background: #F7F7F7 url( /images/1/index_08.jpg ) top left no-repeat;
+    float: left;
+}
+
+.zwdt1 {
+    width: 183px;
+    height: 211px;
+    border-left: 1px solid #D2D2D2;
+    padding-top: 32px;
+}
+
+.zwdt1 ul {
+    width: 177px;
+    border-bottom: 1px dashed #ACACAC;
+    height: 28px;
+    overflow: hidden;
+    padding-left: 3px;
+}
+
+.zwdt1 ul li {
+    height: 28px;
+    line-height: 28px;
+    background: url( /images/1/index_06.jpg ) no-repeat 32px center;
+    padding-left: 48px;
+    float: left;
+    text-align: left;
+}
+
+.zwdt-link1 {
+    width: 545px;
+    height: 48px;
+    border-bottom: 1px dashed #ACACAC;
+    padding: 10px;
+    text-align: center;
+}
+
+.zwdt-link1 ul {
+    width: 540px;
+    padding-left: 5px;
+}
+
+.zwdt-link1 ul li {
+    width: 60px;
+    float: left;
+    text-align: left;
+    background: url( /images/1/index_09.jpg ) no-repeat left center;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 15px;
+}
+
+.zwdt-link {
+    width: 545px;
+    height: 65px;
+    border-bottom: 1px dashed #ACACAC;
+    padding: 10px;
+    text-align: center;
+}
+
+.zwdt-link ul {
+    width: 540px;
+    padding-left: 5px;
+}
+
+.zwdt-link ul li {
+    width: 60px;
+    float: left;
+    text-align: left;
+    background: url( /images/1/index_09.jpg ) no-repeat left center;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 15px;
+}
+
+.zwdt-jsearch {
+    width: 550px;
+    height: 65px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+/*------------------------------------------------------*/
+.zjcn {
+    width: 185px;
+    height: 243px;
+    background: #F7F7F7 url( /images/1/index_13.jpg ) top left no-repeat;
+    float: left;
+}
+
+.zjcn1 {
+    width: 183px;
+    height: 211px;
+    border-left: 1px solid #D2D2D2;
+    border-right: 1px solid #D2D2D2;
+    padding-top: 32px;
+}
+
+.zjcn-ul-yes {
+    width: 184px;
+    height: 28px;
+    overflow: hidden;
+    border-bottom: 1px dashed #ACACAC;
+    background: #FFFFFF;
+}
+
+.zjcn-ul-yes li {
+    width: 124px;
+    height: 28px;
+    font-weight: bold;
+    color: #D90000;
+    line-height: 28px;
+    background: url( /images/1/index_06.jpg ) no-repeat 32px center;
+    padding-left: 48px;
+    float: left;
+    text-align: left;
+    cursor: pointer;
+}
+
+.zjcn-ul-yes li a {
+    color: #D90000;
+}
+
+.zjcn-ul-yes li a:hover {
+    color: #D90000;
+    text-decoration: underline;
+}
+
+.zjcn-ul-yes li a:visited {
+    color: #D90000;
+}
+
+.zjcn-ul-no {
+    width: 183px;
+    height: 28px;
+    overflow: hidden;
+    border-bottom: 1px dashed #ACACAC;
+    border-right: 1px solid #D2D2D2;
+    background: #F7F7F7;
+}
+
+.zjcn-ul-no li {
+    width: 124px;
+    height: 28px;
+    line-height: 28px;
+    color: #000000;
+    background: url( /images/1/index_06.jpg ) no-repeat 32px center;
+    padding-left: 48px;
+    float: left;
+    text-align: left;
+    cursor: pointer;
+}
+
+.zjcn-ul-no li a {
+    color: #000000;
+}
+
+.zjcn-ul-no li a:hover {
+    color: #000000;
+    text-decoration: underline;
+}
+
+.zjcn-ul-no li a:visited {
+    color: #000000;
+}
+
+.zjcn2 {
+    width: 559px;
+    height: 243px;
+    float: left;
+    text-align: center;
+}
+
+.zjcn2-tab {
+    width: 539px;
+    border-bottom: 1px dashed #ACACAC;
+    padding: 10px;
+    margin-left: 10px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.zjcn2-tab li {
+    width: 94px;
+    float: left;
+    text-align: left;
+    background: url( /images/1/index_14.jpg ) no-repeat left center;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 15px;
+}
+
+.zjcn3 {
+    width: 529px;
+    padding: 10px;
+    margin-left: 10px;
+    text-align: left;
+    overflow: hidden;
+    height: 300px;
+    padding-bottom: 8px;
+}
+
+.zjcn-p {
+    height: 23px;
+    line-height: 23px;
+    text-align: left;
+    text-indent: 2em;
+}
+
+/*------------------------------------------------*/
+.yqlj {
+    width: 970px;
+    height: 24px;
+    padding-top: 6px;
+    background: url( /images/1/index_16.jpg );
+    margin-top: 10px;
+    border-left: 1px solid #B7DCEE;
+    border-right: 1px solid #B7DCEE;
+}
+
+.yqlj ul {
+    width: 970px;
+    height: 24px;
+    overflow: hidden;
+}
+
+.yqlj-li-yes {
+    float: left;
+    width: 118px;
+    height: 24px;
+    line-height: 24px;
+    background: url( /images/1/index_18.jpg ) no-repeat bottom;
+    font-weight: bold;
+    color: #1F4F9B;
+    text-align: center;
+    cursor: pointer;
+}
+
+.yqlj-li-no {
+    float: left;
+    width: 118px;
+    height: 24px;
+    line-height: 24px;
+    background: url( /images/1/index_17.jpg ) no-repeat bottom;
+    color: #000000;
+    text-align: center;
+    cursor: pointer;
+}
+
+.yqlj-li-link {
+    float: left;
+    height: 24px;
+    padding-left: 20px;
+    width: 108px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.yqlj-li-jsearch {
+    width: 305px;
+    float: right;
+    height: 24px;
+    text-align: left;
+}
+
+.yqlj-li-jsearch select {
+    width: 175px;
+    text-align: left;
+    float: left;
+}
+
+.yqlj-li-jsearch select option {
+    text-align: left;
+}
+
+.yqlj-link {
+    width: 970px;
+    height: 186px;
+    border-left: 1px solid #B7DCEE;
+    border-right: 1px solid #B7DCEE;
+    border-bottom: 1px solid #B7DCEE;
+}
+
+.yqlj-link ul {
+    width: 950px;
+    height: 166px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.yqlj-link ul li {
+    background: url( /images/1/ty_14.jpg ) no-repeat 5px center;
+    width: 110px;
+    padding-left: 15px;
+    text-align: left;
+    float: left;
+    line-height: 24px;
+}
+
+.banner1 {
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: url( /images/1/ty_06.jpg ) repeat-x
+}
+
+/*----------------,,,----------------------------*/
+.b-right {
+    width: 206px;
+    height: auto;
+    overflow: hidden;
+    float: right;
+}
+
+.right-p {
+    width: 206px;
+    height: 33px;
+    line-height: 33px;
+    background: url( /images/1/index_20.jpg ) no-repeat;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFEFF;
+}
+
+.right-box {
+    width: 200px;
+    padding-left: 5px;
+    height: auto;
+    overflow: hidden;
+    background: url( /images/1/index_21.jpg ) repeat-y;
+    text-align: center;
+}
+
+.right-box p {
+    text-align: left;
+    line-height: 23px;
+    padding-left: 15px;
+}
+
+.right-box-tit {
+    width: 162px;
+    height: 25px;
+    border-bottom: 1px solid #CCCCCC;
+    background: url( /images/1/index_22.jpg ) no-repeat 2px 8px;
+    text-align: left;
+    padding-left: 20px;
+    font-weight: bold;
+    line-height: 25px;
+    color: #000000;
+    margin-left: 10px;
+}
+
+.right-box-tit a {
+    float: right;
+    color: #0098C9;
+    line-height: 26px;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.right-box-tit a:hover {
+    float: right;
+    color: #0098C9;
+    line-height: 26px;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.right-box-tit a:visited {
+    float: right;
+    color: #0098C9;
+    line-height: 26px;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.right-box-tit1 {
+    font-weight: bold;
+    color: #1C509B;
+    line-height: 20px;
+    text-align: left;
+    padding-left: 15px;
+    padding-bottom: 5px;
+    width: 164px;
+}
+
+.right-box-tit1 a {
+    color: #1C509B;
+}
+
+.right-box-tit1 a:hover {
+    color: #1C509B;
+}
+
+.right-box-tit2 {
+    width: 164px;
+    line-height: 21px;
+    height: auto;
+    overflow: hidden;
+    text-align: left;
+    padding-left: 15px;
+}
+
+.right-box-tit2 img {
+    float: left;
+    margin-right: 6px;
+}
+
+.right-box-tit3 {
+    width: 184px;
+    height: 38px;
+    text-align: center;
+}
+
+.right-box-tit3 ul {
+    text-align: center;
+    padding-top: 8px;
+    height: 22px;
+    padding-left: 10px;
+}
+
+.right-box-tit3 ul li {
+    float: left;
+    width: 85px;
+    height: 22px;
+    background: url( /images/1/index_23.jpg ) no-repeat left;
+    text-align: center;
+    color: #1C509B;
+    font-weight: bold;
+    line-height: 22px;
+}
+
+.right-p1 {
+    width: 165px;
+    height: 33px;
+    line-height: 33px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFEFF;
+    background: url( /images/1/index_25.jpg ) no-repeat;
+    padding-left: 31px;
+    padding-right: 10px;
+}
+
+.right-p1 span {
+    float: right;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 33px;
+}
+
+.right-p1 span a {
+    color: #FFFFFF;
+}
+
+.right-p1 span a:hover {
+    color: #FFFFFF;
+}
+
+.right-p1 span a:visited {
+    color: #FFFFFF;
+}
+
+.img-ul {
+    width: 194px;
+    height: 147px;
+    overflow: hidden;
+}
+
+.img-ul li {
+    border-bottom: 1px dashed #7F7F7F;
+    padding: 2px;
+    line-height: 21px;
+    text-align: left;
+    height: 65px;
+}
+
+.img-ul li a {
+    line-height: 21px;
+}
+
+.img-ul li img {
+    float: left;
+    margin-right: 3px;
+    margin-top: 3px;
+    margin-left: 6px;
+    border: 1px solid #CCCCCC;
+    padding: 1px;
+    width: 60px;
+    height: 55px;
+}
+
+.link-ul {
+    height: auto;
+    overflow: hidden;
+    width: 174px;
+    padding-left: 20px;
+    padding-top: 7px;
+}
+
+.link-ul li {
+    line-height: 23px;
+    float: left;
+    padding-left: 13px;
+    background: url( /images/1/index_31.jpg ) no-repeat left center;
+    padding-right: 15px;
+}
+
+/*--------------------------------------------------------*/
+.foot {
+    width: 992px;
+    background: #1B7FCA;
+    height: auto;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.bottom {
+    width: 992px;
+    height: 85px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    overflow: hidden;
+    background: #F0F0F0 url( /images/1/ty-00.jpg ) no-repeat center;
+}
+
+.bottom p {
+    line-height: 26px;
+    text-align: center;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 6px;
+    height: auto;
+}
+
+.es {
+    font-weight: bold;
+}
+
+.eo {
+    font-weight: normal;
+}
+
+/*---------------------------------------------------------------*/
+.font-w {
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    line-height: 28px;
+    vertical-align: middle;
+}
+
+.font-w a {
+    color: #FFFFFF;
+    width: 82px;
+    height: 14px;
+    line-height: 14px;
+}
+
+.font-w a:hover {
+    color: #FFFFFF;
+}
+
+.font-w a:visited {
+    color: #FFFFFF;
+}
+
+.ffv {
+    padding-left: 30px;
+    position: ff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14px;
+    background: #FFFFCC;
+    z-index: 10000;
+    line-height: 12px;
+    font-size: 10px;
+}
+</style>
+<script type="text/javascript">
+    var Timer = null;
+    var iSpeed = 0;
+    window.onload = function()
+    {
+        var oUl = document.getElementById("ul");
+        var oLi = oUl.getElementsByTagName("li");
+        for (var i = 0; i < oLi.length - 1; i++)
+        {
+            oLi[i].Index = i;
+            oLi[i].onmouseover = function() {
+                startMove(this.offsetLeft)
+            };
+        }
+    };
+    function startMove(iTarget)
+    {
+        if (Timer)
+        {
+            clearInterval(Timer);
+        }
+        Timer = setInterval(function()
+        {
+            doMove(iTarget);
+        }, 30);
+    }
+    function doMove(iTarget)
+    {
+        var oUl = document.getElementById("ul");
+        var oLi = oUl.getElementsByTagName("li");
+        var moveLi = document.getElementById("li");
+        var oLiMove = oLi[oLi.length - 1];
+
+        iSpeed += (iTarget - oLiMove.offsetLeft) / 5;
+        iSpeed *= 0.7;
+        oLiMove.style.left = oLiMove.offsetLeft + iSpeed + "px";
+
+    }
+    function getmydata() {
+        var sss = $('#search').val();
+        return sss;
+    }
+
+
+    $(document).ready(function() {
+        $('select').selectseach();
+
+    });
+
+    function setTab(name, cursel, n) {
+        for (i = 1; i <= n; i++) {
+            var menu = document.getElementById(name + i);
+            // var con=document.getElementById("con_"+name+"_"+i);
+
+            menu.className = i == cursel ? "zjcn-ul-yes" : "zjcn-ul-no";
+            //con.style.display=i==cursel?"block":"none";
+        }
+    }
+    function setTab1(name, cursel, n) {
+        for (i = 1; i <= n; i++) {
+            var menu = document.getElementById(name + i);
+            var con = document.getElementById("con_" + name + "_" + i);
+
+            menu.className = i == cursel ? "yqlj-li-yes" : "yqlj-li-no";
+            con.style.display = i == cursel ? "block" : "none";
+        }
+    }
+
+    function setj(name, cursel, n) {
+        for (i = 1; i <= n; i++) {
+            //var menu=document.getElementById(name+i);
+            var con = document.getElementById("con_" + name + "_" + i);
+
+            // menu.className=i==cursel?"es":"eo";
+            con.style.display = i == cursel ? "block" : "none";
+        }
+    }
+    function setTab2(name, cursel, n) {
+        for (i = 1; i <= n; i++) {
+            var menu = document.getElementById(name + i);
+            var con = document.getElementById("con_" + name + "_" + i);
+            var con1 = document.getElementById("con1_" + name + "_" + i);
+            var con2 = document.getElementById("con2_" + name + "_" + i);
+            menu.className = i == cursel ? "li-yes" : "li-no";
+            con.style.display = i == cursel ? "block" : "none";
+            con1.style.display = i == cursel ? "block" : "none";
+            con2.style.display = i == cursel ? "block" : "none";
+        }
+    }
+
+
+</script>
+<script type="text/javascript" src="http://www.changning.sh.cn/web2010/result.aspx"></script>
+<script>
+    $(function() {
+        //市民办事结果
+        var result = window._result;
+        if (result) {
+            var div_title = $("#back_result1 .search_title").clone();
+            $("#back_result1, #back_result2").empty();
+            $.each(result.Table, function() {
+                var onerow = div_title.clone();
+                onerow.html(this.affairName);
+                $("#back_result1, #back_result2").append(onerow);
+            });
+        }
+
+        (function() {
+            var margin = [];
+            margin.push("0px");
+            margin.push("-24px");
+            margin.push("-48px");
+            margin.push("-72px");
+            margin.push("-96px");
+            var nnn = 0;
+            var myTime;
+            function startScroll() {
+                if (nnn == 4) {
+                    $("#back_result1, #back_result2").css({"margin-top": margin[0]});
+                    nnn ++;
+                }
+                nnn = (nnn + 1) % margin.length;
+                $("#back_result1, #back_result2").animate({ marginTop: margin[nnn]}, 500);
+                myTime = setTimeout(startScroll, 5000);
+            }
+
+            myTime = setTimeout(startScroll, 5000);
+            $("#back_result1, #back_result2").mouseover(function() {
+                clearTimeout(myTime);
+            }).mouseout(function() {
+                myTime = setTimeout(startScroll, 5000);
+            });
+        })();
+
+
+        $("#btnSearchEvent1, #btnSearchEvent2").each(function(i) {
+            $(this).click(function() {
+                var txt = $("#txtSearchEvent" + (i + 1));
+                var dept = $("#search_department" + (i + 1));
+                if (txt.val()) {
+                    window.open("http://www.changning.sh.cn/web2010/wsbsindex.aspx?key=" + encodeURIComponent(txt.val()) + "&dept=" + encodeURIComponent(dept.val()));
+                } else {
+                    alert("输入关键字");
+                    txt.focus();
+                }
+            });
+        });
+    });
+</script>
+
+</head>
+<body>
+<div id="ff">
+</div>
+<script src="jiathis_r.js" type="text/javascript"></script>
+<div class="box">
+    <div class="top">
+        <div class="login">
+
+            <script language='javascript' src='/script/1/login.js'></script>
+        </div>
+        <div class="top-tip">
+            <script language='javascript' src='/script/4/lanuage.js'></script>
+            &nbsp;|&nbsp;<a target="_blank" href="http://www.changning.net/cn/foreign/en/index.html">English</a>&nbsp;|&nbsp;<a
+                target="_blank" href="http://japan.changning.net/cn/foreign/jp/index.html">日语版</a>&nbsp;|&nbsp;<a
+                target="_blank" href="http://korea.changning.net/cn/foreign/kr/index.html"><img alt=""
+                                                                                                style="vertical-align: middle"
+                                                                                                src="/picture/4/ty_05.jpg"/></a>&nbsp;|&nbsp;<a
+                target="_blank" href="http://spanish.changning.net/cn/foreign/sp/index.html">Espa&ntilde;ol</a>|<a
+                target="_blank" href="http://www.weather.com.cn/weather/101020100.shtml">天气预报</a> <a target="_blank"
+                                                                                                     href="http://www.sh.gov.cn"><img
+                alt="" style="vertical-align: middle" src="/picture/4/ty_04.jpg"/></a>
+
+        </div>
+    </div>
+</div>
+<div class="banner">
+    <embed type="application/x-shockwave-flash" src="/flash/0/tupian.swf" width="992" height="95" scale="exactfit"
+           quality="high"
+           pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">
+        <param name="WMode" value="Transparent"/>
+    </embed>
+</div>
+<div class="DH">
+    <div class="DH1">
+        <div class="DH2">
+            <script language='javascript' src='/script/1/1112261346395178.js'></script>
+            <div class="jsearch">
+                <script language='javascript' src='/script/1/1109151615469641.js'></script>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bg">
+<div class="tzgg">
+    <div id="TextDiv1">
+        <TABLE WIDTH=100% CELLSPACING=0 CELLPADDING=0 BORDER=0>
+            <TR>
+                <TD><a class="tzgg-a" href='/art/2012/3/16/art_10_217978.html' title='“上海长宁”微博“长宁印象”摄影作品征集活动'
+                       target=_blank>“上海长宁”微博“长宁印象”摄影作品 <img src='/picture/4/gif-0242.gif' align='absmiddle' border='0'></a>
+                </TD>
+                <TD><a class="tzgg-a" href='/art/2012/3/5/art_10_215306.html' title='虹桥路（近凯旋路）市政掘路信息' target=_blank>虹桥路（近凯旋路）市政掘路信息</a>
+                </TD>
+                <TD><a class="tzgg-a" href='/art/2012/3/5/art_10_215305.html' title='定西路（新华-延安西路）市政掘路信息' target=_blank>定西路（新华-延安西路）市政掘路信息</a>
+                </TD>
+            </TR>
+
+            <TR>
+                <TD><a class="tzgg-a" href='/art/2012/3/5/art_10_215304.html' title='法华镇路（定西-延安西路）市政掘路信息' target=_blank>法华镇路（定西-延安西路）市政掘路信 </a>
+                </TD>
+                <TD><a class="tzgg-a" href='/art/2012/2/23/art_10_215142.html' title='贸易便利化“一站式”服务中心开始试运行'
+                       target=_blank>贸易便利化“一站式”服务中心开始试运 </a></TD>
+                <TD><a class="tzgg-a" href='/art/2012/2/22/art_10_215121.html' title='2010-2011年度“长宁十佳新闻人物”候选人简介'
+                       target=_blank>2010-2011年度“长宁十佳新闻 </a></TD>
+            </TR>
+            <TR>
+                <TD><a class="tzgg-a" href='/art/2012/2/22/art_10_215117.html' title='遵义南路仙霞路口市政掘路信息' target=_blank>遵义南路仙霞路口市政掘路信息</a>
+                </TD>
+                <TD><a class="tzgg-a" href='/art/2012/1/31/art_10_212007.html' title='关于组织申报2012年上海市服务业发展'
+                       target=_blank>关于组织申报2012年上海市服务业发 </a></TD>
+                <TD><a class="tzgg-a" href='/art/2012/1/29/art_10_211266.html' title='创建全国文明城区“文明宣传创意大赛”获奖作者公示'
+                       target=_blank>创建全国文明城区“文明宣传创意大赛” </a></TD>
+            </TR>
+            <TR>
+                <TD><a class="tzgg-a" href='/art/2012/1/29/art_10_211254.html' title='长宁今后五年的奋斗目标' target=_blank>长宁今后五年的奋斗目标</a>
+                </TD>
+            </TR>
+        </TABLE>
+        <script type="text/javascript">
+            new Marquee("TextDiv1", 0, 1, 857, 24, 23, 3000, 5000);
+        </script>
+    </div>
+</div>
+
+<div class="bg1">
+<div class="bg2">
+<div class="b-left">
+<div style="height:auto; overflow:hidden;">
+    <div class="b-flash">
+        <script language='javascript' src='/script/2/swfobject_source.js'></script>
+        <DIV id=dplayer2
+             style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: #ffffff; PADDING-BOTTOM: 0px; MARGIN: 0px auto; WIDTH: 286px; PADDING-TOP: 0px; HEIGHT: 229px"></DIV>
+        <SCRIPT language=javascript type=text/javascript>
+        var pic_arr = new Array();
+        var link_arr = new Array();
+        var text_arr = new Array();
+        var i = 0;
+        pic_arr[i] = "/picture/0/s00001730.jpg";
+        link_arr[i] = "http://weibo.com/changning";
+        text_arr[i] = "“上海长宁”微博平台";
+        i++;
+        pic_arr[i] = "/picture/0/s1201291848243431931.jpg";
+        link_arr[i] = "http://app.changning.sh.cn/col/col311/index.html";
+        text_arr[i] = "创建全国文明城区纪实";
+        i++;
+        pic_arr[i] = "/picture/0/s1201291848233285984.jpg";
+        link_arr[i] = "http://app.changning.sh.cn/col/col311/index.html";
+        text_arr[i] = "长宁经济答卷";
+        i++;
+        pic_arr[i] = "/picture/0/s00001731.jpg";
+        link_arr[i] = "http://lh.changning.sh.cn/col/col819/index.html";
+        text_arr[i] = "2012长宁“两会”";
+        i++;
+        var f = "/flash/1/focus1.swf";
+        var titles = text_arr.join("|");
+        var imgs = pic_arr.join("|");
+        var urls = link_arr.join("|");
+        var pw = 286;
+        var ph = 229;
+        var sizes = 14;
+        var Times = 4000;
+        var umcolor = 0xFFFFFF;
+        var btnbg = 0xFF7E00;
+        var txtcolor = 0xFFFFFF;
+        var txtoutcolor = 0x000000;
+        var flash = new SWFObject(f, 'mymovie', pw, ph, '7', '');
+        flash.addParam('allowFullScreen', 'true');
+        flash.addParam('allowScriptAccess', 'always');
+        flash.addParam('quality', 'high');
+        flash.addParam('wmode', 'Transparent');
+        flash.addVariable('pw', pw);
+        flash.addVariable('ph', ph);
+        flash.addVariable('sizes', sizes);
+        flash.addVariable('umcolor', umcolor);
+        flash.addVariable('btnbg', btnbg);
+        flash.addVariable('txtcolor', txtcolor);
+        flash.addVariable('txtoutcolor', txtoutcolor);
+        flash.addVariable('urls', urls);
+        flash.addVariable('Times', Times);
+        flash.addVariable('titles', titles);
+        flash.addVariable('imgs', imgs);
+        flash.write('dplayer2');</SCRIPT>
+    </div>
+    <div class="b-left-box">
+
+        <div class="b-left-box-tit">
+            <ul>
+                <li><a href="/col/col853/index.html" target="_blank">最新要闻</a></li>
+                <li><a href="http://www.cnepaper.com/cnsb/" target="_blank">长宁时报</a></li>
+                <li><a href="/col/col241/index.html" target="_blank">有线视频</a></li>
+                <li><a href="/col/col16/index.html" target="_blank">领导动态</a></li>
+                <li><a href="/col/col12/index.html" target="_blank">媒体报道</a></li>
+                <li><a href="/col/col838/index.html" target="_blank">部门快讯</a></li>
+                <li><a href="/col/col11/index.html" target="_blank">新闻发布会</a></li>
+            </ul>
+        </div>
+        <div class="b-left-box-link">
+            <div class="b-left-box-link-tip">
+
+                <p>【热点头条】</p>
+                <ul>
+                    <li><p><a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_11_1.htm">长宁区创建全国双拥模范城纪实</a>
+                    </p></li>
+                    <li><p><a href="/art/2012/3/16/art_10_217978.html">欢迎参加&ldquo;长宁印象&rdquo;摄影作品征集活动</a></p>
+
+                        <p style="text-align: left">&nbsp;</p>
+
+                        <p>&nbsp;</p>
+
+                        <p style="text-align: left">&nbsp;</p>
+
+                        <p>&nbsp;</p>
+
+                        <p style="text-align: left">&nbsp;</p></li>
+                    <li><p><a href="/art/2012/2/28/art_853_215194.html">长宁&ldquo;全国双拥模范城&rdquo;四连冠</a>　<a
+                            href="http://changning.sh.cn/col/col241/index.html">市商务委调研长宁</a></p></li>
+                    <li><p><a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_3.htm">各界开展2012春季全民义务植树活动</a>&nbsp;
+                        <a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_8.htm">律师工作年会</a></p></li>
+                    <li><p><a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_5.htm">社会管理创新获阶段性成果</a>&nbsp;
+                        <a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_7.htm">国防教育网络频道开通</a></p></li>
+                    <li><p><a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_4.htm">将建国内最大纺织服装出口创新基地</a>&nbsp;
+                        <a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_6.htm">档案工作会议</a></p></li>
+                </ul>
+
+            </div>
+            <div class="b-left-box-link-x">
+                <ul>
+                    <li><p><a href="/art/2012/2/28/art_853_215194.html">长宁&ldquo;全国双拥模范城&rdquo;四连冠</a>　<a
+                            href="http://changning.sh.cn/col/col241/index.html">市商务委调研长宁</a></p></li>
+                    <li><p><a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_3.htm">各界开展2012春季全民义务植树活动</a>&nbsp;
+                        <a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_8.htm">律师工作年会</a></p></li>
+                    <li><p><a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_5.htm">社会管理创新获阶段性成果</a>&nbsp;
+                        <a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_7.htm">国防教育网络频道开通</a></p></li>
+                    <li><p><a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_4.htm">将建国内最大纺织服装出口创新基地</a>&nbsp;
+                        <a href="http://www.cnepaper.com/cnsb/html/2012-03/13/content_1_6.htm">档案工作会议</a></p></li>
+                    <li><p>&ldquo;十二五&rdquo;：<a
+                            href="http://sh.people.com.cn/GB/134952/211179/215589/index.html">精品虹桥</a> <a
+                            href="http://sh.people.com.cn/GB/134952/211179/215590/index.html">国际商都</a> <a
+                            href="http://sh.people.com.cn/GB/134952/211179/215591/index.html">智慧高地</a> <a
+                            href="http://sh.people.com.cn/GB/134952/211179/215592/index.html">活力城区</a></p></li>
+                    <li><p><a href="http://sh.people.com.cn/GB/134952/211179/211358/index.html">品味西大门：记者看长宁</a>&nbsp; <a
+                            href="http://sh.people.com.cn/GB/134952/211179/211359/index.html">印象大虹桥：作家看长宁</a></p></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="b-left2">
+    <div class="xxgk">
+        <div class="xxgk1">
+            <ul>
+                <li><a href="/col/col19/index.html" target="_blank">政府信息公开规定</a></li>
+                <li><a href="/col/col18/index.html" target="_blank">政府信息公开指南</a></li>
+                <li><a href="/govdiropen/jcms_files/jcms1/web1/site/index.html" target="_blank">政府信息公开目录</a></li>
+                <li><a href="/col/col24/index.html" target="_blank">政府信息公开监督</a></li>
+                <li><a href="/col/col20/index.html" target="_blank">政府信息公开年报</a></li>
+                <li><a href="/col/col610/index.html" target="_blank">信息公开常见问题</a></li>
+                <li><a href="http://www.changning.sh.cn/newgovopen/apply.aspx" target="_blank">我要申请政府信息</a></li>
+            </ul>
+
+        </div>
+
+    </div>
+    <div class="xxgk2">
+        <ul class="tab">
+            <li id="tab31" class="li-yes" style="width:180px;"><a
+                    href="/govdiropen/jcms_files/jcms1/web1/site/index.html" target="_blank">政府信息公开目录</a></li>
+            <li id="tab32" class="li-no" style="width:130px; border-left:1px solid #D2D2D2;"><a target="_blank"
+                                                                                                href="/govdiropen/jcms_files/jcms1/web39/site/index.html">区政府信息</a>
+            </li>
+            <li id="tab33" class="li-no" style="width:127px; border-left:1px solid #D2D2D2;"><a
+                    href="/col/col829/index.html" target="_blank">部门信息公开</a></li>
+
+            <li id="tab34" class="li-no" style="width:130px; border-left:1px solid #D2D2D2;"><a target="_blank"
+                                                                                                href="http://gczxzl.changning.sh.cn">重点工程领域</a>
+            </li>
+        </ul>
+        <div class="xxgk-mu">
+            <ul>
+                <li><a target="_blank" href="/col/col650/index.html">政府机构</a></li>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=9">法规文件</a>
+                </li>
+            </ul>
+            <ul>
+
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=15">规划计划</a>
+                </li>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=19">统计信息</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=23">财政信息</a>
+                </li>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=36">行政权力</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=47">人事信息</a>
+                </li>
+
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=52">应急管理</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=55">政务动态</a>
+                </li>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=61">公告公示</a>
+                </li>
+            </ul>
+            <ul style="background: none transparent scroll repeat 0% 0%">
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/column.jsp?cid=66">公共企事</a>
+                </li>
+                <li><a target="_blank" href="/govdiropen/jcms_files/jcms1/web1/site/index.html">更多&gt;&gt;</a></li>
+
+            </ul>
+        </div>
+        <div>
+            <script language=javascript
+                    src='/govdiropen/jcms_files/jcms1/web1/site/zfxxgk/freshnews/freshnews_dy.jsp?uid=1040'></script>
+        </div>
+    </div>
+</div>
+<div class="b-left2">
+<div class="zwdt">
+
+    <div class="zwdt1">
+        <ul>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=aa77add4-584c-461f-8204-85665adb9cc7">教育</a>
+            </li>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=e36af88e-6171-4620-9685-2bbce28cb113">社保</a>
+            </li>
+        </ul>
+        <ul>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=68ff201c-18e1-4276-abbd-2cfbcad57f2a">就业</a>
+            </li>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=824ebc61-d0e4-42f6-9138-e25f90a0df44">医疗</a>
+            </li>
+
+        </ul>
+        <ul>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=824ebc61-d0e4-42f6-9138-e25f90a0df44">住房</a>
+            </li>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=be2b1838-74ee-4e0c-be5e-3d7d6e322537">交通</a>
+            </li>
+        </ul>
+        <ul>
+            <li><a target="_blank" href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=">司法</a></li>
+            <li><a target="_blank" href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=">其他</a></li>
+        </ul>
+
+        <ul>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=d82fe827-d4b9-41b6-b5ea-d16123996732">证件办理</a>
+            </li>
+        </ul>
+        <ul>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=6cb94055-dc0f-4258-9e8f-3b55675cb2ea">资质认定</a>
+            </li>
+        </ul>
+        <ul>
+            <li><a target="_blank"
+                   href="http://www.changning.sh.cn/web2010/wsbsindex.aspx?wsbscategoryID=b2b06b46-a49f-4125-b171-01f0da9a61a0">开办企业</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<div class="xxgk2">
+    <ul class="tab">
+        <li id="tab22" class="li-yes" style="width:130px;border-left:1px solid #D2D2D2; border-right:1px solid #D2D2D2;"
+            onmouseover="setTab2('tab2',2,2)">企业办事
+        </li>
+        <li id="tab21" class="li-no" style="width:130px;" onmouseover="setTab2('tab2',1,2)">市民办事</li>
+        <li class="li-no" style="width:320px;">&nbsp;</li>
+    </ul>
+    <div id="con_tab2_1" class="zwdt-link1" style="display:none">
+        <ul>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=4c2a25da-fb52-47c9-8eae-fc3f3236c5cc"
+                   target="_blank">生育</a></li>
+
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=70de66f6-edc4-4254-9f99-97b23c1cd204"
+                   target="_blank">证照申领</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=f1d2a954-9f47-4d9e-a931-bc8d3dacf433"
+                   target="_blank">文化教育</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=9dc9d7a1-0a7d-40d2-beac-6965dc79df6d"
+                   target="_blank">宗教</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=c3f27d2b-5b4d-44ea-967d-c529183e1804"
+                   target="_blank">交通</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=7ca841a7-2234-4c0f-9666-272197bbc5e6"
+                   target="_blank">其他</a></li>
+        </ul>
+    </div>
+    <div id="con_tab2_2" class="zwdt-link1" style="display:block">
+        <ul>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=18c7b95c-c1d6-4ab4-8d99-d71b1a3cfc26"
+                   target="_blank">绿化环保</a></li>
+
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=2035ceda-651b-4806-b2f3-26649f013b01"
+                   target="_blank">企业变更</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=39534853-be35-471b-aaab-570419f6a823"
+                   target="_blank">企业破产</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=8069719c-0dcb-44b7-857d-1f14f706d8b7"
+                   target="_blank">城市建设</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=96a59879-6449-4dc8-a605-ec6ed3f43f5b"
+                   target="_blank">水务</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=9b834399-8cf5-4902-bb7b-2b75d138fd17"
+                   target="_blank">行业准营</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=aa4b3f9c-e54e-4340-8cb6-69ac021daf1c"
+                   target="_blank">质量监督</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=b5c91efe-6ae0-421b-b443-b67a02e8ad84"
+                   target="_blank">项目审批</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=c654e474-d6ee-4c8c-950b-d095f34db9d1"
+                   target="_blank">年检</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=ca0b0c45-37ba-4a9f-8f47-160356230c50"
+                   target="_blank">财税</a></li>
+
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=cba6094e-5893-4db3-a8ca-ae7e5cbfe1d9"
+                   target="_blank">人才培训</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=d44d3f03-aafd-4d58-a954-239a76d9c783"
+                   target="_blank">企业开业</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=f59f038c-6ec0-4db1-8a9e-44ae8269da79"
+                   target="_blank">劳动保障</a></li>
+            <li>
+                <a href="http://www.changning.sh.cn/wsbs/AffairDivPage.aspx?AffairCategoryID=f8480291-ae52-4305-b4bd-66b5ae284662"
+                   target="_blank">其他</a></li>
+        </ul>
+    </div>
+    <div class="zwdt-jsearch" id="con1_tab2_1" style="display:block">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+
+                <td width="70"><img src="/images/1/index_10.jpg" width="70" height="62"/></td>
+                <td style="border-bottom:1px solid #CECECE; border-top:1px solid #CECECE;">
+                    <style type="text/css">
+                        .search_title {
+                            overflow: hidden;
+                            width: 200px;
+                            height: 24px;
+                            float: left;
+                        }</style>
+                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                        <form method="post" target="_blank">
+                            <tbody>
+                                <tr>
+                                    <td height="26" align="left" style="padding-left: 5px">按事项名称检索： <input
+                                            id="txtSearchEvent1" size="23" onchange="return checkNotHigh(this,255);"
+                                            style="border-bottom: rgb(204,204,204) 1px solid; border-left: rgb(204,204,204) 1px solid; line-height: 14px; width: 70px; height: 16px; vertical-align: middle; border-top: rgb(204,204,204) 1px solid; border-right: rgb(204,204,204) 1px solid"
+                                            name="vc_name" type="text"/> <img id="btnSearchEvent1" alt="" onclick=""
+                                                                              style="vertical-align: middle; cursor: pointer"
+                                                                              src="/picture/4/1112131936540465859.jpg"/>
+                                    </td>
+                                    <td align="right" style="padding-right: 2px">按职能部门检索： <select
+                                            id="search_department1" name="search_department1">
+                                        <option value="区财政局" selected="selected">区财政局</option>
+                                        <option value="区档案局">区档案局</option>
+                                        <option value="区发展改革委">区发展改革委</option>
+                                        <option value="区房管局">区房管局</option>
+                                        <option value="区规土局">区规土局</option>
+                                        <option value="区合作交流办">区合作交流办</option>
+                                        <option value="区环保局">区环保局</option>
+                                        <option value="区建设交通委">区建设交通委</option>
+                                        <option value="区教育局">区教育局</option>
+                                        <option value="区绿化市容局">区绿化市容局</option>
+                                        <option value="区民防办">区民防办</option>
+                                        <option value="区民政局">区民政局</option>
+                                        <option value="区民宗办">区民宗办</option>
+                                        <option value="区人保局">区人保局</option>
+                                        <option value="区人口计生委">区人口计生委</option>
+                                        <option value="区商务委">区商务委</option>
+                                        <option value="区食药监分局">区食药监分局</option>
+                                        <option value="区司法局">区司法局</option>
+                                        <option value="区体育局">区体育局</option>
+                                        <option value="区卫生局">区卫生局</option>
+                                        <option value="区文化局">区文化局</option>
+                                        <option value="区质监局">区质监局</option>
+                                    </select></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div style="width: 100%; height: 24px; overflow: hidden">
+                                            <div id="back_result1">
+                                                <div class="tzgg-a search_title">&nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </form>
+                        <tbody></tbody>
+                    </table>
+                </td>
+
+                <td width="6"><img src="/images/1/index_11.jpg" width="6" height="62"/></td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="zwdt-jsearch" id="con1_tab2_2" style="display:none">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="70"><img src="/images/1/index_12.jpg" width="70" height="62"/></td>
+                <td style="border-bottom:1px solid #CECECE; border-top:1px solid #CECECE;">
+                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                        <form method="post" target="_blank">
+                            <tbody>
+                                <tr>
+                                    <td height="26" align="left" style="padding-left: 5px">按事项名称检索： <input
+                                            id="txtSearchEvent2" onChange="return checkNotHigh(this,255);"
+                                            style="border-bottom: rgb(204,204,204) 1px solid; border-left: rgb(204,204,204) 1px solid; line-height: 14px; width: 70px; height: 16px; vertical-align: middle; border-top: rgb(204,204,204) 1px solid; border-right: rgb(204,204,204) 1px solid"
+                                            name="vc_name" type="text"/>&nbsp;<img id="btnSearchEvent2" alt=""
+                                                                                   style="vertical-align: middle; cursor: pointer"
+                                                                                   src="/picture/4/1112131936540465859.jpg"/>
+                                    </td>
+                                    <td align="right" style="padding-right: 2px">按职能部门检索： <select
+                                            id="search_department2" name="search_department2">
+                                        <option value="区财政局" selected="selected">区财政局</option>
+                                        <option value="区档案局">区档案局</option>
+                                        <option value="区发展改革委">区发展改革委</option>
+                                        <option value="区房管局">区房管局</option>
+                                        <option value="区规土局">区规土局</option>
+                                        <option value="区合作交流办">区合作交流办</option>
+                                        <option value="区环保局">区环保局</option>
+                                        <option value="区建设交通委">区建设交通委</option>
+                                        <option value="区教育局">区教育局</option>
+                                        <option value="区绿化市容局">区绿化市容局</option>
+                                        <option value="区民防办">区民防办</option>
+                                        <option value="区民政局">区民政局</option>
+                                        <option value="区民宗办">区民宗办</option>
+                                        <option value="区人保局">区人保局</option>
+                                        <option value="区人口计生委">区人口计生委</option>
+                                        <option value="区商务委">区商务委</option>
+                                        <option value="区食药监分局">区食药监分局</option>
+                                        <option value="区司法局">区司法局</option>
+                                        <option value="区体育局">区体育局</option>
+                                        <option value="区卫生局">区卫生局</option>
+                                        <option value="区文化局">区文化局</option>
+                                        <option value="区质监局">区质监局</option>
+                                    </select></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div style="width: 100%; height: 24px; overflow: hidden">
+                                            <div id="back_result2">
+                                                <div class="tzgg-a search_title">&nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </form>
+                    </table>
+                </td>
+
+                <td width="6"><img src="/images/1/index_11.jpg" width="6" height="62"/></td>
+            </tr>
+        </table>
+
+    </div>
+    <div id="con2_tab2_1" style="display:block">
+        <div>
+            <ul class="con">
+                <li class="li-link"><a title="【区人保局】失业保险金审批" target="_blank"
+                                       href="http://www.changning.sh.cn/wsbs/Detail.aspx?AffairID=cc598897-442c-437f-9e50-d6a495174900">【区人保局】失业保险金审批</a>
+                </li>
+                <li class="li-link"><a title="【区人保局】工伤认定" target="_blank"
+                                       href="http://www.changning.sh.cn/wsbs/Detail.aspx?AffairID=29d5b08a-dab8-4cfa-b334-385348f1c31a">【区人保局】工伤认定</a>
+                </li>
+
+                <li class="li-link"><a title="【区财政局】会计从业资格审批
+    " href="http://www.changning.sh.cn/OpenInfo/InfoDetail.aspx?InfoGuid=337db7da-4cbb-4cc3-b34c-925a312e06c2"
+      target="_blank">【区财政局】会计从业资格审批 </a></li>
+                <li class="li-link"><a title="【区人口计生委】再生育的许可" target="_blank"
+                                       href="http://www.changning.sh.cn/wsbs/Detail.aspx?AffairID=bd6c7360-1920-4230-abb9-473f67c2ec0c">【区人口计生委】再生育的许可</a>
+                </li>
+            </ul>
+        </div>
+        <div id="TextDiv2">
+            <ul class="con">
+                <li class="li-link"><a title="【教育】长宁幼儿园就读服务" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=a776dfa7-c86a-4fdd-82a8-a5d3f860efa2">【教育】长宁幼儿园就读服务</a>
+                </li>
+                <li class="li-link"><a title="【教育】外来人口本地就读服务" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=983008c9-d8bf-4910-bd1d-a763b67823bb">【教育】外来人口本地就读服务</a>
+                </li>
+                <li class="li-link"><a title="【医疗】长宁医疗卫生机构" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=7ba71e49-7608-466e-8514-674cf682df7c">【医疗】长宁医疗卫生机构</a>
+                </li>
+
+                <li class="li-link"><a title="【医疗】城乡困难群众医疗救助服务" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=453965a1-c9ed-40ee-a3ca-9e4ed2a0a1f7">【医疗】城乡困难群众医疗救助服务</a>
+                </li>
+                <li class="li-link"><a title="【交通】长途汽车出行" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=5a2cc7c9-a93a-49aa-acf0-4784a0d263ae">【交通】长途汽车出行</a>
+                </li>
+                <li class="li-link"><a title="【交通】长宁区域内公共汽车出行" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=a4bbf7b9-bd19-4615-be2d-3f2beaf7a3ca">【交通】长宁区域内公共汽车出行</a>
+                </li>
+            </ul>
+        </div>
+        <script type="text/javascript">
+            new Marquee("TextDiv2", 0, 1, 555, 25, 23, 3000, 5000);
+        </script>
+    </div>
+    <div id="con2_tab2_2" style="display:none">
+        <div>
+            <ul class="con">
+                <li class="li-link"><a title="【区商务委】外商投资企业重大事项的变更" target="_blank"
+                                       href="http://www.changning.sh.cn/wsbs/Detail.aspx?AffairID=0593d3f5-6696-4b41-93a4-3bda0ef3ead1">【区商务委】外商投资企业重大事项的变更</a>
+                </li>
+                <li class="li-link"><a title="【区人保局】企业施行其他工时制审批" target="_blank"
+                                       href="http://www.changning.sh.cn/wsbs/Detail.aspx?AffairID=6c46720e-ba0e-47ed-a6e8-75528def3e22">【区人保局】企业施行其他工时制审批</a>
+                </li>
+                <li class="li-link"><a title="【区食药监分局】上海市食品卫生许可证" target="_blank"
+                                       href="http://www.changning.sh.cn/wsbs/Detail.aspx?AffairID=cf8823b3-1a5e-4111-9ba5-ddcbf682892e">【区食药监分局】上海市食品卫生许可证</a>
+                </li>
+                <li class="li-link"><a title="【区商务委】加工贸易合同报批" target="_blank"
+                                       href="http://www.changning.sh.cn/wsbs/Detail.aspx?AffairID=91ab3410-5a2c-4bf0-8e0c-7761a33eee7d">【区商务委】加工贸易合同报批</a>
+                </li>
+            </ul>
+        </div>
+        <div id="TextDiv3">
+            <ul class="con">
+                <li class="li-link"><a title="【教育】长宁幼儿园就读服务" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=a776dfa7-c86a-4fdd-82a8-a5d3f860efa2">【教育】长宁幼儿园就读服务</a>
+                </li>
+                <li class="li-link"><a title="【教育】外来人口本地就读服务" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=983008c9-d8bf-4910-bd1d-a763b67823bb">【教育】外来人口本地就读服务</a>
+                </li>
+                <li class="li-link"><a title="【医疗】长宁医疗卫生机构" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=7ba71e49-7608-466e-8514-674cf682df7c">【医疗】长宁医疗卫生机构</a>
+                </li>
+                <li class="li-link"><a title="【医疗】城乡困难群众医疗救助服务" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=453965a1-c9ed-40ee-a3ca-9e4ed2a0a1f7">【医疗】城乡困难群众医疗救助服务</a>
+                </li>
+                <li class="li-link"><a title="【交通】长途汽车出行" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=5a2cc7c9-a93a-49aa-acf0-4784a0d263ae">【交通】长途汽车出行</a>
+                </li>
+                <li class="li-link"><a title="【交通】长宁区域内公共汽车出行" target="_blank"
+                                       href="http://www.changning.sh.cn/web2010/InfoDetail.aspx?InfoGuid=a4bbf7b9-bd19-4615-be2d-3f2beaf7a3ca">【交通】长宁区域内公共汽车出行</a>
+                </li>
+            </ul>
+        </div>
+        <script type="text/javascript">
+            new Marquee("TextDiv3", 0, 1, 555, 25, 23, 3000, 5000);
+
+        </script>
+    </div>
+</div>
+</div>
+<div class="b-left2">
+<div class="zjcn">
+    <div class="zjcn1">
+        <ul id="tab7" class="zjcn-ul-yes" onmouseover="setTab('tab',7,7)">
+            <li><a href="/col/col7/index.html" target="_blank">社区·服务</a></li>
+        </ul>
+
+        <ul id="tab1" class="zjcn-ul-no" onmouseover="setTab('tab',1,7)">
+
+            <li><a href="/col/col7/index.html" target="_blank">投资·招商</a></li>
+        </ul>
+        <ul id="tab2" class="zjcn-ul-no" onmouseover="setTab('tab',2,7)">
+            <li><a href="/col/col7/index.html" target="_blank">概览·指南</a></li>
+        </ul>
+        <ul id="tab3" class="zjcn-ul-no" onmouseover="setTab('tab',3,7)">
+            <li><a href="/col/col7/index.html" target="_blank">生活·旅游</a></li>
+
+        </ul>
+        <ul id="tab4" class="zjcn-ul-no" onmouseover="setTab('tab',4,7)">
+            <li><a href="/col/col7/index.html" target="_blank">探索·体验</a></li>
+        </ul>
+        <ul id="tab5" class="zjcn-ul-no" onmouseover="setTab('tab',5,7)">
+            <li><a href="/col/col7/index.html" target="_blank">感受·攻略</a></li>
+        </ul>
+        <ul id="tab6" class="zjcn-ul-no" onmouseover="setTab('tab',6,7)">
+            <li><a href="/col/col7/index.html" target="_blank">博览·资讯</a></li>
+
+        </ul>
+
+    </div>
+</div>
+<div class="zjcn2" id="con_tab_1" style="display:none;">
+    <ul class="zjcn2-tab">
+        <li><a target="_blank" href="/col/col55/index.html">国家级开发区</a></li>
+        <li><a target="_blank" href="/col/col54/index.html">产业园区</a></li>
+        <li><a target="_blank" href="http://www.hongqiao.gov.cn/swhq_rzqy.asp">入住企业</a></li>
+
+        <li><a target="_blank"
+               href="http://sww.changning.sh.cn/InfoListWithTag.aspx?ParentCategoryID=e5f1a588-1904-4ea8-9f20-caa699e1fb29&amp;CategoryID=e5f1a588-1904-4ea8-9f20-caa699e1fb29">投资新闻</a>
+        </li>
+        <li><a target="_blank"
+               href="http://sww.changning.sh.cn/InfoListWithTag.aspx?ParentCategoryID=1fd2426e-f33f-40ef-b07d-649d95723460&amp;CategoryID=1fd2426e-f33f-40ef-b07d-649d95723460">商务公告</a>
+        </li>
+        <li><a target="_blank" href="http://www.hongqiao.gov.cn/fwhq_tzjs_lb.asp">招商推介</a></li>
+        <li><a target="_blank" href="http://www.hongqiao.gov.cn/swhq_zlzs_01.asp">展览展示</a></li>
+        <li><a target="_blank" href="http://www.hongqiao.gov.cn/swhq_jjly.asp">经济楼宇</a></li>
+        <li><a target="_blank" href="http://www.hongqiao.gov.cn/swhq_jrjg.asp">金融机构</a></li>
+
+    </ul>
+    <div class="zjcn3">
+
+
+    </div>
+</div>
+<div class="zjcn2" id="con_tab_2" style="display:none;">
+    <ul class="zjcn2-tab">
+        <li><a href="/col/col76/index.html" target="_blank">历史·变迁</a></li>
+        <li><a href="/col/col58/index.html" target="_blank">文化·人物</a></li>
+        <li><a href="/col/col59/index.html" target="_blank">民俗·人文</a></li>
+
+        <li><a href="/col/col60/index.html" target="_blank">区域·地图</a></li>
+    </ul>
+    <div class="zjcn3">
+        <table width="98%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="204" align="left" valign="top" style="padding-bottom:10px;"></td>
+                <td align="left" valign="top">
+                    <p class="zjcn-p">长宁区地理位置优越，交通便捷，处于沪宁发展轴和沪杭发展轴汇合 </p>
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+</div>
+<div class="zjcn2" id="con_tab_3" style="display:none;">
+    <ul class="zjcn2-tab">
+        <li><a href="http://elife.changning.sh.cn/intro_65.aspx?cid=108&tid=3&navindex=0" target="_blank">交通</a></li>
+        <li><a href="http://elife.changning.sh.cn/intro_65.aspx?cid=70&tid=3&navindex=0" target="_blank">美食</a></li>
+        <li><a href="http://elife.changning.sh.cn/intro_65.aspx?cid=66&tid=1&navindex=0" target="_blank">住宿</a></li>
+
+        <li><a href="http://elife.changning.sh.cn/intro_65.aspx?cid=75&tid=1&navindex=0" target="_blank">娱乐</a></li>
+        <li><a href="http://elife.changning.sh.cn/intro_65.aspx?cid=79&tid=0&navindex=0" target="_blank">购物</a></li>
+        <li><a href="http://elife.changning.sh.cn/intro_65.aspx?cid=69&tid=1&navindex=0" target="_blank">旅游</a></li>
+        <li><a href="http://elife.changning.sh.cn/intro_65.aspx?cid=82&tid=1&navindex=0" target="_blank">教育</a></li>
+        <li><a href="http://elife.changning.sh.cn/list_2.aspx?cid=25&navindex=0" target="_blank">医疗</a></li>
+    </ul>
+    <div class="zjcn3">
+
+
+    </div>
+</div>
+<div class="zjcn2" id="con_tab_4" style="display:none;">
+
+    <ul class="zjcn2-tab">
+        <li><a href="/col/col68/index.html" target="_blank">经典建筑</a></li>
+        <li><a href="/col/col69/index.html" target="_blank">创意园</a></li>
+        <li><a href="/col/col70/index.html" target="_blank">苏州河</a></li>
+        <li><a href="/col/col71/index.html" target="_blank">国际城区</a></li>
+        <li><a href="/col/col72/index.html" target="_blank">区位优势</a></li>
+    </ul>
+    <div class="zjcn3">
+
+
+    </div>
+</div>
+
+<div class="zjcn2" id="con_tab_5" style="display:none;">
+    <ul class="zjcn2-tab">
+        <li><a href="/col/col75/index.html" target="_blank">推荐观光线路</a></li>
+    </ul>
+    <div class="zjcn3">
+
+
+    </div>
+</div>
+<div class="zjcn2" id="con_tab_6" style="display:none;">
+    <ul class="zjcn2-tab">
+        <li><a href="/col/col86/index.html" target="_blank">长宁经济</a></li>
+
+        <li><a href="/col/col88/index.html" target="_blank">长宁电子书</a></li>
+        <li><a href="/col/col89/index.html" target="_blank">长宁视频集</a></li>
+        <li><a href="/col/col90/index.html" target="_blank">长宁图片集</a></li>
+    </ul>
+    <div class="zjcn3">
+
+
+    </div>
+</div>
+<div class="zjcn2" id="con_tab_7" style="display: block;">
+    <table border="0" cellspacing="0" cellpadding="0" width="100%" height="50">
+        <tbody>
+
+            <tr>
+                <td valign="bottom" align="center"><a target="_blank"
+                                                      href="http://elife.changning.sh.cn/intro_65.aspx?cid=70&tid=0&navindex=0"><img
+                        border="0" alt="" width="40" height="41" src="/picture/4/1202010126332032.bmp"/></a></td>
+                <td valign="bottom" align="center"><a target="_blank"
+                                                      href="http://elife.changning.sh.cn/intro_65.aspx?cid=66&tid=0&navindex=0"><img
+                        border="0" alt="" width="40" height="41" src="/picture/4/1202010126332035.bmp"/></a></td>
+                <td valign="bottom" align="center"><a target="_blank"
+                                                      href="http://elife.changning.sh.cn/intro_65.aspx?cid=108&tid=3&navindex=0"><img
+                        border="0" alt="" width="41" height="41" src="/picture/4/1202010126332031.bmp"/></a></td>
+                <td valign="bottom" align="center"><a target="_blank"
+                                                      href="http://elife.changning.sh.cn/intro_65.aspx?cid=69&tid=1&navindex=0"><img
+                        border="0" alt="" width="41" height="41" src="/picture/4/1202010126332033.bmp"/></a></td>
+                <td valign="bottom" align="center"><a target="_blank"
+                                                      href="http://elife.changning.sh.cn/intro_65.aspx?cid=79&tid=0&navindex=0"><img
+                        border="0" alt="" width="41" height="41" src="/picture/4/1202010126332030.bmp"/></a></td>
+                <td valign="bottom" align="center"><a target="_blank"
+                                                      href="http://elife.changning.sh.cn/intro_65.aspx?cid=75&tid=1&navindex=0"><img
+                        border="0" alt="" width="41" height="41" src="/picture/4/1202010126332034.jpg"/></a></td>
+            </tr>
+        </tbody>
+
+    </table>
+    <div class="zjcn3">
+        <TABLE WIDTH=100% CELLSPACING=0 CELLPADDING=0 BORDER=0>
+            <TR>
+                <TD>
+                    <div style="line-height:20px;">·<a href='http://www.redtown570.com/' class='bt_link'
+                                                       title='【红坊】360度看坊间' target=_blank>【红坊】360度看坊间</a></div>
+                </TD>
+                <TD>
+                    <div style="line-height:20px;">·<a href='http://www.lhs-arts.org/' class='bt_link'
+                                                       title='【刘海粟美术馆】最新画展网上查询' target=_blank>【刘海粟美术馆】最新画展网 </a></div>
+                </TD>
+                <TD>
+                    <div style="line-height:20px;">·<a
+                            href='http://ipac.library.sh.cn/ipac20/ipac.jsp?profile=#focusfocusfocusfocus#focus'
+                            class='bt_link' title='【长宁区图书馆】 图书书目网上查询' target=_blank>【长宁区图书馆】 图书书目 </a></div>
+                </TD>
+            </TR>
+            <TR>
+                <TD>
+                    <div style="line-height:20px;">·<a href='http://www.filmcenter.com.cn/' class='bt_link'
+                                                       title='【上海影城】上映新片网上速查' target=_blank>【上海影城】上映新片网上速 </a></div>
+                </TD>
+                <TD>
+                    <div style="line-height:20px;">·<a href='http://www.shanghaimart.com/index.asp' class='bt_link'
+                                                       title='【世贸商城】系列专业展会欢迎您' target=_blank>【世贸商城】系列专业展会欢 </a></div>
+                </TD>
+                <TD>
+                    <div style="line-height:20px;">·<a href='http://www.shanghaizoo.cn/' class='bt_link'
+                                                       title='【上海动物园】亲近自然亲近动物世界' target=_blank>【上海动物园】亲近自然亲近 </a></div>
+                </TD>
+
+            </TR>
+        </TABLE>
+        <iframe height="137"
+                src="/jact/main/jact/datacall/model/datacallcomquestion/datacallcomquestion_1328034821718.htm"
+                frameborder="0" width="529" allowtransparency="allowtransparency" scrolling="no"></iframe>
+
+    </div>
+</div>
+</div>
+</div>
+<div class="b-right">
+    <div class="right-p">近期关注</div>
+    <div class="right-box">
+
+        <div class="right-box-tit"><span style="padding-right:4px;"><a
+                href="http://www.changning.sh.cn/col/col5/index.html" target="_blank">更多>></a></span>互动征集
+        </div>
+        <div class="right-box-tit1">
+            <a href="http://www.changning.sh.cn/art/2012/3/16/art_10_217978.html" target="_blank">“长宁印象”摄影作品征集 </a>
+        </div>
+        <div class="right-box-tit2">
+            <img src="/picture/0/1203201035287508584.jpg" width="102" height="73" style="float:left;"/>
+            以照片的形式展现长宁日新月异的城市新貌和和谐生活，集中体现长宁“精品城区、活力城区、绿色城
+        </div>
+
+        <div class="right-box-tit3">
+            <ul>
+                <li><a href="/col/col268/index.html" target="_blank">往期回顾</a></li>
+                <li><a href="/col/col11/index.html" target="_blank">新闻发布会</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="right-p1"><span><a href="/col/col9/index.html" target="_blank">更多>></a></span>专题推荐</div>
+
+    <div class="right-box">
+        <ul class="img-ul">
+            <li><img src="/picture/0/1201311359310001120.JPG"/><a style="font-weight:bold;"
+                                                                  href='http://lh.changning.sh.cn/col/col819/index.html'
+                                                                  title='长宁2012“两会”' target=_blank>长宁2012“两会 </a><br>区长李耀新所作的政府工作报告
+            </li>
+            <li><img src="/picture/0/1201311359320789417.jpg"/><a style="font-weight:bold;"
+                                                                  href='http://222.66.103.87/col/col548/index.html'
+                                                                  title='长宁区第九次党代会' target=_blank>长宁区第九次党代会</a><br>“长宁今后五年的奋斗目标”
+            </li>
+        </ul>
+    </div>
+    <div class="right-p1"><span></span>便捷通道</div>
+    <div class="right-box">
+        <div style="text-align:left; padding-left:5px; padding-top:2px;"><img src="/images/1/index_27.jpg"/></div>
+        <p>长宁区人民政府办公地址：<br/>
+
+            长宁路599号<br/>
+            办公时间：8:30-17:30<br/>
+            联系电话：21-22050000</p>
+
+        <div style="text-align:left; padding-left:5px;">
+            <a target="_blank" href="http://cnxf.changning.sh.cn"><img border="0" alt="" width="173" height="57"
+                                                                       style="margin-left: 4px"
+                                                                       src="/picture/4/index_28.jpg"/></a>
+        </div>
+        <div style=" border-bottom:1px dashed #C0C0C0; height:9px; width:190px;margin-left:auto;margin-right:auto;"></div>
+        <ul class="link-ul">
+            <li><a target="_blank" href="/col/col329/index.html">信访须知</a></li>
+
+            <li><a target="_blank" href="/col/col847/index.html">典型案例</a></li>
+            <li><a target="_blank" href="/jact/front/front_main?sysid=9">业务咨询</a></li>
+            <li><a target="_blank" href="/jact/front/front_main?sysid=9">工作建议</a></li>
+            <li><a target="_blank" href="/jact/front/front_main?sysid=9" target='_blank'>监督投诉</a></li>
+            <li><a href="http://cnjf.changning.sh.cn/wysq/SQListView.aspx" target='_blank'>行业纠风</a></li>
+        </ul>
+        <div style=" border-bottom:1px dashed #C0C0C0; height:9px; width:190px;margin-left:auto;margin-right:auto;"></div>
+
+        <div style="text-align:left; padding-left:5px;"><img src="/images/1/index_29.jpg"/></div>
+        <ul class="link-ul">
+            <li><a target="_blank" href="/col/col650/index.html">政府机构</a></li>
+            <li>政府网站</li>
+            <li><a target="_blank" href="/col/col235/index.html">网站使用帮助</a></li>
+        </ul>
+        <div style=" border-bottom:1px dashed #C0C0C0; height:9px; width:190px;margin-left:auto;margin-right:auto;"></div>
+        <div style="text-align:left; padding-left:5px;"><img src="/images/1/index_30.jpg"/></div>
+        <ul class="link-ul">
+            <li>我要投稿</li>
+            <li><a target="_blank" href="/col/col849/index.html">意见征集</a></li>
+
+            <li>我要纠错</li>
+        </ul>
+        <div style="height:6px; width:200px;"></div>
+    </div>
+</div>
+
+</div>
+</div>
+<div class="yqlj">
+<ul>
+
+<li class="yqlj-li-link">友情链接</li>
+<li id="ta1" class="yqlj-li-yes" onclick="setTab1('ta',1,4)">长宁区政府部门</li>
+<li id="ta2" class="yqlj-li-no" onclick="setTab1('ta',2,4)">上海区县</li>
+<li id="ta3" class="yqlj-li-no" onclick="setTab1('ta',3,4)">上海市政府</li>
+<li id="ta4" class="yqlj-li-no" onclick="setTab1('ta',4,4)">新闻媒体</li>
+<li style="float:right;"></li>
+
+<li class="yqlj-li-jsearch">
+<div style="float:left;">
+<script language='javascript' src='/script/1/jquery.selectseach.min.js'></script>
+<select id="search" m="search" name="search" style='width:200px;'>
+
+<option value=""></option>
+<option value="http://jcj.changning.sh.cn/">纪委、监察局</option>
+
+<option value=""></option>
+<option value="http://nj.changning.sh.cn">组织部</option>
+
+<option value=""></option>
+<option value="">统战部</option>
+
+<option value=""></option>
+<option value="http://archives.changning.sh.cn">档案局</option>
+
+<option value=""></option>
+<option value="http://fgw.changning.sh.cn">发展和改革委员会</option>
+
+<option value=""></option>
+<option value="http://sww.changning.sh.cn">商务委员会</option>
+
+<option value=""></option>
+<option value="http://jianw.changning.sh.cn">建设和交通委员会</option>
+
+<option value=""></option>
+
+<option value="http://kw.changning.sh.cn/CNCMS">科学技术委员会</option>
+
+<option value=""></option>
+<option value="http://jsw.changning.sh.cn">人口和计划生育委员会</option>
+
+<option value=""></option>
+<option value="http://gzw.changning.sh.cn">国有资产监督管理委员会</option>
+
+<option value=""></option>
+<option value="http://gaj.changning.sh.cn">公安局长宁分局</option>
+
+<option value=""></option>
+<option value="http://sfj.changning.sh.cn">司法局</option>
+
+<option value=""></option>
+<option value="http://ldj.changning.sh.cn">人力资源和社会保障局</option>
+
+<option value=""></option>
+<option value="http://cn.shmzj.gov.cn/">民政局</option>
+
+<option value=""></option>
+<option value="http://czj.changning.sh.cn">财政局（互联网访问）</option>
+
+<option value=""></option>
+<option value="http://czj.cn.gov">财政局（政务网访问）</option>
+
+<option value=""></option>
+<option value="http://sjj.changning.sh.cn">审计局</option>
+
+<option value=""></option>
+<option value="http://www.chneic.sh.cn">教育局</option>
+
+<option value=""></option>
+<option value="http://www.schb.gov.cn">卫生局</option>
+
+<option value=""></option>
+<option value="http://whj.changning.sh.cn">文化局</option>
+
+<option value=""></option>
+
+<option value="http://whzf.changning.sh.cn">文化局</option>
+
+<option value=""></option>
+<option value="http://tyj.changning.sh.cn">体育局</option>
+
+<option value=""></option>
+<option value="http://lhsr.changning.sh.cn">绿化和市容管理局</option>
+
+<option value=""></option>
+<option value="http://cgzf.changning.sh.cn">绿化和市容管理局</option>
+
+<option value=""></option>
+<option value="http://hbj.changning.sh.cn">环境保护局</option>
+
+<option value=""></option>
+<option value="http://ghj.changning.sh.cn">规划和土地管理局</option>
+
+<option value=""></option>
+<option value="http://www.cnfg.gov.cn/">住房保障和房屋管理局</option>
+
+<option value=""></option>
+<option value="http://mfb.changning.sh.cn">民防办公室</option>
+
+<option value=""></option>
+<option value="http://safety.changning.sh.cn/">安全生产监督管理局</option>
+
+<option value=""></option>
+<option value="http://www.csj.sh.gov.cn/gb/zwz/swj/changning/index.html">税务局长宁分局</option>
+
+<option value=""></option>
+<option value="http://gsj.changning.sh.cn/">工商分局</option>
+
+<option value=""></option>
+<option value="http://cn.shzj.gov.cn">质量技术监督局</option>
+
+<option value=""></option>
+<option value="http://changning.shfda.gov.cn">食药监督管理局长宁分局</option>
+
+<option value=""></option>
+
+<option value="http://219.233.203.133:8500">长宁人大</option>
+
+<option value=""></option>
+<option value="http://cnzx.changning.sh.cn">长宁政协</option>
+
+<option value=""></option>
+<option value="http://www.cngh.org">总工会</option>
+
+<option value=""></option>
+<option value="http://tw.changning.sh.cn">共青团长宁区委员会</option>
+
+<option value=""></option>
+<option value="http://cnfl.changning.sh.cn">妇女联合会</option>
+
+<option value=""></option>
+<option value="http://www.cndisabled.sh.cn">残疾人联合会</option>
+
+<option value=""></option>
+<option value="http://gsl.changning.sh.cn">工商业联合会</option>
+
+<option value=""></option>
+<option value="http://cnjf.changning.sh.cn/">长宁区纠风网</option>
+
+<option value=""></option>
+<option value="http://www.xhjd.org">新华街道办事处</option>
+
+<option value=""></option>
+<option value="http://jsjd.changning.sh.cn">江苏街道办事处</option>
+
+<option value=""></option>
+<option value="http://www.huayang.org.cn">华阳街道办事处</option>
+
+<option value=""></option>
+<option value="http://tsjd.changning.sh.cn">天山街道办事处</option>
+
+<option value=""></option>
+<option value="http://zqjd.changning.sh.cn">周桥街道办事处</option>
+
+<option value=""></option>
+
+<option value="http://www.xxjd.gov.cn">仙霞街道办事处</option>
+
+<option value=""></option>
+<option value="http://hongqiao.changning.sh.cn">虹桥街道办事处</option>
+
+<option value=""></option>
+<option value="http://cqjd.changning.sh.cn">程桥街道办事处</option>
+
+<option value=""></option>
+<option value="http://bxjjd.changning.sh.cn">北新泾街道办事处</option>
+
+<option value=""></option>
+<option value="http://xjz.changning.sh.cn">新泾镇</option>
+
+<option value=""></option>
+<option value="http://zffwqy.changning.sh.cn/web/">政府服务企业信息化平台</option>
+
+<option value=""></option>
+<option value="http://www.chnlc.net">学在数字长宁</option>
+
+<option value=""></option>
+<option value="http://www.shdrc.gov.cn/">市发展和改革委员会</option>
+
+<option value=""></option>
+<option value="http://www.sheitc.gov.cn/">市经济和信息化委员会</option>
+
+<option value=""></option>
+<option value="http://www.scofcom.gov.cn/sfic/sc/index.jsp">市商务委员会</option>
+
+<option value=""></option>
+<option value="http://www.shmec.gov.cn/index.php">市教育委员会</option>
+
+<option value=""></option>
+<option value="http://www.stcsm.gov.cn/">市科学技术委员会</option>
+
+<option value=""></option>
+<option value="http://www.shmzw.gov.cn/gb/mzw/index.html">市民族和宗教事务委员会</option>
+
+<option value=""></option>
+
+<option value="http://gaj.sh.gov.cn/shga/gweb/">市公安局</option>
+
+<option value=""></option>
+<option value="http://jcw.sh.gov.cn/">市监察局</option>
+
+<option value=""></option>
+<option value="http://mzj.sh.gov.cn/gb/shmzj/index.html">市民政局</option>
+
+<option value=""></option>
+<option value="http://www.justice.gov.cn/sfxzinfoplat/platformData/infoplat/pub/wetsite_12/shouye_102/index.html">市司法局
+</option>
+
+<option value=""></option>
+<option value="http://www.czj.sh.gov.cn/">市财政局</option>
+
+<option value=""></option>
+<option value="http://www.12333sh.gov.cn/">市人力资源和社会保障局</option>
+
+<option value=""></option>
+<option value="http://222.66.164.74/index.jsp">市人力资源和社会保障局（原市医疗保险局）</option>
+
+<option value=""></option>
+<option value="http://jsjtw.sh.gov.cn/gb/jsjt2009/index.html">市城乡建设和交通委员会</option>
+
+<option value=""></option>
+<option value="http://e-nw.shac.gov.cn/index.jsp">市农业委员会</option>
+
+<option value=""></option>
+<option value="http://www.sepb.gov.cn/">市环境保护局</option>
+
+<option value=""></option>
+<option value="http://www.shgtj.gov.cn/">市规划和国土资源管理局</option>
+
+<option value=""></option>
+<option value="http://www.shanghaiwater.gov.cn/web/homepage/index.html">市水务局(市海洋局)</option>
+
+<option value=""></option>
+<option value="http://wgj.sh.gov.cn/">市文化广播影视管理局</option>
+
+<option value=""></option>
+
+<option value="http://wsj.sh.gov.cn/website/">市卫生局</option>
+
+<option value=""></option>
+<option value="http://rkjsw.sh.gov.cn/">市人口和计划生育委员会</option>
+
+<option value=""></option>
+<option value="http://sjj.sh.gov.cn/">市审计局</option>
+
+<option value=""></option>
+<option value="http://www.shfao.gov.cn/">市人民政府外事办公室</option>
+
+<option value=""></option>
+<option value="http://www.shgzw.gov.cn/gb/gzw/index.html">市国有资产监督管理委员会</option>
+
+<option value=""></option>
+<option value="http://www.sgs.gov.cn/sabicsgs/index.jsp">市工商行政管理局</option>
+
+<option value=""></option>
+<option value="http://www.shzj.gov.cn/">市质量技术监督局</option>
+
+<option value=""></option>
+<option value="http://tjj.sh.gov.cn/2008shtj/index.asp">市统计局</option>
+
+<option value=""></option>
+<option value="http://cbj.sh.gov.cn/index.jsp">市新闻出版局</option>
+
+<option value=""></option>
+<option value="http://www.shsports.gov.cn/">市体育局</option>
+
+<option value=""></option>
+<option value="http://lyw.sh.gov.cn/">市旅游局</option>
+
+<option value=""></option>
+<option value="http://www.sipa.gov.cn/">市知识产权局</option>
+
+<option value=""></option>
+<option value="http://lhsr.sh.gov.cn/">市绿化和市容管理局</option>
+
+<option value=""></option>
+
+<option value="http://www.shfg.gov.cn/">市住房保障和房屋管理局</option>
+
+<option value=""></option>
+<option value="http://jtj.sh.gov.cn/">市交通运输和港口管理局</option>
+
+<option value=""></option>
+<option value="http://www.shsafety.gov.cn/index.html">市安全生产监督管理局</option>
+
+<option value=""></option>
+<option value="http://www.mfb.sh.cn/mfbinfoplat/platformData/infoplat/pub/shmf_104/shouye_1002/index.html">市民防办公室
+</option>
+
+<option value=""></option>
+<option value="http://xzb.sh.gov.cn/">市人民政府合作交流办公室</option>
+
+<option value=""></option>
+<option value="http://qwb.sh.gov.cn/">市人民政府侨务办公室</option>
+
+<option value=""></option>
+<option value="http://www.shanghailaw.gov.cn/fzbChinese/index.jsp">市人民政府法制办公室</option>
+
+<option value=""></option>
+<option value="http://sjr.sh.gov.cn/">市金融服务办公室</option>
+
+<option value=""></option>
+<option value="http://www.shport.gov.cn/">市口岸服务办公室</option>
+
+<option value=""></option>
+<option value="http://www.expo2010.cn/">世博会事务协调局</option>
+
+<option value=""></option>
+<option value="http://www.shio.gov.cn/">市人民政府新闻办公室</option>
+
+<option value=""></option>
+<option value="http://www.fzzx.sh.gov.cn/">市人民政府发展研究中心</option>
+
+<option value=""></option>
+<option value="http://www.shgrain.gov.cn/foodnetmis/website/index.aspx">市粮食局</option>
+
+<option value=""></option>
+
+<option value="http://jyj.sh.gov.cn/site/index_html">市监狱管理局</option>
+
+<option value=""></option>
+<option value="http://www.shfda.gov.cn/gb/node2/node3/index.html">市食品药品监督管理局</option>
+
+<option value=""></option>
+<option value="http://stj.sh.gov.cn/">市社会团体管理局</option>
+
+<option value=""></option>
+<option value="http://www.shjfzx.gov.cn/">市纠风在线网</option>
+
+<option value=""></option>
+<option value="http://www.pudong.gov.cn">浦东新区</option>
+
+<option value=""></option>
+<option value="http://www.cmx.gov.cn">崇明县</option>
+
+<option value=""></option>
+<option value="http://fxq.sh.gov.cn">奉贤区</option>
+
+<option value=""></option>
+<option value="http://www.shqp.gov.cn">青浦区</option>
+
+<option value=""></option>
+<option value="http://www.songjiang.gov.cn">松江区</option>
+
+<option value=""></option>
+<option value="http://jsq.sh.gov.cn">金山区</option>
+
+<option value=""></option>
+<option value="http://www.jiading.gov.cn">嘉定区</option>
+
+<option value=""></option>
+<option value="http://www.shmh.gov.cn">闵行区</option>
+
+<option value=""></option>
+<option value="http://bsq.sh.gov.cn">宝山区</option>
+
+<option value=""></option>
+
+<option value="http://www.jingan.gov.cn">静安区</option>
+
+<option value=""></option>
+<option value="http://www.shzb.gov.cn">闸北区</option>
+
+<option value=""></option>
+<option value="http://www.shyp.gov.cn">杨浦区</option>
+
+<option value=""></option>
+<option value="http://hkq.sh.gov.cn">虹口区</option>
+
+<option value=""></option>
+<option value="http://www.shhp.gov.cn">黄浦区</option>
+
+<option value=""></option>
+<option value="http://www.ptq.sh.gov.cn">普陀区</option>
+</select>
+</div>
+<div style="float:left;">
+    <img alt="" onclick="window.open (getmydata())
+" style="margin-left: 30px; cursor: pointer" src="/picture/4/index_19.jpg"/></div>
+</li>
+</ul>
+</div>
+<div class="yqlj-link" id="con_ta_1" style="display:block;">
+    <ul>
+        <li><a href='http://jcj.changning.sh.cn/' title='区监察局' target=_blank>区监察局</a></li>
+        <li><a href='http://nj.changning.sh.cn' title='区委组织部' target=_blank>区委组织部</a></li>
+        <li><a href='http://fgw.changning.sh.cn' title='区发改委' target=_blank>区发改委</a></li>
+        <li><a href='http://jianw.changning.sh.cn' title='区建交委' target=_blank>区建交委</a></li>
+        <li><a href='http://kw.changning.sh.cn/CNCMS' title='区科委' target=_blank>区科委</a></li>
+        <li><a href='http://jsw.changning.sh.cn' title='区人口计生委' target=_blank>区人口计生委</a></li>
+        <li><a href='http://gzw.changning.sh.cn' title='区国资委' target=_blank>区国资委</a></li>
+        <li><a href='http://gaj.changning.sh.cn' title='区公安分局' target=_blank>区公安分局</a></li>
+        <li><a href='http://sfj.changning.sh.cn' title='区司法局' target=_blank>区司法局</a></li>
+        <li><a href='http://cn.shmzj.gov.cn/' title='区民政局' target=_blank>区民政局</a></li>
+        <li><a href='http://czj.changning.sh.cn' title='区财政局' target=_blank>区财政局</a></li>
+        <li><a href='http://sjj.changning.sh.cn' title='区审计局' target=_blank>区审计局</a></li>
+        <li><a href='http://www.chneic.sh.cn' title='区教育局' target=_blank>区教育局</a></li>
+        <li><a href='http://www.schb.gov.cn' title='区卫生局' target=_blank>区卫生局</a></li>
+        <li><a href='http://whj.changning.sh.cn' title='区文化局' target=_blank>区文化局</a></li>
+        <li><a href='http://tyj.changning.sh.cn' title='区体育局' target=_blank>区体育局</a></li>
+        <li><a href='http://lhsr.changning.sh.cn' title='区绿化和市容管理局' target=_blank>区绿化和市容管理局</a></li>
+        <li><a href='http://hbj.changning.sh.cn' title='区环保局' target=_blank>区环保局</a></li>
+        <li><a href='http://ghj.changning.sh.cn' title='区规土局' target=_blank>区规土局</a></li>
+        <li><a href='http://www.cnfg.gov.cn/' title='区房管局' target=_blank>区房管局</a></li>
+        <li><a href='http://mfb.changning.sh.cn' title='区民防办' target=_blank>区民防办</a></li>
+        <li><a href='http://safety.changning.sh.cn/' title='区安监局' target=_blank>区安监局</a></li>
+        <li><a href='http://gsj.changning.sh.cn/' title='区工商分局' target=_blank>区工商分局</a></li>
+        <li><a href='http://www.csj.sh.gov.cn/gb/zwz/swj/changning/index.html' title='区税务分局' target=_blank>区税务分局</a>
+        </li>
+        <li><a href='http://cn.shzj.gov.cn/' title='区质监局' target=_blank>区质监局</a></li>
+        <li><a href='http://changning.shfda.gov.cn/' title='区食药监局' target=_blank>区食药监局</a></li>
+        <li><a href='http://sww.changning.sh.cn' title='区商务委' target=_blank>区商务委</a></li>
+        <li><a href='http://ldj.changning.sh.cn' title='区人保局' target=_blank>区人保局</a></li>
+        <li><a href='http://rd.changning.sh.cn' title='区人大' target=_blank>区人大</a></li>
+        <li><a href='http://cnzx.changning.sh.cn' title='区政协' target=_blank>区政协</a></li>
+        <li><a href='http://www.cngh.org/' title='区总工会' target=_blank>区总工会</a></li>
+        <li><a href='http://tqw.changning.sh.cn' title='区团委' target=_blank>区团委</a></li>
+        <li><a href='http://cnfl.changning.sh.cn' title='区妇联' target=_blank>区妇联</a></li>
+        <li><a href='http://gsl.changning.sh.cn/' title='区工商联' target=_blank>区工商联</a></li>
+        <li><a href='http://www.xhjd.org/' title='新华街道' target=_blank>新华街道</a></li>
+        <li><a href='http://jsjd.changning.sh.cn/' title='江苏街道' target=_blank>江苏街道</a></li>
+        <li><a href='http://www.huayang.org.cn/' title='华阳街道' target=_blank>华阳街道</a></li>
+        <li><a href='http://zqjd.changning.sh.cn/' title='周桥街道' target=_blank>周桥街道</a></li>
+        <li><a href='http://tsjd.changning.sh.cn' title='天山街道' target=_blank>天山街道</a></li>
+        <li><a href='http://www.xxjd.gov.cn/' title='仙霞街道' target=_blank>仙霞街道</a></li>
+        <li><a href='http://hongqiao.changning.sh.cn' title='虹桥街道' target=_blank>虹桥街道</a></li>
+        <li><a href='http://cqjd.changning.sh.cn/' title='程桥街道' target=_blank>程桥街道</a></li>
+        <li><a href='http://bxjjd.changning.sh.cn/' title='北新泾街道' target=_blank>北新泾街道</a></li>
+        <li><a href='http://xjz.changning.sh.cn/' title='新泾镇' target=_blank>新泾镇</a></li>
+        <li><a href='http://cnjf.changning.sh.cn/' title='区纠风网' target=_blank>区纠风网</a></li>
+        <li><a href='http://cgzf.changning.sh.cn/' title='区城管大队' target=_blank>区城管大队</a></li>
+        <li><a href='http://whzf.changning.sh.cn/' title='区文化执法大队' target=_blank>区文化执法大队</a></li>
+        <li><a href='http://www.cndisabled.sh.cn/' title='区残联' target=_blank>区残联</a></li>
+    </ul>
+
+</div>
+<div class="yqlj-link" id="con_ta_2" style="display:none;">
+    <ul>
+        <li style="width:150px;"><a href='http://www.pudong.gov.cn' title='浦东新区' target=_blank>浦东新区</a></li>
+        <li style="width:150px;"><a href='http://www.xuhui.gov.cn' title='徐汇区' target=_blank>徐汇区</a></li>
+        <li style="width:150px;"><a href='http://www.changning.sh.cn/' title='长宁区' target=_blank>长宁区</a></li>
+        <li style="width:150px;"><a href='http://www.ptq.sh.gov.cn' title='普陀区' target=_blank>普陀区</a></li>
+        <li style="width:150px;"><a href='http://www.shhp.gov.cn' title='黄浦区' target=_blank>黄浦区</a></li>
+        <li style="width:150px;"><a href='http://hkq.sh.gov.cn' title='虹口区' target=_blank>虹口区</a></li>
+        <li style="width:150px;"><a href='http://www.shyp.gov.cn' title='杨浦区' target=_blank>杨浦区</a></li>
+        <li style="width:150px;"><a href='http://www.shzb.gov.cn' title='闸北区' target=_blank>闸北区</a></li>
+        <li style="width:150px;"><a href='http://www.jingan.gov.cn' title='静安区' target=_blank>静安区</a></li>
+        <li style="width:150px;"><a href='http://bsq.sh.gov.cn' title='宝山区' target=_blank>宝山区</a></li>
+        <li style="width:150px;"><a href='http://www.shmh.gov.cn' title='闵行区' target=_blank>闵行区</a></li>
+        <li style="width:150px;"><a href='http://www.jiading.gov.cn' title='嘉定区' target=_blank>嘉定区</a></li>
+        <li style="width:150px;"><a href='http://jsq.sh.gov.cn' title='金山区' target=_blank>金山区</a></li>
+        <li style="width:150px;"><a href='http://www.songjiang.gov.cn' title='松江区' target=_blank>松江区</a></li>
+        <li style="width:150px;"><a href='http://www.shqp.gov.cn' title='青浦区' target=_blank>青浦区</a></li>
+        <li style="width:150px;"><a href='http://fxq.sh.gov.cn' title='奉贤区' target=_blank>奉贤区</a></li>
+        <li style="width:150px;"><a href='http://www.cmx.gov.cn' title='崇明县' target=_blank>崇明县</a></li>
+    </ul>
+
+</div>
+<div class="yqlj-link" id="con_ta_3" style="display:none;">
+    <ul>
+        <li style="width:300px;"><a href='http://www.shdrc.gov.cn/' title='市发展和改革委员会' target=_blank>市发展和改革委员会</a></li>
+        <li style="width:300px;"><a href='http://www.sheitc.gov.cn/' title='市经济和信息化委员会' target=_blank>市经济和信息化委员会</a>
+        </li>
+        <li style="width:300px;"><a href='http://www.scofcom.gov.cn/sfic/sc/index.jsp' title='市商务委员会' target=_blank>市商务委员会</a>
+        </li>
+        <li style="width:300px;"><a href='http://www.shmec.gov.cn/index.php' title='市教育委员会' target=_blank>市教育委员会</a>
+        </li>
+        <li style="width:300px;"><a href='http://www.stcsm.gov.cn/' title='市科学技术委员会' target=_blank>市科学技术委员会</a></li>
+        <li style="width:300px;"><a href='http://www.shmzw.gov.cn/gb/mzw/index.html' title='市民族和宗教事务委员会' target=_blank>市民族和宗教事务委员会</a>
+        </li>
+        <li style="width:300px;"><a href='http://gaj.sh.gov.cn/shga/gweb/' title='市公安局' target=_blank>市公安局</a></li>
+        <li style="width:300px;"><a href='http://jcw.sh.gov.cn/' title='市监察局' target=_blank>市监察局</a></li>
+        <li style="width:300px;"><a href='http://mzj.sh.gov.cn/gb/shmzj/index.html' title='市民政局' target=_blank>市民政局</a>
+        </li>
+        <li style="width:300px;"><a
+                href='http://www.justice.gov.cn/sfxzinfoplat/platformData/infoplat/pub/wetsite_12/shouye_102/index.html'
+                title='市司法局' target=_blank>市司法局</a></li>
+        <li style="width:300px;"><a href='http://www.czj.sh.gov.cn/' title='市财政局' target=_blank>市财政局</a></li>
+        <li style="width:300px;"><a href='http://www.12333sh.gov.cn/' title='市人力资源和社会保障局' target=_blank>市人力资源和社会保障局</a>
+        </li>
+        <li style="width:300px;"><a href='http://222.66.164.74/index.jsp' title='市人力资源和社会保障局（原市医疗保险局）' target=_blank>市人力资源和社会保障局（原市医疗保险局）</a>
+        </li>
+        <li style="width:300px;"><a href='http://jsjtw.sh.gov.cn/gb/jsjt2009/index.html' title='市城乡建设和交通委员会'
+                                    target=_blank>市城乡建设和交通委员会</a></li>
+        <li style="width:300px;"><a href='http://e-nw.shac.gov.cn/index.jsp' title='市农业委员会' target=_blank>市农业委员会</a>
+        </li>
+        <li style="width:300px;"><a href='http://www.sepb.gov.cn/' title='市环境保护局' target=_blank>市环境保护局</a></li>
+        <li style="width:300px;"><a href='http://www.shgtj.gov.cn/' title='市规划和国土资源管理局' target=_blank>市规划和国土资源管理局</a>
+        </li>
+        <li style="width:300px;"><a href='http://www.shanghaiwater.gov.cn/web/homepage/index.html' title='市水务局(市海洋局)'
+                                    target=_blank>市水务局(市海洋局)</a></li>
+        <li style="width:300px;"><a href='http://wgj.sh.gov.cn/' title='市文化广播影视管理局' target=_blank>市文化广播影视管理局</a></li>
+    </ul>
+
+</div>
+<div class="yqlj-link" id="con_ta_4" style="display:none;">
+    <ul>
+        <li><a href='http://www.online.sh.cn/' title='上海热线' target=_blank>上海热线</a></li>
+        <li><a href='http://www.smg.cn/' title='上海文广传媒集团' target=_blank>上海文广传媒集团</a></li>
+        <li><a href='http://www.china.com.cn/' title='中国网' target=_blank>中国网</a></li>
+        <li><a href='http://www.xmwb.com.cn/' title='新民晚报' target=_blank>新民晚报</a></li>
+        <li><a href='http://www.shanghaidaily.com/' title='上海日报(英)' target=_blank>上海日报(英)</a></li>
+        <li><a href='http://www.jfdaily.com/' title='解放日报' target=_blank>解放日报</a></li>
+        <li><a href='http://whb.news365.com.cn/' title='文汇报' target=_blank>文汇报</a></li>
+        <li><a href='http://www.chinanews.com.cn/' title='中国新闻网' target=_blank>中国新闻网</a></li>
+        <li><a href='http://www.e-gov.org.cn' title='中国电子政务网' target=_blank>中国电子政务网</a></li>
+        <li><a href='http://www.cctv.com.cn/' title='央视网' target=_blank>央视网</a></li>
+        <li><a href='http://www.southcn.com/' title='南方网' target=_blank>南方网</a></li>
+        <li><a href='http://www.beijingnews.com.cn/' title='千龙新闻网' target=_blank>千龙新闻网</a></li>
+        <li><a href='http://www.eastday.com.cn/' title='东方网' target=_blank>东方网</a></li>
+        <li><a href='http://www.labour-daily.cn/' title='劳动报' target=_blank>劳动报</a></li>
+        <li><a href='http://cn.china.cn/' title='中国供应商网' target=_blank>中国供应商网</a></li>
+        <li><a href='http://www.cyol.net/' title='中青在线' target=_blank>中青在线</a></li>
+        <li><a href='http://www.why.com.cn/epublish/gb/paper1/index.htm' title='青年报' target=_blank>青年报</a></li>
+        <li><a href='http://www.xinhuanet.com/' title='新华网' target=_blank>新华网</a></li>
+        <li><a href='http://www.people.com.cn/' title='人民网' target=_blank>人民网</a></li>
+    </ul>
+
+</div>
+</div>
+<div class="foot">
+    <table width="330" height="28" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center" valign="top" class="font-w">
+                <script language='javascript' src='/script/1/1112261342441078.js'></script>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="bottom">
+    <script language='javascript' src='/script/1/copyright.js'></script>
+    <script language=Javascript>
+
+        var delta = 0.08
+        var collection;
+        function floaters() {
+            this.items = [];
+            this.addItem = function(id, x, y, content)
+            {
+                document.write('<DIV id=' + id + ' style="Z-INDEX: 10; POSITION: absolute;  width:60px; height:200px;left:' + (typeof(x) == 'string' ? eval(x) : x) + ';top:' + (typeof(y) == 'string' ? eval(y) : y) + '">' + content + '</DIV>');
+
+                var newItem = {};
+                newItem.object = document.getElementById(id);
+                newItem.x = x;
+                newItem.y = y;
+
+                this.items[this.items.length] = newItem;
+            }
+            this.play = function()
+            {
+                collection = this.items
+                setInterval('play()', 10);
+            }
+        }
+        function play()
+        {
+
+            for (var i = 0; i < collection.length; i++)
+            {
+                var followObj = collection[i].object;
+                var followObj_x = (typeof(collection[i].x) == 'string' ? eval(collection[i].x) : collection[i].x);
+                var followObj_y = (typeof(collection[i].y) == 'string' ? eval(collection[i].y) : collection[i].y);
+
+                if (followObj.offsetLeft != (document.documentElement.scrollLeft + followObj_x)) {
+                    var dx = (document.documentElement.scrollLeft + followObj_x - followObj.offsetLeft) * delta;
+                    dx = (dx > 0 ? 1 : -1) * Math.ceil(Math.abs(dx));
+                    followObj.style.left = followObj.offsetLeft + dx;
+                }
+
+                if (followObj.offsetTop != (document.documentElement.scrollTop + followObj_y)) {
+                    var dy = (document.documentElement.scrollTop + followObj_y - followObj.offsetTop) * delta;
+                    dy = (dy > 0 ? 1 : -1) * Math.ceil(Math.abs(dy));
+                    followObj.style.top = followObj.offsetTop + dy;
+                }
+                followObj.style.display = '';
+            }
+        }
+
+        var theFloaters = new floaters();
+        //右面
+        theFloaters.addItem('followDiv1', 'document.documentElement.clientWidth-60', 350, '<div  id=a12><a href=/art/2012/1/31/art_10_212007.html target=_blank><img src=/picture/4/1202221350332653818.jpg border=0 ></a><br><a href="#" onclick="Close();">关闭</a></div>');
+        //左面
+        theFloaters.addItem('followDiv2', 0, 350, '<div id=b12 ><a href=/art/2012/2/22/art_10_215121.html target=_blank><img src=/picture/4/1202271425534216801.jpg border=0 ></a><br><a href="#" onclick="Close();">关闭</a></div>');
+        theFloaters.play();
+
+        function Close()
+        {
+            document.getElementById("a12").style.display = "none";
+            document.getElementById("b12").style.display = "none";
+        }
+
+    </script>
+
+    <script language="JavaScript">
+        //定时关闭浮动层
+        var s;
+        var htt = document.getElementById("ff");
+        function callfun() {
+            htt.style.display = "none";
+            clearInterval(s);
+        }
+        //浮动层方法
+        function abc() {
+            var arr = [1,];
+            if (arr.length == 2) {
+                htt.innerHTML = "<div class='ffv'>您使用的是IE内核浏览器</div>";
+            }
+            else {
+                htt.innerHTML = "<div class='ffv'>您使用的是非IE内核浏览器,为了保证您正常的浏览网站，建议使用IE浏览器进行浏览网站</div>";
+            }
+            s = setInterval('callfun()', 6000);
+            //设置关闭浮动层时间
+        }
+        out();
+    </script>
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="/module/advertise/que_showadv.jsp?id=1"></script><!-- visitcount Begin -->
+<iframe src='./module/visitcount/visit.jsp?type=1&i_webid=1&i_columnid=1' name="vishidden" id="vishidden" width="0"
+        height="0"></iframe><!-- visitcount End -->
+<script language="javascript" src='/script/pagecontrol.js'></script>

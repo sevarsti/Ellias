@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="voteForm" type="com.saille.qtVote.VoteForm" />
+    </form-beans>
+
+    <action-mappings>
+        <action path="/vote"
+                type="com.saille.qtVote.VoteAction"
+                name="voteForm"
+                parameter="method"
+                scope="session">
+            <forward name="begin" path="/vote/vote.jsp"/>
+        </action>
+    </action-mappings>
+
+</struts-config>

@@ -1,0 +1,22 @@
+.body
+{
+    font-size:13pt;
+    background-color:#FFFFFF;
+    width:800pt;
+    margin-left:auto;
+    margin-right:auto;
+}
+.tab
+{
+    font-size:18pt;
+}
+.headnews
+{
+    font-size:12pt;
+    line-height:30px;
+}
+.column
+{
+    font-size:15pt;
+    line-height:20px;
+}

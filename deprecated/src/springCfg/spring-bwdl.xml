@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd" >
+<beans>
+    <!--<bean id="bwdlService" class="com.saille.bwdl.service.BwdlService">-->
+        <!--<property name="dao">-->
+            <!--<ref local="bwdlDao"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="bwdlSettingService" class="com.saille.bwdl.service.BwdlSettingService">-->
+        <!--<property name="dao">-->
+            <!--<ref local="bwdlSettingDao"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="bwdlDao" class="com.saille.bwdl.dao.BwdlDao">-->
+        <!--<property name="dataSource">-->
+            <!--<ref bean="mysql_ds"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="bwdlSettingDao" class="com.saille.bwdl.dao.BwdlSettingDao">-->
+        <!--<property name="dataSource">-->
+            <!--<ref bean="mysql_ds"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+</beans>

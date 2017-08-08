@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <!--<class lazy="false"-->
+        <!--name="com.saille.test.RobCPlayer" table="test">-->
+        <!--<id column="OBJID" name="id" type="java.lang.Integer" unsaved-value="0">-->
+            <!--<generator class="servlet.IDGenerator">-->
+                <!--<param name="name">TEST</param>-->
+            <!--</generator>-->
+        <!--</id>-->
+        <!--<property column="VALUE" name="value" type="java.lang.String"/>-->
+    <!--</class>-->
+</hibernate-mapping>

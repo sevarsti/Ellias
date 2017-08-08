@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class lazy="false"
+        name="com.saille.book.Book" table="book">
+        <id column="OBJID" name="id" type="java.lang.Integer" unsaved-value="0">
+            <generator class="servlet.IDGenerator">
+                <param name="name">BOOK</param>
+            </generator>
+        </id>
+        <property column="TITLE" name="title" type="java.lang.String"/>
+        <property column="AUTHOR" name="author" type="java.lang.String"/>
+        <property column="SUMMARY" name="summary" type="java.lang.String"/>
+        <property column="PATH" name="path" type="java.lang.String"/>
+        <property column="STORETYPE" name="storeType" type="java.lang.String"/>
+        <property column="CONTENT" name="content" type="java.lang.String"/>
+    </class>
+</hibernate-mapping>

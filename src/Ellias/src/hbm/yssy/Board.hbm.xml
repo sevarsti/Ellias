@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class lazy="false"
+        name="com.saille.bbs.yssy.Board" table="BOARD">
+        <id column="OBJID" name="id" type="java.lang.Integer" unsaved-value="0">
+            <generator class="servlet.IDGenerator">
+                <param name="name">BOARD</param>
+            </generator>
+        </id>
+        <property column="BOARDNAME" name="boardName" type="java.lang.String"/>
+        <property column="CHINESENAME" name="chineseName" type="java.lang.String"/>
+    </class>
+</hibernate-mapping>

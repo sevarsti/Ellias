@@ -1,0 +1,52 @@
+<%@LANGUAGE="VBSCRIPT" CODEPAGE="936"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+</head>
+<body>
+
+<div id="focusViwer" name="focusView">
+	<a href="3643603.jpg" target=_blank><img border=1 width=375 height=500 alt="焦点图" src="3643603.jpg" >
+	<br>
+  3643603.jpg</a>
+</div>
+<script language="javascript" src="focusflash.js"></script>
+
+<script type="text/javascript">
+	<!--
+	
+	var focus_width = 375;	// 图片宽度
+	var focus_height= 500;	// 图片高度
+	var text_height = 20;	// 显示的文字高度
+	var swf_height = focus_height + text_height;
+	
+	var pics ="3643603.jpg|3644310.jpg|3647102.jpg|3649097.jpg|3646832.jpg|3649095.jpg|3649096.jpg";
+	var links="3643603.jpg|3644310.jpg|3647102.jpg|3649097.jpg|3646832.jpg|3649095.jpg|3649096.jpg";
+	var texts="3643603.jpg|3644310.jpg|3647102.jpg|3649097.jpg|3646832.jpg|3649095.jpg|3649096.jpg";
+	
+	var FocusFlash = new focusFlash("focus.swf",
+									"focusflash",
+									focus_width,
+									swf_height,
+									"7",
+									"#cccccc",
+									false,
+									"High");
+	FocusFlash.addParam("allowScriptAccess", "sameDomain");
+	FocusFlash.addParam("menu", "false");
+	FocusFlash.addParam("wmode", "opaque");
+
+	FocusFlash.addVariable("pics", pics);
+	FocusFlash.addVariable("links", links);
+	FocusFlash.addVariable("texts", texts);
+	FocusFlash.addVariable("borderwidth", focus_width);
+	FocusFlash.addVariable("borderheight", focus_height);
+	FocusFlash.addVariable("textheight", text_height);
+	FocusFlash.write("focusViwer");
+	
+	//-->
+	</script>
+</body>
+</html>

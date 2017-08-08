@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="GBK"?>
+<Context path="/">
+
+    <Resource name="SinitekOtterapp" auth="Container"
+            type="javax.sql.DataSource"
+            maxActive="100"
+            maxIdle="30"
+            maxWait="10000"
+            username="root"
+            password="sjtuagent"
+            driverClassName="com.mysql.jdbc.Driver"
+            characterEncoding="GB2312"
+            url="jdbc:mysql://localhost:3306/ellias"/>
+
+    <Resource name="Oracle" auth="Container"
+              type="javax.sql.DataSource"
+              maxActive="100"
+              maxIdle="30"
+              maxWait="10000"
+              validationQuery="select sysdate from dual"
+              testWhileIdle="true"
+              testOnBorrow="true"
+              driverClassName="oracle.jdbc.OracleDriver"
+        username="htf"
+        password="htf"
+        url="jdbc:oracle:thin:@localhost:1521:orcl"/>
+    <!--defaultAutoCommit="false"-->
+</Context>

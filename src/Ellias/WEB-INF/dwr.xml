@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+
+<dwr>
+
+    <allow>
+
+    <!--
+    <filter class="org.getahead.dwrdemo.monitor.MonitoringAjaxFilter"/>
+    <filter class="org.directwebremoting.filter.ExtraLatencyAjaxFilter">
+      <param name="delay" value="200"/>
+    </filter>
+    -->
+    <!--<create creator="spring" javascript="StockSpirit">-->
+      <!--<param name="beanName" value="StockSpirit"></param>-->
+    <!--</create>-->
+        <create creator="new" javascript="TravianDwr">
+            <param name="class" value="com.saille.dwr.TravianDwr"/>
+        </create>
+
+        <create creator="new" javascript="RMDwr">
+            <param name="class" value="com.saille.rm.dwr.RMDwr"/>
+        </create>
+
+        <!--<create creator="new" javascript="MsnUtils">-->
+            <!--<param name="class" value="com.saille.msn.utils.MsnUtils"/>-->
+        <!--</create>-->
+
+        <!--<create creator="new" javascript="HhcqUtils">-->
+            <!--<param name="class" value="com.saille.hhcq.util.HhcqDwr"/>-->
+        <!--</create>-->
+
+        <!--<convert converter="bean" match="com.saille.hhcq.Gangkou"/>-->
+        <!--<convert converter="bean" match="com.saille.hhcq.Shangpin"/>-->
+        <!--<convert converter="bean" match="com.saille.hhcq.Jiage"/>-->
+
+        <create creator="new" javascript="BwdlUtils">
+            <param name="class" value="com.saille.bwdl.util.BwdlUtils"/>
+        </create>
+
+        <convert converter="bean" match="com.saille.bwdl.ChengShi"/>
+        <convert converter="bean" match="com.saille.bwdl.WuJiang"/>
+        <convert converter="bean" match="com.saille.bwdl.ShiLi"/>
+
+        <!--<create creator="new" javascript="RxqqDwr">-->
+            <!--<param name="class" value="com.saille.rxqq.RxqqDwr"/>-->
+        <!--</create>-->
+
+        <create creator="new" javascript="OgzqDwr">
+            <param name="class" value="com.saille.ogzq.OgzqDwr"/>
+        </create>
+
+        <!--<create creator="new" javascript="PampersDwr">-->
+            <!--<param name="class" value="com.saille.pampers.PampersDwr"/>-->
+        <!--</create>-->
+        <!--<convert converter="bean" match="org.codehaus.jettison.json.JSONObject"/>-->
+
+    </allow>
+
+</dwr>

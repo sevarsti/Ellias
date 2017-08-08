@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="changeBpmForm" type="com.saille.rm.form.ChangeBpmForm" />
+    </form-beans>
+
+    <action-mappings>
+        <action path="/rm"
+                type="com.saille.rm.action.ChangeBpmAction"
+                name="changeBpmForm"
+                parameter="method"
+                scope="request">
+            <forward name="error" path="/rm/changebpm.jsp"/>
+            <forward name="success" path="/rm/success.jsp"/>
+        </action>
+
+        <action path="/rm/download"
+            type="com.saille.rm.action.DownloadToolAction"
+            parameter="method"
+            scope="request">
+        </action>
+    </action-mappings>
+
+</struts-config>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Ellias Hhcq Library</description>
+    <display-name>Ellias Hhcq</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>hhcq</short-name>
+    <uri>http://www.ellias.com/taglib/hhcq</uri>
+
+    <function>
+       <description>Get Guojia</description>
+       <name>getGuojia</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>com.saille.hhcq.Guojia getGuojia(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get Gangkou</description>
+       <name>getGangkou</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>com.saille.hhcq.Gangkou getGangkou(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get Leibie</description>
+       <name>getLeibie</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>com.saille.hhcq.Leibie getLeibie(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get Shangpin</description>
+       <name>getShangpin</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>com.saille.hhcq.Shangpin getShangpin(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get All Guojias</description>
+       <name>getAllGuojias</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>java.util.List getAllGuojias()</function-signature>
+   </function>
+
+    <function>
+       <description>Get All Gangkous</description>
+       <name>getAllGangkous</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>java.util.List getAllGangkous()</function-signature>
+   </function>
+
+    <function>
+       <description>Get All Leibies</description>
+       <name>getAllLeibies</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>java.util.List getAllLeibies()</function-signature>
+   </function>
+
+    <function>
+       <description>Get All Shangpins</description>
+       <name>getAllShangpins</name>
+       <function-class>com.saille.hhcq.util.HhcqUtils</function-class>
+       <function-signature>java.util.List getAllShangpins()</function-signature>
+   </function>
+    <!--<tag>-->
+        <!--<name>execute</name>-->
+        <!--<tag-class>com.sinitek.web.tag.utils.ExecuteTag</tag-class>-->
+        <!--<body-content>JSP</body-content>-->
+        <!--<attribute>-->
+            <!--<name>id</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>value</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>className</name>-->
+            <!--<required>true</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>method</name>-->
+            <!--<required>true</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+    <!--</tag>-->
+
+    <!--<tag>-->
+        <!--<name>execute-param</name>-->
+            <!--<tag-class>com.sinitek.web.tag.utils.ExecuteParamTag</tag-class>-->
+        <!--<body-content>empty</body-content>-->
+        <!--<attribute>-->
+            <!--<name>type</name>-->
+            <!--<required>true</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>value</name>-->
+            <!--<required>true</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+    <!--</tag>-->
+
+    <!--<tag>-->
+        <!--<name>listEnum</name>-->
+            <!--<tag-class>com.sinitek.web.tag.EnumItemListTag</tag-class>-->
+        <!--<body-content>empty</body-content>-->
+        <!--<attribute>-->
+            <!--<name>id</name>-->
+            <!--<required>true</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>name</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>property</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>enumName</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>sortItem</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>sortType</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+    <!--</tag>-->
+
+    <!--<tag>-->
+        <!--<description>Calendar Control</description>-->
+        <!--<name>calendar</name>-->
+        <!--<tag-class>com.sinitek.web.tag.CalendarTag</tag-class>-->
+        <!--<body-content>empty</body-content>-->
+        <!--<attribute>-->
+            <!--<name>ctrlId</name>-->
+            <!--<required>true</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>useRootCommon</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>showsTime</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+    <!--</tag>-->
+
+    <!--<tag>-->
+        <!--<description>Display Enum Name</description>-->
+        <!--<name>dispEnumName</name>-->
+        <!--<tag-class>com.sinitek.web.tag.DispEnumNameTag</tag-class>-->
+        <!--<body-content>empty</body-content>-->
+        <!--<attribute>-->
+            <!--<name>value</name>-->
+            <!--<required>true</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>enumName</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>entityName</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>propertyName</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+        <!--<attribute>-->
+            <!--<name>showStyle</name>-->
+            <!--<required>false</required>-->
+            <!--<rtexprvalue>true</rtexprvalue>-->
+        <!--</attribute>-->
+    <!--</tag>-->
+
+
+</taglib>

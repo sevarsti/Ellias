@@ -1,0 +1,647 @@
+/***************************************************************/
+body{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+	/*color: white;*/
+	margin: 0px;
+    /*background-color: #888888; *//*grey;*/
+	/*background-color: #F9FFFF; *//*White;*/
+    /*background-color: #000000; *//*White;*/
+
+    overflow: auto;
+	SCROLLBAR-BASE-COLOR: #F0FFFF;	/* 基本颜色 */
+	SCROLLBAR-FACE-COLOR: #F0FFFF;	/* 滚动块的颜色 */
+	SCROLLBAR-ARROW-COLOR: #8EAAE9;	/* 上下按钮上三角箭头的颜色 */
+	SCROLLBAR-3DLIGHT-COLOR: #F0FFFF;	/* 亮边框的颜色 */
+	SCROLLBAR-DARKSHADOW-COLOR: #F0FFFF;	/* 暗边框的颜色 */
+	SCROLLBAR-HIGHLIGHT-COLOR: #8EAAE9;		/* 3D部分高亮边框的颜色 */
+	SCROLLBAR-SHADOW-COLOR: #8EAAE9;	/* 3D部分暗边框的颜色 */
+	SCROLLBAR-TRACK-COLOR: #8EAAE9;	/* 背景的颜色 */
+}
+
+div{
+	SCROLLBAR-BASE-COLOR: #F0FFFF;	/* 基本颜色 */
+	SCROLLBAR-FACE-COLOR: #F0FFFF;	/* 滚动块的颜色 */
+	SCROLLBAR-ARROW-COLOR: #8EAAE9;	/* 上下按钮上三角箭头的颜色 */
+	SCROLLBAR-3DLIGHT-COLOR: #F0FFFF;	/* 亮边框的颜色 */
+	SCROLLBAR-DARKSHADOW-COLOR: #F0FFFF;	/* 暗边框的颜色 */
+	SCROLLBAR-HIGHLIGHT-COLOR: #8EAAE9;		/* 3D部分高亮边框的颜色 */
+	SCROLLBAR-SHADOW-COLOR: #8EAAE9;	/* 3D部分暗边框的颜色 */
+	SCROLLBAR-TRACK-COLOR: #8EAAE9;	/* 背景的颜色 */
+}
+
+/* basic links color */
+a:link {
+	font-size: 12px;
+	color: #000000;
+	text-decoration: none;
+}
+a:visited {
+	font-size: 12px;
+	color: #000033;
+	text-decoration: none;
+}
+a:hover {
+	font-size: 12px;
+	color: #000099;
+	text-decoration: underline;
+}
+.font {
+	font-size: 12px;
+	line-height: 150%;
+	color: #000000;
+	text-decoration: none;
+}
+
+.inputbox {
+	height: 20px;
+	border: 1px solid #B3B3B3;
+	font-size: 12px;
+	line-height: normal;
+	color: #000000;
+	text-decoration: none;
+}
+.inputbox_readonly {
+	height: 20px;
+	border: 1px solid #B3B3B3;
+	font-size: 12px;
+	line-height: normal;
+	color: #000000;
+	text-decoration: none;
+	background-color: Transparent;
+}
+.numericbox {
+	text-align: right;
+	height: 20px;
+	border: 1px solid #B3B3B3;
+	font-size: 12px;
+	line-height: normal;
+	color: #000000;
+	text-decoration: none;
+}
+.numericbox_readonly {
+	text-align: right;
+	height: 20px;
+	border: 1px solid #B3B3B3;
+	font-size: 12px;
+	line-height: normal;
+	color: #000000;
+	text-decoration: none;
+	background-color: Transparent;
+}
+.otterbtn
+{
+	font-size: 9pt;
+	background-color: #BEE3FA;
+	border-width:1px;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+.otterbtn_compact
+{
+	font-size: 9pt;
+	background-color: #BEE3FA;
+	font-size: 9pt;
+	border-width:1px;
+}
+/*
+.otterbtn_big
+{
+	border-top-width: 1px;
+	font-weight: bold;
+	border-left-width: 1px;
+	font-size: 12pt;
+	border-bottom-width: 1px;
+	width: 50px;
+	height: 25px;
+	background-color: #bee3fa;
+	border-right-width: 1px;
+}
+.searchbtn {
+	font-size: 12px;
+	color: #FFFFFF;
+	text-decoration: none;
+	background-color: #003595;
+	height: 18px;
+	border: 1px solid #B3B3B3;
+	line-height: 120%;
+}
+.searchbtnnew {
+	font-size: 12px;
+	color: #000000;
+	text-decoration: none;
+	background-color: #EAEAEB;
+	height: 18px;
+	border: 1px solid #B3B3B3;
+	line-height: 120%;
+}
+*/
+
+textarea.write {
+	border: 1px solid #B3B3B3;
+	color: #000000;
+	padding: 2px 0px 0px 2px;
+	text-align: left;
+	overflow: auto;
+}
+textarea.read {
+	border: none;
+	color: #000000;
+	padding: 2px 0px 0px 10px;
+	text-align: left;
+	background-color: transparent;
+	overflow: auto;
+}
+
+/* table Style */
+td,tr{
+	font-family: verdana, arial;
+	font-size: 7pt;
+}
+table.frame {
+	border: #8EAAE9 2px solid;
+	padding: 0px;
+}
+table.navigator {
+	border: #8EAAE9 2px solid;
+	padding: 0px;
+	background-color: #EEEEEE;
+}
+table.infolist {
+	border: #8EAAE9 1px solid;
+	padding: 0px;
+	background-color: #8EAAE9;
+}
+tr.head{
+/*	background-color: #92ABCF;
+	font-weight: bold;
+	color: white;
+	line-height: 1.2em;*/
+	font-size: 10px;
+	line-height: 150%;
+	font-weight: bold;
+	/*color: #FFFFFF;*/
+	text-decoration: none;
+	background-color: #8EAAE9;
+	text-align: center;
+}
+tr.row1{
+	background-color: #E0EFFE;
+	line-height: 1.7em;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+tr.row2{
+	background-color: #F0FFFF;
+	line-height: 1.7em;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+table.table_body {
+	border: #8EAAE9 1px solid;
+	padding: 0px;
+	background-color: #8EAAE9;
+}
+td.fieldname {
+	background-color: #E0EFFE;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+td.fieldvalue {
+	background-color: #F0FFFF;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+td.fieldnumericvalue
+{
+	padding-right: 2px;
+	padding-left: 2px;
+	background-color: #f0ffff;
+	text-align: right;
+}
+td.fieldtextvalue
+{
+	padding-right: 2px;
+	padding-left: 2px;
+	background-color: #f0ffff;
+	text-align: left;
+}
+
+.page_title{
+	padding: 2px;
+	font-family: arial;
+	font-weight: bold;
+	font-size: 16px;
+	color: #9E99B3;
+	background-color: white;
+	border-bottom: 1px solid #9E99B3;
+}
+.display_title{
+	padding: 2px;
+	font-family: arial;
+	font-weight: bold;
+	font-size: 25px;
+	color: black;
+	background-color: white;
+	border-bottom: 1px solid #9E99B3;
+}
+.deepblue{
+	/*font-weight: bold;*/
+	background-color: #8EAAE9;
+}
+.lightblue1{
+	background-color: #E0EFFE;
+}
+.lightblue2{
+	background-color: #F0FFFF;
+}
+
+.BaseMenuItem
+{
+	padding: 3px 3px 3px 20px;
+	width: 100%;
+	height: 100%;
+	background-color: #E0EFFE;
+	border: 1px solid #E0EFFE;
+	cursor: pointer;
+}
+.BaseMenuItemActive
+{
+	padding: 3px 3px 3px 20px;
+	width: 100%;
+	height: 100%;
+	color: white;
+	font-weight: bold;
+	background-color: #8EAAE9;
+	border: 1px solid gray;
+	cursor: pointer;
+}
+.BaseMenuItemNull
+{
+	padding: 3px 3px 3px 20px;
+	width: 100%;
+	height: 100%;
+	background-color: #E0EFFE;
+	border: 1px solid #E0EFFE;
+}
+
+.dialog_back
+{
+	background-color: #8EAAE9;
+}
+.dialog_fore
+{
+	background-color: #F0FFFF;
+}
+
+.to_right
+{
+	BACKGROUND-IMAGE: url("../images/common/btn_nextpage.gif");
+	OVERFLOW: hidden;
+	WIDTH: 20px;
+	BACKGROUND-REPEAT: no-repeat;
+	FONT-FAMILY: Verdana;
+	HEIGHT: 18px;
+	BACKGROUND-COLOR: white;
+	TEXT-ALIGN: left;
+	BORDER-WIDTH: 1px;
+}
+.to_left
+{
+	BACKGROUND-IMAGE: url("../images/common/btn_prevpage.gif");
+	OVERFLOW: hidden;
+	WIDTH: 20px;
+	BACKGROUND-REPEAT: no-repeat;
+	FONT-FAMILY: Verdana;
+	HEIGHT: 18px;
+	BACKGROUND-COLOR: white;
+	TEXT-ALIGN: left;
+	BORDER-WIDTH: 1px;
+}
+
+/* button style for data grid navigate */
+input.lastpage
+{
+	BACKGROUND-IMAGE: url("../images/common/btn_lastpage.gif");
+	OVERFLOW: hidden;
+	WIDTH: 20px;
+	BACKGROUND-REPEAT: no-repeat;
+	FONT-FAMILY: Verdana;
+	HEIGHT: 18px;
+	BACKGROUND-COLOR: white;
+	TEXT-ALIGN: left;
+	BORDER-WIDTH: 1px;
+}
+input.nextpage
+{
+	BACKGROUND-IMAGE: url("../images/common/btn_nextpage.gif");
+	OVERFLOW: hidden;
+	WIDTH: 20px;
+	BACKGROUND-REPEAT: no-repeat;
+	FONT-FAMILY: Verdana;
+	HEIGHT: 18px;
+	BACKGROUND-COLOR: white;
+	TEXT-ALIGN: left;
+	BORDER-WIDTH: 1px;
+}
+input.prevpage
+{
+	BACKGROUND-IMAGE: url("../images/common/btn_prevpage.gif");
+	OVERFLOW: hidden;
+	WIDTH: 20px;
+	BACKGROUND-REPEAT: no-repeat;
+	FONT-FAMILY: Verdana;
+	HEIGHT: 18px;
+	BACKGROUND-COLOR: white;
+	TEXT-ALIGN: left;
+	BORDER-WIDTH: 1px;
+}
+input.firstpage
+{
+	BACKGROUND-IMAGE: url("../images/common/btn_firstpage.gif");
+	OVERFLOW: hidden;
+	WIDTH: 20px;
+	BACKGROUND-REPEAT: no-repeat;
+	FONT-FAMILY: Verdana;
+	HEIGHT: 18px;
+	BACKGROUND-COLOR: white;
+	TEXT-ALIGN: left;
+	BORDER-WIDTH: 1px;
+}
+
+input.search
+{
+	background-image: url("../images/common/find.gif");
+	width: 16px;
+	height: 16px;
+	border: 1px solid
+}
+
+
+input.query
+{
+	background-image: url("../images/MetaDB/query.ico");
+	width: 18px;
+	cursor: hand;
+	border-top-style: none;
+	background-repeat: no-repeat;
+	border-right-style: none;
+	border-left-style: none;
+	height: 18px;
+	background-color: transparent;
+	border-bottom-style: none;
+}
+
+
+
+input.setting
+{
+	background-image: url("../images/MetaDB/setting.ico");
+	width: 18px;
+	cursor: hand;
+	border-top-style: none;
+	background-repeat: no-repeat;
+	border-right-style: none;
+	border-left-style: none;
+	height: 18px;
+	background-color: transparent;
+	border-bottom-style: none;
+}
+
+input.newEntity
+{
+	background-image: url(../images/MetaDB/newentity.ico);
+	width: 18px;
+	cursor: hand;
+	border-top-style: none;
+	background-repeat: no-repeat;
+	border-right-style: none;
+	border-left-style: none;
+	height: 18px;
+	background-color: transparent;
+	border-bottom-style: none;
+}
+
+input.upArrow
+{
+	background-image: url(../images/MetaDB/upArrow.ico);
+	width: 18px;
+	cursor: hand;
+	border-top-style: none;
+	background-repeat: no-repeat;
+	border-right-style: none;
+	border-left-style: none;
+	height: 18px;
+	background-color: transparent;
+	border-bottom-style: none;
+}
+
+input.downArrow
+{
+	background-image: url(../images/MetaDB/downArrow.ico);
+	width: 18px;
+	cursor: hand;
+	border-top-style: none;
+	background-repeat: no-repeat;
+	border-right-style: none;
+	border-left-style: none;
+	height: 18px;
+	background-color: transparent;
+	border-bottom-style: none;
+}
+
+input.reload
+{
+	background-image: url(../images/MetaDB/reload.ico);
+	width: 18px;
+	cursor: hand;
+	border-top-style: none;
+	background-repeat: no-repeat;
+	border-right-style: none;
+	border-left-style: none;
+	height: 18px;
+	background-color: transparent;
+	border-bottom-style: none;
+}
+
+
+input.submit
+{
+	background-image: url(../images/MetaDB/submit.ico);
+	width: 18px;
+	cursor: hand;
+	border-top-style: none;
+	background-repeat: no-repeat;
+	border-right-style: none;
+	border-left-style: none;
+	height: 18px;
+	background-color: transparent;
+	border-bottom-style: none;
+}
+
+INPUT.Calendar {
+	BACKGROUND-IMAGE: url("../images/common/bacocalendar.gif");
+	BACKGROUND-REPEAT: no-repeat;
+	BACKGROUND-COLOR: transparent;
+	BORDER: medium none;
+	OVERFLOW: hidden;
+	CURSOR: hand;
+	WIDTH: 16px;
+	HEIGHT: 16px;
+}
+
+BUTTON.Calendar {
+	BACKGROUND-IMAGE: url("../images/common/bacocalendar.gif");
+	BACKGROUND-REPEAT: no-repeat;
+	BACKGROUND-COLOR: transparent;
+	BORDER: medium none;
+	OVERFLOW: hidden;
+	CURSOR: hand;
+	WIDTH: 16px;
+	HEIGHT: 16px;
+}
+BUTTON.Browser {
+	BACKGROUND-IMAGE: url("../images/common/BacoBrowser.gif");
+	BACKGROUND-REPEAT: no-repeat;
+	BACKGROUND-COLOR: transparent;
+	BORDER: medium none;
+	OVERFLOW: hidden;
+	CURSOR: hand;
+	WIDTH: 16px;
+	HEIGHT: 16px;
+}
+
+
+
+.TreeView
+{
+	font-size: 8pt;
+	color: #000000;
+	font-family: arial;
+}
+A.TreeView:LINK
+{
+	font-size: 8pt;
+	color: #4682b4;
+	font-family: arial;
+	text-decoration: none;
+}
+A.TreeView:VISITED
+{
+	font-size: 8pt;
+	color: #4682b4;
+	font-family: arial;
+	text-decoration: none;
+}
+A.TreeView:HOVER
+{
+	font-size: 8pt;
+	color: #4682b4;
+	font-family: arial;
+	text-decoration: underline;
+}
+.TreeNode {
+         font-family: Tahoma;
+         font-size: 9pt;
+         color: black;
+}
+.TreeNodeOver {
+         font-family: Tahoma;
+         font-size: 9pt;
+         color: red;
+         cursor: hand;
+}
+.TreeNodeSelect {
+         font-family: Tahoma;
+         font-size: 9pt;
+         color: white;
+         background: blue;
+         cursor: hand;
+}
+.TreeNodeDisabled {
+         font-family: Tahoma;
+         font-size: 9pt;
+         COLOR: gray;
+}
+/*
+tr.dgselect
+{
+	text-align: center;
+	background-color: #00ffff;
+	font-size: 12px;
+	line-height: 180%;
+	color: #ffffff;
+	text-decoration: none;
+}
+*/
+
+#divdatagrid
+        {
+            overflow: auto;
+            /*scrollbar-base-color: #b0c4de;*/
+            height: 500px;
+            width: 950px;
+        }
+
+
+        td.locked, th.locked {
+            background-color:#EEEEEE;
+            position: relative;
+            left: expression(document.getElementById("divDatagrid").scrollLeft);
+            z-index: 99;
+        }
+        th.lockedTop {
+           border-width:0;
+            position: relative;
+            top: expression(document.getElementById("divDatagrid").scrollTop);
+        }
+
+        td.lockedTop {
+            position: relative;
+            top: expression(document.getElementById("divDatagrid").scrollTop);
+        }
+
+table.borderl{
+    border-collapse:collapse;border:2px solid black;
+}
+td.borderh{
+    border-bottom:2px solid black;
+}
+td.borderl{
+    border-bottom:1px solid silver;
+}
+td.borderhr{
+    border-bottom:2px solid black;
+    border-right:1px solid black;
+}
+td.borderlr{
+    border-bottom:1px solid silver;
+    border-right:1px solid black;
+}
+
+.borderrthick{
+    border-right:1px solid black;
+}
+.borderrthin{
+    border-right:1px solid silver;
+}
+.borderbthick{
+    border-bottom:1px solid black;
+}
+.borderbthin{
+    border-bottom:1px solid silver;
+}
+.bordertthick{
+    border-top:1px solid black;
+}
+.bordertthin{
+    border-top:1px solid silver;
+}
+
+table, tr, td, th,select,input,textarea{font-size:8pt;}
+
+div.alert{
+    padding:4pt;
+    color:red;
+    background-color:yellow;
+}

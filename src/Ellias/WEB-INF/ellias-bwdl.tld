@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Ellias Bwdl Library</description>
+    <display-name>Ellias Bwdl</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>bwdl</short-name>
+    <uri>http://www.ellias.com/taglib/bwdl</uri>
+
+    <function>
+       <description>Get Bingzhong</description>
+       <name>getBingzhong</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.lang.String getBingZhong(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get WuQiType</description>
+       <name>getWuQiType</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.lang.String getWuQiType(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get WuQi</description>
+       <name>getWuQi</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>com.saille.bwdl.WuQi getWuQi(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get FangJu</description>
+       <name>getFangJu</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>com.saille.bwdl.FangJu getFangJu(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get All FangJu</description>
+       <name>getAllFangJus</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.util.List getAllFangJus(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get All WuQi</description>
+       <name>getAllWuQis</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.util.List getAllWuQis(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get All BingZhong</description>
+       <name>getAllBingZhongs</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.util.List getAllBingZhongs()</function-signature>
+   </function>
+
+    <function>
+       <description>Get All ChengShis</description>
+       <name>getAllChengShis</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.util.List getAllChengShis(int)</function-signature>
+   </function>
+
+    <function>
+       <description>Get All Init WuJiangs</description>
+       <name>getAllWuJiangsInit</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.util.List getAllWuJiangsInit(int)</function-signature>
+   </function>
+
+    <function>
+        <description>Get All Init ShiLis</description>
+       <name>getAllShiLisInit</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>java.util.List getAllShiLisInit(int)</function-signature>
+    </function>
+
+    <function>
+        <description>Get ShiLi</description>
+       <name>getShiLi</name>
+       <function-class>com.saille.bwdl.util.BwdlUtils</function-class>
+       <function-signature>com.saille.bwdl.ShiLi getShiLi(int)</function-signature>
+    </function>
+</taglib>

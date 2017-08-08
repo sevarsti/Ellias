@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd" >
+<beans>
+    <!--<bean id="bookService" class="com.saille.book.service.BookService">-->
+        <!--<property name="bookDao">-->
+            <!--<ref local="bookDao"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="bookDao" class="com.saille.book.dao.BookDao">-->
+    <!--</bean>-->
+</beans>

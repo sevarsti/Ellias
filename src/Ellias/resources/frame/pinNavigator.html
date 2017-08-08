@@ -1,0 +1,46 @@
+<html>
+<head>
+<link rel="stylesheet" href="design/style/pinNavigator.css" type="text/css">
+<script language="javascript" src="include/pinNavigator.js"></script>
+
+<script LANGUAGE="javascript">
+var controlID = "";
+function load()
+{
+	// process parameters
+	var param = "";
+	try {
+		param = window.location.search;
+	} catch(Error) {}
+
+	if(param.length > 0) {
+		param = param.substring(1,param.length);
+		var aArray = param.split("&");
+		for(var i=0;i<aArray.length;i++) {
+			var aParam = aArray[i].split("=");
+			for(var j=0;j<aParam.length-1;j++) {
+				if(aParam[0].toUpperCase() == "ID") {
+					controlID = aParam[1];
+				}
+			}
+		}
+	}
+
+	// if control id is not specified by url
+	if(controlID == "") {
+		try {
+			controlID = window.frameElement.id;
+		} catch(Error) {
+			alert("The control id can't be determined in pinNavigator.html: Please call pinNavigator.html with parameter id i.e. pinNavigator.html?id=navmain");
+		}
+	}
+
+  try {
+    parent.navigatorCreate(objNavigator, controlID);
+  } catch(Exception) {  }
+}
+</script>
+
+<body style="margin:0;overflow:hidden" onmouseup="__mouseUp" onload="load()">
+</body>
+</html>

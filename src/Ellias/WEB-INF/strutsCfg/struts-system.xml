@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="tableForm" type="com.saille.system.form.TableForm" />
+    </form-beans>
+    <action-mappings>
+        <action path="/system/addTable"
+                name="tableForm"
+                type="com.saille.system.action.TableAction"
+                parameter="method"
+                scope="session">
+            <forward name="addTableSuccess" path="/addTableSuccess.jsp"/>
+        </action>
+        <action path="/login"
+                name="tableForm"
+                type="com.saille.core.action.LoginAction"
+                parameter="method"
+                scope="request">
+            <forward name="success" path="/index.jsp"/>
+            <forward name="fail" path="/login.jsp"/>
+        </action>
+    </action-mappings>
+</struts-config>

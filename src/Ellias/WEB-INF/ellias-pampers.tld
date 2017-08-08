@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Ellias pampers Library</description>
+    <display-name>Ellias pampers</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>pampers</short-name>
+    <uri>http://www.ellias.com/taglib/pampers</uri>
+
+    <function>
+        <name>getProvinceById</name>
+        <function-class>com.saille.pampers.Constant</function-class>
+        <function-signature>java.lang.String getProvinceById(int)</function-signature>
+    </function>
+
+    <function>
+        <name>getCityById</name>
+        <function-class>com.saille.pampers.Constant</function-class>
+        <function-signature>java.lang.String getCityById(int)</function-signature>
+   </function>
+
+    <function>
+        <name>getCities</name>
+        <function-class>com.saille.pampers.Constant</function-class>
+        <function-signature>java.util.List getCities(int)</function-signature>
+    </function>
+
+    <function>
+        <name>getProvinces</name>
+        <function-class>com.saille.pampers.Constant</function-class>
+        <function-signature>java.util.List getProvinces()</function-signature>
+    </function>
+
+    <function>
+        <name>getItemName</name>
+        <function-class>com.saille.pampers.DetectPampers</function-class>
+        <function-signature>java.lang.String getItemName(int)</function-signature>
+    </function>
+</taglib>

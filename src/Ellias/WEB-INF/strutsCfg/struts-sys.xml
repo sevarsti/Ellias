@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="employeeForm" type="com.saille.sys.form.EmployeeForm" />
+        <form-bean name="positionForm" type="com.saille.sys.form.PositionForm" />
+        <form-bean name="resourceForm" type="com.saille.sys.form.ResourceForm" />
+        <form-bean name="rightForm" type="com.saille.sys.form.RightForm" />
+        <form-bean name="empPositionForm" type="com.saille.sys.form.EmpPositionForm" />
+        <form-bean name="settingForm" type="com.saille.sys.form.SettingForm"/>
+    </form-beans>
+
+    <action-mappings>
+        <action path="/sys/employee"
+                type="com.saille.sys.action.EmployeeAction"
+                name="employeeForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/sys/listEmployees.jsp"/>
+            <forward name="edit" path="/sys/editEmployee.jsp"/>
+        </action>
+        <action path="/sys/position"
+                type="com.saille.sys.action.PositionAction"
+                name="positionForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/sys/listPositions.jsp"/>
+            <forward name="edit" path="/sys/editPosition.jsp"/>
+        </action>
+        <action path="/sys/resource"
+                type="com.saille.sys.action.ResourceAction"
+                name="resourceForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/sys/listResources.jsp"/>
+            <forward name="edit" path="/sys/editResource.jsp"/>
+        </action>
+        <action path="/sys/right"
+                type="com.saille.sys.action.RightAction"
+                name="rightForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/sys/listRights.jsp"/>
+            <forward name="edit" path="/sys/editRight.jsp"/>
+            <forward name="table" path="/sys/rightTable.jsp"/>
+        </action>
+        <action path="/sys/empPosition"
+                type="com.saille.sys.action.EmpPositionAction"
+                name="empPositionForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/sys/listEmpPositions.jsp"/>
+            <forward name="edit" path="/sys/editEmpPosition.jsp"/>
+        </action>
+        <action path="/sys/setting"
+                type="com.saille.sys.action.SettingAction"
+                name="settingForm"
+                parameter="method"
+                scope="request">
+            <forward name="list" path="/sys/listSettings.jsp"/>
+            <forward name="edit" path="/sys/editSetting.jsp"/>
+        </action>
+    </action-mappings>
+</struts-config>
