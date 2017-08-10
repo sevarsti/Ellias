@@ -1,13 +1,14 @@
 package com.saille.bbs.yssy;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.apache.log4j.Logger;
-
-import java.net.URL;
-import java.io.InputStream;
-
 import com.saille.html.HTMLUtil;
 import com.saille.sys.BaseThread;
+import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.JdbcTemplate;
+import servlet.GlobalContext;
+
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +20,19 @@ import com.saille.sys.BaseThread;
 public class LoginLoop extends BaseThread {
     private final Logger LOGGER = Logger.getLogger(this.getClass());
     private static LoginLoop instance = null;
-    private LoginLoop(int interval) {super(interval);}
+    private static String id;
+    private static String pwd;
+    private LoginLoop(int interval) {
+        super(interval);
+        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
+        List<Map<String, Object>> list = jt.queryForList("select strvalue from setting where setting = 'YSSY_LOG_ID'");
+        String value = list.get(0).get("strvalue").toString();
+        String id = value.split("-")[0];
+        String pwd = value.split("-")[1];
+        this.id = id;
+        this.pwd = pwd;
+    }
 
     public static LoginLoop getInstance(int interval) {
         if(instance == null) {
@@ -33,7 +46,7 @@ public class LoginLoop extends BaseThread {
         HTMLUtil util = new HTMLUtil();
         try {
             LOGGER.info("loop login");
-            util.logInYSSY("ir", "pmgkglor");
+            util.logInYSSY(id, pwd);
             LOGGER.info("loop login, sleep end");
         } catch(Exception ex) {
             System.out.println("error: " + ex.getMessage());
