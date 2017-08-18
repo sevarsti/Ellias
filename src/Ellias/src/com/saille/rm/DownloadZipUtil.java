@@ -40,7 +40,7 @@ public class DownloadZipUtil {
                 }
                 String filename = entry.getName();
                 File f = new File("D:\\rm\\TableComBin\\" + filename);
-                if(!f.exists() || f.lastModified() < entry.getTime()) {
+                if(f.exists() && f.lastModified() < entry.getTime()) {
                     String bakfilename = "D:\\rm\\TableComBin\\deprecated\\";
                     bakfilename += f.getName().substring(0, f.getName().lastIndexOf(".") + 1);
                     bakfilename += new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(f.lastModified()));
@@ -60,8 +60,9 @@ public class DownloadZipUtil {
                     fis.close();
                     f.delete();
                     f.createNewFile();
-                } else {
+                } else if(f.exists() && f.lastModified() >= entry.getTime()) {
                     continue;
+                } else {
                 }
                 FileOutputStream fos = new FileOutputStream(f);
                 byte[] save = new byte[1024];
