@@ -113,7 +113,7 @@
 
             /* 统计总分 */
             DecimalFormat df = new DecimalFormat("#,##0.0000%");
-            String[][] scores = new String[8][3];
+            String[][] scores = new String[10][3];
             scores[0][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
             scores[0][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
             scores[0][0] = Long.parseLong(scores[0][1]) + Long.parseLong(scores[0][2]) + "";
@@ -123,22 +123,28 @@
             scores[2][0] = df.format(Double.parseDouble(scores[1][0]) / Double.parseDouble(scores[0][0]));
             scores[2][1] = df.format(Double.parseDouble(scores[1][1]) / Double.parseDouble(scores[0][1]));
             scores[2][2] = df.format(Double.parseDouble(scores[1][2]) / Double.parseDouble(scores[0][2]));
-            scores[3][0] = (long)Math.ceil(Double.parseDouble(scores[0][0]) * 0.995) - Long.parseLong(scores[1][0]) + "";
-            scores[3][1] = Long.parseLong(scores[0][1]) - Long.parseLong(scores[1][1]) + "";
-            scores[3][2] = (long)Math.ceil(Double.parseDouble(scores[0][2]) * 0.995) - Long.parseLong(scores[1][2]) + "";
+            scores[3][0] = "99.5%";
+            scores[3][1] = "100%";
+            scores[3][2] = "99.5%";
+            scores[4][0] = (long)Math.ceil(Double.parseDouble(scores[0][0]) * df.parse(scores[3][0]).doubleValue()) - Long.parseLong(scores[1][0]) + "";
+            scores[4][1] = (long)Math.ceil(Double.parseDouble(scores[0][1]) * df.parse(scores[3][1]).doubleValue()) - Long.parseLong(scores[1][1]) + "";//Long.parseLong(scores[0][1]) - Long.parseLong(scores[1][1]) + "";
+            scores[4][2] = (long)Math.ceil(Double.parseDouble(scores[0][2]) * df.parse(scores[3][2]).doubleValue()) - Long.parseLong(scores[1][2]) + "";
 
-            scores[4][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
-            scores[4][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
-            scores[4][0] = Long.parseLong(scores[4][1]) + Long.parseLong(scores[4][2]) + "";
-            scores[5][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 1 and removetag = 0") + "";
-            scores[5][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 0 and removetag = 0") + "";
+            scores[5][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
+            scores[5][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
             scores[5][0] = Long.parseLong(scores[5][1]) + Long.parseLong(scores[5][2]) + "";
-            scores[6][0] = df.format(Double.parseDouble(scores[5][0]) / Double.parseDouble(scores[4][0]));
-            scores[6][1] = df.format(Double.parseDouble(scores[5][1]) / Double.parseDouble(scores[4][1]));
-            scores[6][2] = df.format(Double.parseDouble(scores[5][2]) / Double.parseDouble(scores[4][2]));
-            scores[7][0] = (long)Math.ceil(Double.parseDouble(scores[4][0]) * 0.9975) - Long.parseLong(scores[5][0]) + "";
-            scores[7][1] = Long.parseLong(scores[4][1]) - Long.parseLong(scores[5][1]) + "";
-            scores[7][2] = (long)Math.ceil(Double.parseDouble(scores[4][2]) * 0.995) - Long.parseLong(scores[5][2]) + "";
+            scores[6][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 1 and removetag = 0") + "";
+            scores[6][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 0 and removetag = 0") + "";
+            scores[6][0] = Long.parseLong(scores[6][1]) + Long.parseLong(scores[6][2]) + "";
+            scores[7][0] = df.format(Double.parseDouble(scores[6][0]) / Double.parseDouble(scores[5][0]));
+            scores[7][1] = df.format(Double.parseDouble(scores[6][1]) / Double.parseDouble(scores[5][1]));
+            scores[7][2] = df.format(Double.parseDouble(scores[6][2]) / Double.parseDouble(scores[5][2]));
+            scores[8][0] = "99.75%";
+            scores[8][1] = "100%";
+            scores[8][2] = "99.5%";
+            scores[9][0] = (long)Math.ceil(Double.parseDouble(scores[5][0]) * df.parse(scores[8][0]).doubleValue()) - Long.parseLong(scores[6][0]) + "";
+            scores[9][1] = (long)Math.ceil(Double.parseDouble(scores[5][1]) * df.parse(scores[8][1]).doubleValue()) - Long.parseLong(scores[6][1]) + "";//Long.parseLong(scores[4][1]) - Long.parseLong(scores[5][1]) + "";
+            scores[9][2] = (long)Math.ceil(Double.parseDouble(scores[5][2]) * df.parse(scores[8][2]).doubleValue()) - Long.parseLong(scores[6][2]) + "";
         %>
         <table border="0" cellpadding="1" cellspacing="1" bgcolor="black">
             <tr class="head">
@@ -229,37 +235,49 @@
                 <td><%=scores[2][2]%></td>
             </tr>
             <tr class="row2">
-                <td class="fieldname">差距</td>
+                <td class="fieldname">目标</td>
                 <td><%=scores[3][0]%></td>
                 <td><%=scores[3][1]%></td>
                 <td><%=scores[3][2]%></td>
+            </tr>
+            <tr class="row1">
+                <td class="fieldname">差距</td>
+                <td><%=scores[4][0]%></td>
+                <td><%=scores[4][1]%></td>
+                <td><%=scores[4][2]%></td>
             </tr>
             <tr class="head">
                 <th colspan="4">去除极限</th>
             </tr>
             <tr class="row2">
                 <td class="fieldname">已打歌曲满分</td>
-                <td><%=scores[4][0]%></td>
-                <td><%=scores[4][1]%></td>
-                <td><%=scores[4][2]%></td>
-            </tr>
-            <tr class="row1">
-                <td class="fieldname">已打歌曲总分</td>
                 <td><%=scores[5][0]%></td>
                 <td><%=scores[5][1]%></td>
                 <td><%=scores[5][2]%></td>
             </tr>
-            <tr class="row2">
-                <td class="fieldname">百分比</td>
+            <tr class="row1">
+                <td class="fieldname">已打歌曲总分</td>
                 <td><%=scores[6][0]%></td>
                 <td><%=scores[6][1]%></td>
                 <td><%=scores[6][2]%></td>
             </tr>
-            <tr class="row1">
-                <td class="fieldname">差距</td>
+            <tr class="row2">
+                <td class="fieldname">百分比</td>
                 <td><%=scores[7][0]%></td>
                 <td><%=scores[7][1]%></td>
                 <td><%=scores[7][2]%></td>
+            </tr>
+            <tr class="row1">
+                <td class="fieldname">目标</td>
+                <td><%=scores[8][0]%></td>
+                <td><%=scores[8][1]%></td>
+                <td><%=scores[8][2]%></td>
+            </tr>
+            <tr class="row2">
+                <td class="fieldname">差距</td>
+                <td><%=scores[9][0]%></td>
+                <td><%=scores[9][1]%></td>
+                <td><%=scores[9][2]%></td>
             </tr>
         </table>
         <br/>

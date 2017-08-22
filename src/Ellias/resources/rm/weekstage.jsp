@@ -87,7 +87,7 @@
         Map<String, String> allSongs = loadSongs();
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
         JdbcTemplate jt = new JdbcTemplate(ds);
-        List<Map<String, Object>> list = jt.queryForList("select a.*, b.key41, b.key42, b.key43, b.key51, b.key52, b.key53, b.key61, b.key62, b.key63, c.score from rm_teamchallenge a join rm_song b on a.songid = b.songid left join rm_songscore c on a.songid = c.songid and (a.key + 3 = c.key) and a.level = c.level and c.hasrole = 1 and c.removetag = 0 where startdate >= date_format((date_add(now(), interval -5 day)), '%Y%m%d') order by startdate desc");
+        List<Map<String, Object>> list = jt.queryForList("select a.*, b.key41, b.key42, b.key43, b.key51, b.key52, b.key53, b.key61, b.key62, b.key63, c.score from rm_teamchallenge a join rm_song b on a.songid = b.songid left join rm_songscore c on a.songid = c.songid and (a.key + 3 = c.key) and a.level = c.level and c.hasrole = 1 and c.removetag = 0 where enddate is null or enddate >= date_format(now(), '%Y%m%d') order by startdate desc");
         List<String[]> teamchallenges = new ArrayList<String[]>();
         for(Map<String, Object> obj : list) {
             String songId = ((Integer) obj.get("songid")).intValue() + "";
