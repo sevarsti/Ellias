@@ -1,11 +1,17 @@
 package com.saille.aliyun;
 
 import com.aliyun.oss.OSSClient;
+<<<<<<< HEAD
 import com.aliyun.oss.model.*;
 
 import java.util.List;
 import java.util.Date;
 import java.io.File;
+=======
+import com.aliyun.oss.model.Bucket;
+
+import java.util.List;
+>>>>>>> 4bb486eb3b30a733b133c33a07b6459d571e4a4d
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +27,7 @@ public class OssUtils {
 
     public static void main(String[] args) {
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+<<<<<<< HEAD
         ListObjectsRequest req = new ListObjectsRequest();
         req.setBucketName("ellias-persistent");
         req.setPrefix("bbs/yssy/Õ¾Çì/200");
@@ -43,5 +50,11 @@ public class OssUtils {
 //        for(Bucket b : bucketList) {
 //            System.out.println(b);
 //        }
+=======
+        List<Bucket> bucketList = ossClient.listBuckets();
+        for(Bucket b : bucketList) {
+            System.out.println(b);
+        }
+>>>>>>> 4bb486eb3b30a733b133c33a07b6459d571e4a4d
     }
 }
