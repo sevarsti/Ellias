@@ -1,9 +1,11 @@
 package com.saille.aliyun;
 
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.*;
 
 import java.util.List;
+import java.util.Date;
+import java.io.File;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,9 +21,27 @@ public class OssUtils {
 
     public static void main(String[] args) {
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
-        List<Bucket> bucketList = ossClient.listBuckets();
-        for(Bucket b : bucketList) {
-            System.out.println(b);
+        ListObjectsRequest req = new ListObjectsRequest();
+        req.setBucketName("ellias-persistent");
+        req.setPrefix("bbs/yssy/Õ¾Çì/200");
+        req.setMaxKeys(1000);
+        List<OSSObjectSummary> list = ossClient.listObjects(req).getObjectSummaries();
+        for(OSSObjectSummary obj : list) {
+            if(obj.getKey().endsWith(".jpg")) {
+                String filename = obj.getKey().substring(obj.getKey().lastIndexOf("/") + 1);
+                File f = new File("D:\\bbs\\bbs10\\" + filename);
+                obj.setLastModified(new Date(f.lastModified()));
+                System.out.println(obj);
+//                CopyObjectRequest copyReq = new CopyObjectRequest();
+//                copyReq.
+//                ossClient.copyObject(CopyObjectRequest)
+                OSSObject obj2 = ossClient.getObject("ellias-persistent", obj.getKey()).;
+//                System.out.println(obj2);
+            }
         }
+//        List<Bucket> bucketList = ossClient.listBuckets();
+//        for(Bucket b : bucketList) {
+//            System.out.println(b);
+//        }
     }
 }

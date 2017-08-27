@@ -123,9 +123,9 @@
             scores[2][0] = df.format(Double.parseDouble(scores[1][0]) / Double.parseDouble(scores[0][0]));
             scores[2][1] = df.format(Double.parseDouble(scores[1][1]) / Double.parseDouble(scores[0][1]));
             scores[2][2] = df.format(Double.parseDouble(scores[1][2]) / Double.parseDouble(scores[0][2]));
-            scores[3][0] = "99.5%";
-            scores[3][1] = "100%";
-            scores[3][2] = "99.5%";
+            scores[3][0] = "99.70%";
+            scores[3][1] = "99.90%";
+            scores[3][2] = "99.50%";
             scores[4][0] = (long)Math.ceil(Double.parseDouble(scores[0][0]) * df.parse(scores[3][0]).doubleValue()) - Long.parseLong(scores[1][0]) + "";
             scores[4][1] = (long)Math.ceil(Double.parseDouble(scores[0][1]) * df.parse(scores[3][1]).doubleValue()) - Long.parseLong(scores[1][1]) + "";//Long.parseLong(scores[0][1]) - Long.parseLong(scores[1][1]) + "";
             scores[4][2] = (long)Math.ceil(Double.parseDouble(scores[0][2]) * df.parse(scores[3][2]).doubleValue()) - Long.parseLong(scores[1][2]) + "";
@@ -140,8 +140,8 @@
             scores[7][1] = df.format(Double.parseDouble(scores[6][1]) / Double.parseDouble(scores[5][1]));
             scores[7][2] = df.format(Double.parseDouble(scores[6][2]) / Double.parseDouble(scores[5][2]));
             scores[8][0] = "99.75%";
-            scores[8][1] = "100%";
-            scores[8][2] = "99.5%";
+            scores[8][1] = "99.95%";
+            scores[8][2] = "99.50%";
             scores[9][0] = (long)Math.ceil(Double.parseDouble(scores[5][0]) * df.parse(scores[8][0]).doubleValue()) - Long.parseLong(scores[6][0]) + "";
             scores[9][1] = (long)Math.ceil(Double.parseDouble(scores[5][1]) * df.parse(scores[8][1]).doubleValue()) - Long.parseLong(scores[6][1]) + "";//Long.parseLong(scores[4][1]) - Long.parseLong(scores[5][1]) + "";
             scores[9][2] = (long)Math.ceil(Double.parseDouble(scores[5][2]) * df.parse(scores[8][2]).doubleValue()) - Long.parseLong(scores[6][2]) + "";

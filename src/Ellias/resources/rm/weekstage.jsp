@@ -134,7 +134,7 @@
         /* ÏÞÊ±¸èÇú */
         list = jt.queryForList("select startdate from rm_xianshisongs where startdate <= date_format(now(),'%Y%m%d') order by startdate desc limit 1");
         startdate = list.get(0).get("startdate").toString();
-        list = jt.queryForList("select a.*, b.has from rm_xianshisongs a join rm_song b on a.songid = b.songid where startdate >= ? order by startdate desc", new Object[]{startdate});
+        list = jt.queryForList("select a.*, b.has from rm_xianshisongs a join rm_song b on a.songid = b.songid where startdate >= ? order by startdate desc, songid", new Object[]{startdate});
         List<String[]> xianshiSongs = new ArrayList<String[]>();
         List<String[]> myXianshiSongs = new ArrayList<String[]>();
         
