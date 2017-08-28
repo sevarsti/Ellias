@@ -15,9 +15,11 @@
 <%@ page import="java.util.Collections" %>
 <%@ include file="../include/include.jsp"%>
 <html>
-  <head><title>Simple jsp page</title></head>
+  <head><title>OSS bucket</title></head>
   <body>
   <%!
+      static DecimalFormat df = new DecimalFormat("#,##0");
+      static DecimalFormat df2 = new DecimalFormat("#,##0.00");
       String getStorageDesc(StorageClass in) {
           String name = in.toString();
           if(name.equals("Standard")) {
@@ -28,9 +30,28 @@
               return "待定";
           }
       }
+      String getSizeDesc(long size) {
+          double value = size;
+          if(value < 1024) {
+              return df2.format(value) + "&nbsp;B";
+          }
+          value = value / 1024;
+          if(value < 1024) {
+              return df2.format(value) + "&nbsp;K";
+          }
+          value = value / 1024;
+          if(value < 1024) {
+              return df2.format(value) + "&nbsp;M";
+          }
+          value = value / 1024;
+          if(value < 1024) {
+              return df2.format(value) + "&nbsp;G";
+          }
+          value = value / 1024;
+          return df2.format(value) + "&nbsp;T";
+      }
   %>
         <%
-            DecimalFormat df = new DecimalFormat("#,##0");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             final String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
             final String accessKeyId = "LTAID3hnLwsUASY4";
@@ -89,6 +110,7 @@
         <tr class="head">
             <th>名字</th>
             <th>大小</th>
+            <th>大小</th>
             <th>修改时间</th>
         </tr>
         <tr class="row2">
@@ -97,7 +119,7 @@
                     ..
                 </a>
             </td>
-            <td></td><td></td>
+            <td></td><td></td><td></td>
         </tr>
         <%
             for(int i = 0; i < dirs.size(); i++) {
@@ -107,7 +129,7 @@
             <td>
                 <a style="color:blue;" href="buckets.jsp?bucket=<%=bucketname%>&prefix=<%=dir%>"><%=dir.substring(prefix.length(),dir.length() - 1)%></a>
             </td>
-            <td></td><td></td>
+            <td></td><td></td><td></td>
         </tr>
         <%
             }
@@ -120,6 +142,9 @@
             </td>
             <td align="right">
                 <%=df.format(file.getSize())%>
+            </td>
+            <td align="right">
+                <%=getSizeDesc(file.getSize())%>
             </td>
             <td>
                 <%=sdf.format(file.getLastModified())%>
