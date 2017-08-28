@@ -1,17 +1,14 @@
 package com.saille.aliyun;
 
 import com.aliyun.oss.OSSClient;
-<<<<<<< HEAD
 import com.aliyun.oss.model.*;
 
 import java.util.List;
 import java.util.Date;
 import java.io.File;
-=======
 import com.aliyun.oss.model.Bucket;
 
 import java.util.List;
->>>>>>> 4bb486eb3b30a733b133c33a07b6459d571e4a4d
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,10 +24,10 @@ public class OssUtils {
 
     public static void main(String[] args) {
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
-<<<<<<< HEAD
         ListObjectsRequest req = new ListObjectsRequest();
         req.setBucketName("ellias-persistent");
         req.setPrefix("bbs/yssy/Õ¾Çì/200");
+        req.setDelimiter("/");
         req.setMaxKeys(1000);
         List<OSSObjectSummary> list = ossClient.listObjects(req).getObjectSummaries();
         for(OSSObjectSummary obj : list) {
@@ -42,7 +39,7 @@ public class OssUtils {
 //                CopyObjectRequest copyReq = new CopyObjectRequest();
 //                copyReq.
 //                ossClient.copyObject(CopyObjectRequest)
-                OSSObject obj2 = ossClient.getObject("ellias-persistent", obj.getKey()).;
+                OSSObject obj2 = ossClient.getObject("ellias-persistent", obj.getKey());
 //                System.out.println(obj2);
             }
         }
@@ -50,11 +47,57 @@ public class OssUtils {
 //        for(Bucket b : bucketList) {
 //            System.out.println(b);
 //        }
-=======
         List<Bucket> bucketList = ossClient.listBuckets();
         for(Bucket b : bucketList) {
             System.out.println(b);
         }
->>>>>>> 4bb486eb3b30a733b133c33a07b6459d571e4a4d
+    }
+
+    public static List<Bucket> sortBucket(List<Bucket> list, int start, int end) {
+        if(start >= end) {
+            return list;
+        }
+        int pos = start;
+        for(int i = pos + 1; i < end; i++) {
+            boolean needSwap = false;
+            if(list.get(i).getName().compareTo(list.get(pos).getName()) > 0) {
+                needSwap = true;
+            }
+            if(needSwap) {
+                Bucket tmp = list.get(i);
+                for(int m = i; m > pos; m--) {
+                    list.set(m, list.get(m - 1));
+                }
+                list.set(pos, tmp);
+            }
+            pos = i;
+        }
+        sortBucket(list, start, pos);
+        sortBucket(list, pos + 1, end);
+        return list;
+    }
+
+    public static List<OSSObjectSummary> sortObject(List<OSSObjectSummary> list, int start, int end) {
+        if(start >= end) {
+            return list;
+        }
+        int pos = start;
+        for(int i = pos + 1; i < end; i++) {
+            boolean needSwap = false;
+            if(list.get(i).getKey().compareTo(list.get(pos).getKey()) < 0) {
+                needSwap = true;
+            }
+            if(needSwap) {
+                OSSObjectSummary tmp = list.get(i);
+                for(int m = i; m > pos; m--) {
+                    list.set(m, list.get(m - 1));
+                }
+                list.set(pos, tmp);
+            }
+            pos = i;
+        }
+        sortObject(list, start, pos);
+        sortObject(list, pos + 1, end);
+        return list;
     }
 }
