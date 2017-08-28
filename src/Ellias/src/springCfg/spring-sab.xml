@@ -41,7 +41,7 @@
         </property>
     </bean>
 
-    <bean class="servlet.GlobalContext">
+    <bean class="servlet.GlobalContext" depends-on="mysql_ds">
         <property name="threads">
             <list>
                 <value>com.saille.rm.loop.LimitSongThread</value>

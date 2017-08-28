@@ -3,12 +3,15 @@ package servlet;
 import com.saille.ogzq.AutoReloginLoopThread;
 import com.saille.ogzq.dailyLoop.ArenaThread;
 import com.saille.baidu.bos.SynchronizeExcel;
+import com.saille.aliyun.OssUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
 import java.text.MessageFormat;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -37,6 +40,19 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
     }
 
     public void afterPropertiesSet() throws Exception {
+        {
+            DataSource ds = (DataSource)GlobalContext.getSpringContext().getBean("mysql_ds");
+            JdbcTemplate jt = new JdbcTemplate(ds);
+            String sql = "select strvalue from setting where setting = ?";
+            Map<String, Object> map = jt.queryForMap(sql, new Object[]{"OSS_ACCESSKEYID"});
+            String accessKeyId = map.get("strvalue").toString();
+            map = jt.queryForMap(sql, new Object[]{"OSS_ACCESSKEYSECRET"});
+            String accessKeySecret = map.get("strvalue").toString();
+            OssUtils.setAccessKeyId(accessKeyId);
+            OssUtils.setAccessKeySecret(accessKeySecret);
+            LOGGER.info("°¢ÀïÔÆOSSÃÜÔ¿¼ÓÔØÍê±Ï");
+        }
+
         if(threads != null && threads.length > 0) {
             for(String s : threads) {
                 Class c = Class.forName(s);

@@ -1,13 +1,15 @@
 package com.saille.aliyun;
 
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.*;
-
-import java.util.List;
-import java.util.Date;
-import java.io.File;
 import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.ListObjectsRequest;
+import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.OSSObjectSummary;
+import org.apache.log4j.Logger;
 
+import javax.sql.DataSource;
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,9 +20,21 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class OssUtils {
+    private final static Logger LOGGER = Logger.getLogger(OssUtils.class);
+    private DataSource ds;
     private final static String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
-    private final static String accessKeyId = "LTAID3hnLwsUASY4";
-    private final static String accessKeySecret = "znxnT9S3n1vdK4SEuZT7LoW67WmAr4";
+
+    public static void setAccessKeyId(String accessKeyId) {
+        OssUtils.accessKeyId = accessKeyId;
+    }
+
+    public static void setAccessKeySecret(String accessKeySecret) {
+        OssUtils.accessKeySecret = accessKeySecret;
+    }
+
+    private static String accessKeyId = "";
+    private static String accessKeySecret = "";
+
 
     public static void main(String[] args) {
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
@@ -99,5 +113,13 @@ public class OssUtils {
         sortObject(list, start, pos);
         sortObject(list, pos + 1, end);
         return list;
+    }
+
+    public void setDs(DataSource ds) {
+        this.ds = ds;
+    }
+
+    public DataSource getDs() {
+        return ds;
     }
 }
