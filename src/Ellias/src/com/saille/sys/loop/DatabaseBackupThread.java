@@ -49,7 +49,8 @@ public class DatabaseBackupThread extends BaseThread {
             ProcessBuilder pb = new ProcessBuilder();
             pb = pb.command("mysqldump", "--default-character-set=gbk", "-uroot", "-psjtuagent", "ellias");
             Process p = pb.start();
-            BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(p.getErrorStream())));
+            InputStream errorStream = p.getErrorStream();
+            BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(errorStream)));
 
             FileOutputStream fos = new FileOutputStream(backupfile);
             InputStream is = p.getInputStream();
@@ -59,11 +60,14 @@ public class DatabaseBackupThread extends BaseThread {
                 fos.write(bytes, 0, len);
             }
             fos.close();
+            is.close();
+
             String estr = err.readLine();
             if(estr != null) {
                 System.out.println("\nError Info");
                 System.out.println(estr);
             }
+            errorStream.close();
             LOGGER.info("数据库ellias备份完毕，备份时间：" + now);
         } catch(Exception ex) {
             ex.printStackTrace();

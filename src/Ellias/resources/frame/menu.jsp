@@ -263,6 +263,18 @@
                 </table>
             </td>
         </tr>
+        <tr style="height:1%">
+            <td>
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" class="BaseMenuItem"
+                        onclick="show(this, '/sys/exportdb.jsp');">
+                    <tr>
+                        <td align="center" nowrap width="98%">
+                            数据库导出
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
     </sys:CheckMenuRightTag>
     <tr style="height:1%">
         <td>
