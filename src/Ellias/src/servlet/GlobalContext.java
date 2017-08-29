@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.text.MessageFormat;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 public class GlobalContext implements ApplicationContextAware, InitializingBean {
@@ -40,9 +41,9 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
     }
 
     public void afterPropertiesSet() throws Exception {
+        DataSource ds = (DataSource)GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
         {
-            DataSource ds = (DataSource)GlobalContext.getSpringContext().getBean("mysql_ds");
-            JdbcTemplate jt = new JdbcTemplate(ds);
             String sql = "select strvalue from setting where setting = ?";
             Map<String, Object> map = jt.queryForMap(sql, new Object[]{"OSS_ACCESSKEYID"});
             String accessKeyId = map.get("strvalue").toString();
@@ -53,29 +54,46 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
             LOGGER.info("阿里云OSS密钥加载完毕");
         }
 
-        if(threads != null && threads.length > 0) {
-            for(String s : threads) {
-                Class c = Class.forName(s);
-                Method[] methods = c.getDeclaredMethods();
-                boolean found = false;
-                for(Method m : methods) {
-                    if(m.getName().equals("getInstance")) {
-                        found = true;
-                        int interval = defaultInterval;
-                        if(threadsInterval.get(s) != null) {
-                            interval = threadsInterval.get(s).intValue();
-                        }
-                        LOGGER.info("★★★启动线程 ：" + s);
-                        Thread t = (Thread) m.invoke(null, new Object[]{interval});
-                        t.start();
-                    }
-                }
-                if(!found) {
-                    LOGGER.error(s + "没有找到getInstance()方法!");
+        {
+            boolean startthread = true;
+            String sql = "select intvalue from setting where setting = 'STARTTHREAD'";
+            List<Map<String, Object>> list = jt.queryForList(sql);
+            if(list.size() > 0) {
+                Map<String, Object> m = list.get(0);
+                int intvalue = ((Number) m.get("intvalue")).intValue();
+                if(intvalue != 1) {
+                    startthread = false;
                 }
             }
+
+            if(startthread) {
+                if(threads != null && threads.length > 0) {
+                    for(String s : threads) {
+                        Class c = Class.forName(s);
+                        Method[] methods = c.getDeclaredMethods();
+                        boolean found = false;
+                        for(Method m : methods) {
+                            if(m.getName().equals("getInstance")) {
+                                found = true;
+                                int interval = defaultInterval;
+                                if(threadsInterval.get(s) != null) {
+                                    interval = threadsInterval.get(s).intValue();
+                                }
+                                LOGGER.info("★★★启动线程 ：" + s);
+                                Thread t = (Thread) m.invoke(null, new Object[]{interval});
+                                t.start();
+                            }
+                        }
+                        if(!found) {
+                            LOGGER.error(s + "没有找到getInstance()方法!");
+                        }
+                    }
+                }
+                LOGGER.info("所有线程启动完毕");
+            } else {
+                LOGGER.info("线程设置为不启动");
+            }
         }
-        LOGGER.info("所有线程启动完毕");
 //        SynchronizeExcel synchronizeExcel = SynchronizeExcel.getInstance();
 //        synchronizeExcel.start();
 //        Thread t = new AutoReloginLoopThread();

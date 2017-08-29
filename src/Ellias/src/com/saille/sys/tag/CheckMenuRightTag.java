@@ -45,6 +45,9 @@ public class CheckMenuRightTag extends TagSupport {
             return BodyTagSupport.SKIP_BODY;
         }
         Employee emp = (Employee) this.pageContext.getSession().getAttribute("employee");
+        if(emp == null) {
+            return BodyTagSupport.SKIP_BODY;
+        }
         try {
             String path = this.getClass().getResource("/").getPath();
             path = path.substring(0, path.length() - 1);
