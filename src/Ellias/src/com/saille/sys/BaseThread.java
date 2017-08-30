@@ -1,5 +1,8 @@
 package com.saille.sys;
 
+import org.apache.log4j.Logger;
+
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
@@ -12,22 +15,51 @@ import java.util.HashMap;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class BaseThread extends Thread{
+    private final static Logger LOGGER = Logger.getLogger(BaseThread.class);
     protected abstract int execute();
+    private static BaseThread INSTANCE = null;
     private Date lastExecuteTime = null;
     private Date nextExecuteTime = null;
     private int interval;
+    protected boolean running = false;
     public static Map<String, BaseThread> threads = new HashMap<String, BaseThread>();
 
-    protected BaseThread(int interval) {
-        this.interval = interval;
-        threads.put(this.getClass().getName(), this);
+    protected BaseThread() {
+    }
+
+    public static synchronized void createInstance(String classname, int interval) {
+        if(!threads.containsKey(classname) || threads.get(classname) == null) {
+            try {
+                Class c = Class.forName(classname);
+                Object obj = c.newInstance();
+                if(!(obj instanceof BaseThread)) {
+                    LOGGER.error(classname + "不是BaseThread的子类！");
+                    return;
+                }
+                BaseThread instance = (BaseThread) obj;
+                instance.setDaemon(true);
+                instance.interval = interval;
+                threads.put(instance.getClass().getName(), instance);
+                instance.start();
+                LOGGER.info("★★★启动线程 ：" + classname);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public static BaseThread findThread(String threadname) {
+        BaseThread thread = threads.get(threadname);
+        return thread;
     }
 
     public void run() {
         while(true) {
             int waittime = 0;
             try {
+                this.running = true;
                 waittime = execute();
+                this.running = false;
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
@@ -48,6 +80,13 @@ public abstract class BaseThread extends Thread{
                 }
             }
         }
+    }
+
+    public void interrupt() {
+        if(this.running) {
+            return;
+        }
+        super.interrupt();
     }
 
     public Date getLastExecuteTime() {

@@ -14,6 +14,7 @@
 <%@ page import="org.springframework.util.FileCopyUtils" %>
 <%@ page import="java.io.FileOutputStream" %>
 <%@ page import="com.saille.sys.BaseThread" %>
+<%@ page import="com.saille.baidu.bos.SynchronizeExcel" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -82,7 +83,7 @@
         item.getInputStream().close();
         if(needSynchronize) {
             System.out.println("need sync");
-            BaseThread t = BaseThread.threads.get("com.saille.baidu.bos.SynchronizeExcel");
+            BaseThread t = BaseThread.findThread("com.saille.baidu.bos.SynchronizeExcel");
             if(t != null) {
                 t.interrupt();
             }

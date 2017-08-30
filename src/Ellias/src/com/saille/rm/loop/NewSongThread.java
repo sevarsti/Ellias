@@ -44,22 +44,9 @@ public class NewSongThread extends BaseThread {
     protected static String compareMaps[] = new String[]{"m_szBPM", "m_iGameTime", "m_ush4KeyEasy", "4e", "m_ush4KeyNormal", "4n", "m_ush4KeyHard", "4h", "m_ush5KeyEasy", "5e", "m_ush5KeyNormal", "5n", "m_ush5KeyHard", "5h", "m_ush6KeyEasy", "6e", "m_ush6KeyNormal", "6n", "m_ush6KeyHard", "6h"};
 
     private final static Logger LOGGER = Logger.getLogger(NewSongThread.class);
-    private static NewSongThread instance;
-    protected NewSongThread(int interval) {
-        super(interval);
-    }
-
-    public static NewSongThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new NewSongThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
-    }
-
     public static void main(String[] args) {
-        NewSongThread instance = getInstance(0);
-        instance.execute();
+//        NewSongThread instance = getInstance(0);
+//        instance.execute();
     }
     @Override
     protected int execute() {

@@ -3,6 +3,7 @@ package com.saille.rm.loop;
 import com.GlobalConstant;
 import com.saille.rm.RMConstant;
 import com.saille.sys.BaseThread;
+import com.saille.util.CommonUtils;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,22 +33,11 @@ import jxl.Cell;
  */
 public class UpdateScoreThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(UpdateScoreThread.class);
-    private static UpdateScoreThread instance;
-    private UpdateScoreThread(int interval){super(interval);}
     public static void main(String[] args) {
-//        new UpdateScoreThread().execute();
-    }
-
-    public static UpdateScoreThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new UpdateScoreThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
     }
 
     public int execute() {
-        if(checkExistExcelThread()) {
+        if(CommonUtils.hasSystemProcess("EXCEL")) {
             return 5;
         }
         try {
@@ -219,34 +209,5 @@ public class UpdateScoreThread extends BaseThread {
             ex.printStackTrace();
         }
         return 0;
-    }
-
-    private boolean checkExistExcelThread() {
-        try {
-            ProcessBuilder pb = new ProcessBuilder();
-//            pb = pb.command("tasklist", "/FI", "\"username", "eq", "ellias");
-            pb = pb.command("tasklist");
-            Process p = pb.start();
-            BufferedReader out = new BufferedReader(new InputStreamReader(new BufferedInputStream(p.getInputStream()), Charset.forName("GB2312")));
-            BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(p.getErrorStream())));
-            String ostr;
-
-            while((ostr = out.readLine()) != null) {
-                if(ostr.indexOf("没有运行的任务匹配指定标准") >= 0) {
-                    return true;
-                }
-                if(ostr.indexOf("EXCEL") >= 0) {
-                    return true;
-                }
-            }
-            String estr = err.readLine();
-            if(estr != null) {
-                System.out.println("\nError Info");
-                System.out.println(estr);
-            }
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return false;
     }
 }

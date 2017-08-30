@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.text.SimpleDateFormat;
 import java.nio.charset.Charset;
 
+import com.saille.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,30 +28,17 @@ public class SynchronizeExcel extends BaseThread {
     private final static Logger LOGGER = LoggerFactory.getLogger(SynchronizeExcel.class);
     private final static String BUCKETNAME = "ellias-excel";
     private final static String BACKUPBUCKETNAME = "ellias-backup";
-    private static SynchronizeExcel INSTANCE = null;
-    private static boolean RUNNING = true;
     private static String[] CHECK_SUFFIX = new String[]{".xls", ".xlsm"};
     private static String[] EXCLUDE_FILES = new String[]{"节奏大师歌曲 - 副本.xls"};
     private final static SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHHmmss");
 
     public static void main(String[] args) {
-//        getInstance().run();
-    }
-
-    private SynchronizeExcel(int interval) {super(interval);}
-
-    public static synchronized SynchronizeExcel getInstance(int interval) {
-        if(INSTANCE == null) {
-            INSTANCE = new SynchronizeExcel(interval);
-            INSTANCE.setDaemon(true);
-        }
-        return INSTANCE;
     }
 
     private final static String EXCELPATH = GlobalConstant.DISKPATH + "EXCEL";
-    public int execute() {
+    protected int execute() {
         try {
-            if(hasExcel()) {
+            if(CommonUtils.hasSystemProcess("EXCEL")) {
                 return 5;
             }
             BOSUtils.init();
@@ -237,41 +225,5 @@ public class SynchronizeExcel extends BaseThread {
                 dailyMap.put(date, obj);
             }
         }
-    }
-
-    private static boolean hasExcel() {
-        try {
-            ProcessBuilder pb = new ProcessBuilder();
-            pb = pb.command("tasklist");
-//            pb = pb.command("tasklist", "/FI", "\"username", "eq", "ellias");
-            Process p = pb.start();
-            BufferedReader out = new BufferedReader(new InputStreamReader(new BufferedInputStream(p.getInputStream()), Charset.forName("GB2312")));
-            BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(p.getErrorStream())));
-            String ostr;
-
-            StringBuilder sb = new StringBuilder();
-            while((ostr = out.readLine()) != null) {
-                if(ostr.indexOf("没有运行的任务匹配指定标准") >= 0) {
-                    return true;
-                }
-                sb.append(ostr).append("\n");
-                if(ostr.indexOf("EXCEL") >= 0) {
-//                    System.out.println("Window 系统进程列表");
-//                    System.out.println(ostr);
-                    return true;
-                }
-            }
-            System.out.println("*********************");
-            System.out.println(sb.toString());
-            System.out.println("*********************");
-            String estr = err.readLine();
-            if(estr != null) {
-                System.out.println("\nError Info");
-                System.out.println(estr);
-            }
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return false;
     }
 }

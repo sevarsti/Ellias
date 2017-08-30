@@ -38,7 +38,6 @@ import servlet.GlobalContext;
 public class StarmallExchangeThread extends BaseThread {
     
     private final static Logger LOGGER = Logger.getLogger(StarmallExchangeThread.class);
-    private static StarmallExchangeThread instance = null;
     public static void main(String[] args) {
         try {
             //mrock.scorebuy_client.bin:×êÊ¯»»»ý·Ö
@@ -60,16 +59,6 @@ public class StarmallExchangeThread extends BaseThread {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-    }
-    private StarmallExchangeThread(int interval) {
-        super(interval);
-    }
-    public static synchronized StarmallExchangeThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new StarmallExchangeThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
     }
 
     public int execute() {

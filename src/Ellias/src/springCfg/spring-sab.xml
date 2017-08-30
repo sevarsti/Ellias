@@ -44,16 +44,16 @@
     <bean class="servlet.GlobalContext" depends-on="mysql_ds">
         <property name="threads">
             <list>
-                <value>com.saille.rm.loop.LimitSongThread</value>
-                <value>com.saille.rm.loop.StarmallExchangeThread</value>
-                <value>com.saille.rm.loop.TeamchallengeThread</value>
-                <value>com.saille.rm.loop.FriendsongThread</value>
-                <value>com.saille.rm.loop.UpdateScoreThread</value>
-                <value>com.saille.rm.loop.ScoreChangeThread</value>
-                <value>com.saille.rm.loop.WeekSThread</value>
+                <!--<value>com.saille.rm.loop.LimitSongThread</value>-->
+                <!--<value>com.saille.rm.loop.StarmallExchangeThread</value>-->
+                <!--<value>com.saille.rm.loop.TeamchallengeThread</value>-->
+                <!--<value>com.saille.rm.loop.FriendsongThread</value>-->
+                <!--<value>com.saille.rm.loop.UpdateScoreThread</value>-->
+                <!--<value>com.saille.rm.loop.ScoreChangeThread</value>-->
+                <!--<value>com.saille.rm.loop.WeekSThread</value>-->
                 <value>com.saille.baidu.bos.SynchronizeExcel</value>
-                <value>com.saille.bbs.yssy.LoginLoop</value>
-                <value>com.saille.sys.loop.DatabaseBackupThread</value>
+                <!--<value>com.saille.bbs.yssy.LoginLoop</value>-->
+                <!--<value>com.saille.sys.loop.DatabaseBackupThread</value>-->
             </list>
         </property>
         <property name="threadsInterval">

@@ -25,18 +25,7 @@ import java.util.*;
  */
 public class FriendsongThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(FriendsongThread.class);
-    private static FriendsongThread instance;
-    private FriendsongThread(int interval){super(interval);}
     public static void main(String[] args) {
-//        new FriendsongThread().execute();
-    }
-
-    public static FriendsongThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new FriendsongThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
     }
 
     private static List<String> getKeys(Map<String, List<int[]>> list) {

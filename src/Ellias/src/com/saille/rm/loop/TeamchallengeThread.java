@@ -30,8 +30,6 @@ import servlet.GlobalContext;
  */
 public class TeamchallengeThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(TeamchallengeThread.class);
-    private static TeamchallengeThread instance = null;
-    private TeamchallengeThread(int interval) {super(interval);}
 
     public static void main(String[] args) {
         try {
@@ -63,14 +61,6 @@ public class TeamchallengeThread extends BaseThread {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    public static TeamchallengeThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new TeamchallengeThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
     }
 
     protected int execute() {

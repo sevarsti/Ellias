@@ -30,22 +30,8 @@ import servlet.GlobalContext;
  */
 public class ScoreChangeThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(ScoreChangeThread.class);
-    private static ScoreChangeThread instance = null;
-
-    protected ScoreChangeThread(int interval) {
-        super(interval);
-    }
-
     public static void main(String[] args) {
 
-    }
-
-    public static synchronized ScoreChangeThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new ScoreChangeThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
     }
 
     protected int execute() {

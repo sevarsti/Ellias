@@ -26,20 +26,7 @@ import servlet.GlobalContext;
  */
 public class LimitSongThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(LimitSongThread.class);
-    private static LimitSongThread instance = null;
-    private LimitSongThread(int interval) {
-        super(interval);
-    }
-
-    public static synchronized LimitSongThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new LimitSongThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
-    }
     public static void main(String[] args) {
-//        new LimitSongThread().run();
     }
     public int execute() {
         DownloadZipUtil.download();

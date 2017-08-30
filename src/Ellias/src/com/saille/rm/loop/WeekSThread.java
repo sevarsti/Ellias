@@ -25,21 +25,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * To change this template use File | Settings | File Templates.
  */
 public class WeekSThread extends BaseThread {
-    private static WeekSThread instance = null;
-    protected WeekSThread(int interval) {
-        super(interval);
-    }
-
     public static void main(String[] args) {
-        WeekSThread.getInstance(0).execute();
-    }
-
-    public static synchronized WeekSThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new WeekSThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
     }
 
     public int execute() {

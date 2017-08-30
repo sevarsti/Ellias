@@ -22,8 +22,8 @@ public class LoginLoop extends BaseThread {
     private static LoginLoop instance = null;
     private static String id;
     private static String pwd;
-    private LoginLoop(int interval) {
-        super(interval);
+    private LoginLoop() {
+        super();
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
         JdbcTemplate jt = new JdbcTemplate(ds);
         List<Map<String, Object>> list = jt.queryForList("select strvalue from setting where setting = 'YSSY_LOG_ID'");
@@ -32,14 +32,6 @@ public class LoginLoop extends BaseThread {
         String pwd = value.split("-")[1];
         this.id = id;
         this.pwd = pwd;
-    }
-
-    public static LoginLoop getInstance(int interval) {
-        if(instance == null) {
-            instance = new LoginLoop(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
     }
 
     public int execute() {

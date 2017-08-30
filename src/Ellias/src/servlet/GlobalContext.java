@@ -4,6 +4,7 @@ import com.saille.ogzq.AutoReloginLoopThread;
 import com.saille.ogzq.dailyLoop.ArenaThread;
 import com.saille.baidu.bos.SynchronizeExcel;
 import com.saille.aliyun.OssUtils;
+import com.saille.sys.BaseThread;
 import com.saille.sys.Setting;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -62,28 +63,15 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
             if(intvalue != 1) {
                 startthread = false;
             }
-
+            startthread = true;
             if(startthread) {
                 if(threads != null && threads.length > 0) {
                     for(String s : threads) {
-                        Class c = Class.forName(s);
-                        Method[] methods = c.getDeclaredMethods();
-                        boolean found = false;
-                        for(Method m : methods) {
-                            if(m.getName().equals("getInstance")) {
-                                found = true;
-                                int interval = defaultInterval;
-                                if(threadsInterval.get(s) != null) {
-                                    interval = threadsInterval.get(s).intValue();
-                                }
-                                LOGGER.info("★★★启动线程 ：" + s);
-                                Thread t = (Thread) m.invoke(null, new Object[]{interval});
-                                t.start();
-                            }
+                        int interval = defaultInterval;
+                        if(threadsInterval.get(s) != null) {
+                            interval = threadsInterval.get(s).intValue();
                         }
-                        if(!found) {
-                            LOGGER.error(s + "没有找到getInstance()方法!");
-                        }
+                        BaseThread.createInstance(s, interval);
                     }
                 }
                 LOGGER.info("所有线程启动完毕");

@@ -21,20 +21,7 @@ import java.nio.charset.Charset;
 public class DatabaseBackupThread extends BaseThread {
     private final static String BACKUP_PATH = GlobalConstant.DISKPATH + "dbbak";
     private final static Logger LOGGER = Logger.getLogger(DatabaseBackupThread.class);
-    private static DatabaseBackupThread instance = null;
-    public static DatabaseBackupThread getInstance(int interval) {
-        if(instance == null) {
-            instance = new DatabaseBackupThread(interval);
-            instance.setDaemon(true);
-        }
-        return instance;
-    }
-
-    private DatabaseBackupThread(int interval) {
-        super(interval);
-    }
     public static void main(String[] args) {
-        new DatabaseBackupThread(10).execute();
     }
     protected int execute() {
         try {
