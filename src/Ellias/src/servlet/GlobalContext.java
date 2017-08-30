@@ -63,7 +63,6 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
             if(intvalue != 1) {
                 startthread = false;
             }
-            startthread = true;
             if(startthread) {
                 if(threads != null && threads.length > 0) {
                     for(String s : threads) {
