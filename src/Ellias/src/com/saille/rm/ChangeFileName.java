@@ -1,5 +1,6 @@
 package com.saille.rm;
 
+import com.GlobalConstant;
 import com.saille.util.IOUtils;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class ChangeFileName {
-    private static String scanDir = "D:\\rm\\imageTemp";
+    private static String scanDir = GlobalConstant.DISKPATH + "rm\\imageTemp";
     public static void main(String[] args) {
         try {
             System.out.println("input scan directory:");

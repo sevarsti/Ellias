@@ -1,5 +1,7 @@
 package com.saille.rm;
 
+import com.GlobalConstant;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.Arrays;
 public class ScoreExchange {
     public static void main(String[] args) {
         try {
-            File f = new File("D:\\rm\\TableComBin\\mrock_scoreexchange_client.bin");
+            File f = new File(GlobalConstant.DISKPATH + "rm\\TableComBin\\mrock_scoreexchange_client.bin");
             FileInputStream fis = new FileInputStream(f);
             fis.skip(8);
             byte[] bb = new byte[4];

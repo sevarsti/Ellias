@@ -1,6 +1,7 @@
 package com.saille.rm.loop;
 
 import com.saille.rm.DownloadZipUtil;
+import com.saille.rm.RMConstant;
 import com.saille.rm.StarmallExchange;
 import com.saille.rm.WeekMatch;
 import com.saille.rm.util.RMUtils;
@@ -42,7 +43,7 @@ public class StarmallExchangeThread extends BaseThread {
         try {
             //mrock.scorebuy_client.bin:钻石换积分
             //mrock_room_client:PK场类型
-            File f = new File("D:\\rm\\TableComBin\\mrock.mission_client.bin");
+            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock.mission_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);
@@ -76,7 +77,7 @@ public class StarmallExchangeThread extends BaseThread {
             Map<String, List<StarmallExchange>> newList = new HashMap<String, List<StarmallExchange>>();
             Map<String, String> newListSong = new HashMap<String, String>();
             DownloadZipUtil.download();
-            File f = new File("D:\\rm\\TableComBin\\mrock_starmall_exchange_client.bin");
+            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock_starmall_exchange_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);

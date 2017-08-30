@@ -22,7 +22,7 @@ public class ConvertSVN {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss, yyyyƒÍM‘¬d»’");
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            File f = new File("D:\\My Documents\\Sinitek\\portfolio\\531-xxx.txt");
+            File f = new File(GlobalConstant.DISKPATH + "My Documents\\Sinitek\\portfolio\\531-xxx.txt");
             InputStream is = new FileInputStream(f);
             InputStreamReader stdin = new InputStreamReader(is);
             BufferedReader bufin = new BufferedReader(stdin);
@@ -114,7 +114,7 @@ public class ConvertSVN {
     }
 
     public static void write(List<Entity> list) throws Exception {
-        File f = new File("D:\\My Documents\\Sinitek\\portfolio\\out.txt");
+        File f = new File(GlobalConstant.DISKPATH + "My Documents\\Sinitek\\portfolio\\out.txt");
         if(!f.exists()) {
             f.createNewFile();
         }

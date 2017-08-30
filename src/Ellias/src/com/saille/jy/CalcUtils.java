@@ -1,5 +1,6 @@
 package com.saille.jy;
 
+import com.GlobalConstant;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -27,7 +28,7 @@ public class CalcUtils {
 
     public static void main(String[] args) {
         try {
-            FileInputStream fis = new FileInputStream("D:\\qingdan.xls");
+            FileInputStream fis = new FileInputStream(GlobalConstant.DISKPATH + "qingdan.xls");
             HSSFWorkbook workbook = new HSSFWorkbook(fis);
             HSSFSheet sheet = workbook.getSheetAt(0);
             Person[] pps = new Person[2];

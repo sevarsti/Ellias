@@ -1,5 +1,7 @@
 package com.saille.util;
 
+import com.GlobalConstant;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
@@ -15,7 +17,7 @@ public class CombineFile {
     public static void main(String[] args) throws Exception {
         try {
             File f = new File("C:\\Documents and Settings\\Ellias\\×ÀÃæ\\apk\\huangdi\\huangdi.src");
-            File out = new File("D:\\outEmperor.txt");
+            File out = new File(GlobalConstant.DISKPATH + "outEmperor.txt");
             FileOutputStream fos = new FileOutputStream(out);
             r(f, fos);
             fos.close();

@@ -6,6 +6,7 @@
 <%@ page import="java.util.zip.ZipEntry" %>
 <%@ page import="java.nio.charset.Charset" %>
 <%@ page import="java.io.File" %>
+<%@ page import="com.GlobalConstant" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -39,7 +40,7 @@
             return;
         }
         /* 备份原始文件 */
-        File excelfile = new File("D:\\");
+        File excelfile = new File(GlobalConstant.DISKPATH );
     }
 %>
 <body>

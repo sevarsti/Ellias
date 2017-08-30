@@ -1,5 +1,6 @@
 package com.saille.bbs.yssy.service;
 
+import com.GlobalConstant;
 import com.saille.bbs.yssy.YSSYUtil;
 import com.txsec.lc.is.security.EncryptUtil;
 
@@ -27,7 +28,7 @@ public class YssyGIDService extends TimerTask {
 
     public YssyGIDService() {
         try {
-            PropertiesConfiguration conf = new PropertiesConfiguration("D:\\vbs\\id.txt");
+            PropertiesConfiguration conf = new PropertiesConfiguration(GlobalConstant.DISKPATH + "vbs\\id.txt");
             this.ids = conf.getStringArray("id");
             this.daemonThread = new Thread(this);
             this.daemonThread.start();

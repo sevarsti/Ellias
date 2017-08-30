@@ -1,5 +1,7 @@
 package com.saille.rm;
 
+import com.GlobalConstant;
+
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -19,11 +21,11 @@ public class MusicCut {
     public static void main(String[] args) {
         try {
 //            System.out.println(byte2int(new byte[]{(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff}));
-            String imdfile = "D:\\rm\\canonrock_4k_hd.imd";
+            String imdfile = GlobalConstant.DISKPATH + "rm\\canonrock_4k_hd.imd";
             int begin = 60000;
             int end = 90000;
             String now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            cut(new String[]{imdfile, "D:\\temp\\canonrock.mp3"}, now, begin, end);
+            cut(new String[]{imdfile, GlobalConstant.DISKPATH + "temp\\canonrock.mp3"}, now, begin, end);
         } catch(Exception ex) {
             ex.printStackTrace();
         }
@@ -45,12 +47,12 @@ public class MusicCut {
     }
 
     public static void changemp3(String path, String time, int start, int end) throws Exception {
-        File f = new File("d:\\temp\\" + time + "_result.mp3");
+        File f = new File(GlobalConstant.DISKPATH + "temp\\" + time + "_result.mp3");
         if(f.exists()) {
             f.delete();
         }
 //        Runtime.getRuntime().exec("d:\\software\\ffmpeg\\ffmpeg.exe -i d:\\\\temp\\\\canonrock.mp3 -ss " + convertTime(start) + " -t " + convertTime(end) + " -vcodec copy -vn d:\\\\temp\\\\canon2.mp3");
-        String cmd = "d:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i " + path.replaceAll("\\\\", "\\\\\\\\") + " -ss " + convertTime(start / 1000) + " -t " + convertTime((end - start) / 1000) + " -vcodec copy -vn d:\\\\temp\\\\" + time + "_result.mp3";
+        String cmd = GlobalConstant.DISKPATH + "software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i " + path.replaceAll("\\\\", "\\\\\\\\") + " -ss " + convertTime(start / 1000) + " -t " + convertTime((end - start) / 1000) + " -vcodec copy -vn " + GlobalConstant.DISKPATH + "\\temp\\\\" + time + "_result.mp3";
         System.out.println(cmd);
         Process p = Runtime.getRuntime().exec(cmd);
         InputStream is = p.getErrorStream();
@@ -69,7 +71,7 @@ public class MusicCut {
     public static int[] changeImd(String path, String time, int start, int length) throws Exception {
         FileInputStream fis = new FileInputStream(path);
 //        FileOutputStream fos1 = new FileOutputStream("D:\\temp\\change1.imd");
-        FileOutputStream fos = new FileOutputStream("D:\\temp\\" + time + "_temp1.imd");
+        FileOutputStream fos = new FileOutputStream(GlobalConstant.DISKPATH + "temp\\" + time + "_temp1.imd");
 
         int imdlength = 0;
         byte[] bb = new byte[4];
@@ -170,7 +172,7 @@ public class MusicCut {
         //第二遍，写第一段
         fis = new FileInputStream(path);
         DataInputStream dis = new DataInputStream(fis);
-        fos = new FileOutputStream("D:\\temp\\" + time + "_temp2.imd");
+        fos = new FileOutputStream(GlobalConstant.DISKPATH + "temp\\" + time + "_temp2.imd");
 
         fis.skip(4);
         bb = new byte[4];
@@ -206,8 +208,8 @@ public class MusicCut {
         fis.close();
         fos.close();
 
-        fis = new FileInputStream("D:\\temp\\" + time + "_temp2.imd");
-        fos = new FileOutputStream("D:\\temp\\" + time + "_result.imd");
+        fis = new FileInputStream(GlobalConstant.DISKPATH + "temp\\" + time + "_temp2.imd");
+        fos = new FileOutputStream(GlobalConstant.DISKPATH + "temp\\" + time + "_result.imd");
         fos.write(int2byte(i2 - i1));
         fos.write(int2byte(bpmcount));
         int tmp;
@@ -218,7 +220,7 @@ public class MusicCut {
         fos.write((byte)3);
         fos.write((byte)3);
         fos.write(int2byte(keycount));
-        fis = new FileInputStream("D:\\temp\\" + time + "_temp1.imd");
+        fis = new FileInputStream(GlobalConstant.DISKPATH + "temp\\" + time + "_temp1.imd");
         bb = new byte[4];
         for(int i = 0; i < keycount; i++) {
             fos.write(fis.read());

@@ -1,5 +1,6 @@
 package com.saille.core;
 
+import com.GlobalConstant;
 import com.saille.util.IOUtils;
 import com.saille.util.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -62,11 +63,11 @@ public class NewEntity {
             /************************************/
             /*创建java文件                      */
             /************************************/
-            File f = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName);
+            File f = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName);
             if(!f.exists()) {
                 f.mkdir();
             }
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\" + entityName + ".java");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\" + entityName + ".java");
             if(file.exists()) {
                 System.out.println("文件已存在");
                 System.exit(0);
@@ -121,11 +122,11 @@ public class NewEntity {
             /************************************/
             /*创建dao文件                      */
             /************************************/
-            f = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\dao\\");
+            f = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\dao\\");
             if(!f.exists()) {
                 f.mkdir();
             }
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\dao\\" + entityName + "Dao.java");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\dao\\" + entityName + "Dao.java");
             if(file.exists()) {
                 System.out.println("dao文件已存在");
                 System.exit(0);
@@ -180,9 +181,9 @@ public class NewEntity {
             /************************************/
             /*创建spring文件                    */
             /************************************/
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\src\\springCfg\\spring-" + packageName + ".xml");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\springCfg\\spring-" + packageName + ".xml");
             if(file.exists()) {
-                File backupFile = new File("D:\\work\\Ellias\\src\\Ellias\\src\\springCfg\\spring-" + packageName + ".xml.bak");
+                File backupFile = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\springCfg\\spring-" + packageName + ".xml.bak");
                 FileOutputStream fos = new FileOutputStream(backupFile);
                 FileInputStream fis = new FileInputStream(file);
                 InputStreamReader isr = new InputStreamReader(fis);
@@ -220,11 +221,11 @@ public class NewEntity {
             /************************************/
             /*创建action文件                    */
             /************************************/
-            f = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\action\\");
+            f = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\action\\");
             if(!f.exists()) {
                 f.mkdir();
             }
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\action\\" + entityName + "Action.java");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\action\\" + entityName + "Action.java");
             if(file.exists()) {
                 System.out.println("action文件已存在");
                 System.exit(0);
@@ -310,11 +311,11 @@ public class NewEntity {
             /************************************/
             /*创建form文件                      */
             /************************************/
-            f = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\form\\");
+            f = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\form\\");
             if(!f.exists()) {
                 f.mkdir();
             }
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\form\\" + entityName + "Form.java");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\src\\com\\saille\\" + packageName + "\\form\\" + entityName + "Form.java");
             if(file.exists()) {
                 System.out.println("form文件已存在");
                 System.exit(0);
@@ -372,9 +373,9 @@ public class NewEntity {
             /************************************/
             /*创建struts文件                    */
             /************************************/
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\WEB-INF\\strutsCfg\\struts-" + packageName + ".xml");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\WEB-INF\\strutsCfg\\struts-" + packageName + ".xml");
             if(file.exists()) {
-                File backupFile = new File("D:\\work\\Ellias\\src\\Ellias\\WEB-INF\\strutsCfg\\struts-" + packageName + ".xml.bak");
+                File backupFile = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\WEB-INF\\strutsCfg\\struts-" + packageName + ".xml.bak");
                 FileOutputStream fos = new FileOutputStream(backupFile);
                 FileInputStream fis = new FileInputStream(file);
                 InputStreamReader isr = new InputStreamReader(fis);
@@ -426,11 +427,11 @@ public class NewEntity {
             /************************************/
             /*创建list.jsp文件                    */
             /************************************/
-            f = new File("D:\\work\\Ellias\\src\\Ellias\\resources\\" + packageName);
+            f = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\resources\\" + packageName);
             if(!f.exists()) {
                 f.mkdir();
             }
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\resources\\" + packageName + "\\list" + entityName + "s.jsp");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\resources\\" + packageName + "\\list" + entityName + "s.jsp");
             if(file.exists()) {
                 System.out.println("文件已存在");
                 System.exit(0);
@@ -489,11 +490,11 @@ public class NewEntity {
             /************************************/
             /*创建edit.jsp文件                  */
             /************************************/
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\resources\\" + packageName);
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\resources\\" + packageName);
             if(!f.exists()) {
                 f.mkdir();
             }
-            file = new File("D:\\work\\Ellias\\src\\Ellias\\resources\\" + packageName + "\\edit" + entityName + ".jsp");
+            file = new File(GlobalConstant.DISKPATH + "work\\Ellias\\src\\Ellias\\resources\\" + packageName + "\\edit" + entityName + ".jsp");
             if(file.exists()) {
                 System.out.println("文件已存在");
                 System.exit(0);

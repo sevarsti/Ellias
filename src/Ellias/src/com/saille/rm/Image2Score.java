@@ -1,5 +1,6 @@
 package com.saille.rm;
 
+import com.GlobalConstant;
 import com.baidu.aip.ocr.AipOcr;
 import com.saille.baidu.BaiduUtils;
 import com.saille.util.IOUtils;
@@ -31,8 +32,8 @@ public class Image2Score {
     private static List<String> unconfirmList = new ArrayList<String>();
     private static List<String[]> updateList = new ArrayList<String[]>();
     private static Sheet sheet;
-    private static String scanDir = "D:\\rm\\imageTemp";
-    private static String fullDir = "D:\\rm\\temp\\full\\";
+    private static String scanDir = GlobalConstant.DISKPATH + "rm\\imageTemp";
+    private static String fullDir = GlobalConstant.DISKPATH + "rm\\temp\\full\\";
     public static void main(String[] args) {
         String last = "";
         try {
@@ -264,9 +265,9 @@ public class Image2Score {
     }
 
     private static String ocrLocal(String filename) throws Exception {
-        String tempfile = "D:\\temp\\ocr\\1";
+        String tempfile = GlobalConstant.DISKPATH + "temp\\ocr\\1";
 
-        String cmd = "D:\\java\\OCR\\tesseract\\tesseract.exe \"" + filename + "\" \"" + tempfile + "\" -l chi_sim";
+        String cmd = GlobalConstant.DISKPATH + "java\\OCR\\tesseract\\tesseract.exe \"" + filename + "\" \"" + tempfile + "\" -l chi_sim";
 //        System.out.println(cmd);
         Process p = Runtime.getRuntime().exec(cmd);
         InputStream is = p.getErrorStream();
@@ -296,7 +297,7 @@ public class Image2Score {
     }
 
     private static String ocrBaidu(String filename) throws Exception {
-        String outfile = "D:\\temp\\ocr\\" + filename.substring(filename.lastIndexOf("\\") + 1);
+        String outfile = GlobalConstant.DISKPATH + "temp\\ocr\\" + filename.substring(filename.lastIndexOf("\\") + 1);
         outfile = outfile.substring(0, outfile.lastIndexOf("."));
 
         AipOcr client = new AipOcr(BaiduUtils.APPID_OCR, BaiduUtils.APIKEY, BaiduUtils.SECRETACCESSKEY);
@@ -356,7 +357,7 @@ public class Image2Score {
         File f = new File(filepath);
         String name = f.getName();
         name = name.substring(0, name.lastIndexOf("."));
-        String ret = "D:\\temp\\ocr\\"+name + "_level.png";
+        String ret = GlobalConstant.DISKPATH + "temp\\ocr\\"+name + "_level.png";
         File outfile = new File(ret);
         if(!outfile.exists()) {
             outfile.createNewFile();
@@ -405,7 +406,7 @@ public class Image2Score {
         File f = new File(filepath);
         String name = f.getName();
         name = name.substring(0, name.lastIndexOf("."));
-        String ret = "D:\\temp\\ocr\\"+name + "_author.png";
+        String ret = GlobalConstant.DISKPATH + "temp\\ocr\\"+name + "_author.png";
         File outfile = new File(ret);
         if(!outfile.exists()) {
             outfile.createNewFile();
@@ -429,7 +430,7 @@ public class Image2Score {
         File f = new File(filepath);
         String name = f.getName();
         name = name.substring(0, name.lastIndexOf("."));
-        String ret = "D:\\temp\\ocr\\"+name + "_name.png";
+        String ret = GlobalConstant.DISKPATH + "temp\\ocr\\"+name + "_name.png";
         File outfile = new File(ret);
         if(!outfile.exists()) {
             outfile.createNewFile();
@@ -589,7 +590,7 @@ public class Image2Score {
         }
 
         /* 识别分数 */
-        String comparepath = "D:\\rm\\OCR_src\\";
+        String comparepath = GlobalConstant.DISKPATH + "rm\\OCR_src\\";
         if(isIOS) {
             comparepath += "IOS_";
         } else {
@@ -675,7 +676,7 @@ public class Image2Score {
 
     public static List<String[]> getSongNames() throws Exception {
         List<String[]> ret = new ArrayList<String[]>();
-        File excel = new File("D:\\excel\\节奏大师歌曲.xls");
+        File excel = new File(GlobalConstant.DISKPATH + "excel\\节奏大师歌曲.xls");
         FileInputStream excelis = new FileInputStream(excel);
         Workbook workbook = Workbook.getWorkbook(excelis);
         sheet = workbook.getSheet("歌曲");

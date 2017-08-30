@@ -89,9 +89,9 @@ public class MrockSongClientAndroid {
             DownloadZipUtil.download();
             String[] files;
             if(includelevel) {
-                files = new String[]{"D:\\rm\\TableComBin\\mrock_song_client_android.bin", "D:\\rm\\TableComBin\\mrock_songlevel_client.bin"};
+                files = new String[]{RMConstant.RM_ROOT + "TableComBin\\mrock_song_client_android.bin", RMConstant.RM_ROOT + "TableComBin\\mrock_songlevel_client.bin"};
             } else {
-                files = new String[]{"D:\\rm\\TableComBin\\mrock_song_client_android.bin"};
+                files = new String[]{RMConstant.RM_ROOT + "TableComBin\\mrock_song_client_android.bin"};
             }
             for(String f : files) {
                 FileInputStream fis = new FileInputStream(f);

@@ -1,5 +1,6 @@
 package com.saille.rm.loop;
 
+import com.saille.rm.RMConstant;
 import com.saille.sys.BaseThread;
 import com.saille.rm.StarmallExchange;
 import com.saille.rm.DownloadZipUtil;
@@ -47,7 +48,7 @@ public class WeekSThread extends BaseThread {
             JdbcTemplate jt = new JdbcTemplate(ds);
 
             DownloadZipUtil.download();
-            File f = new File("D:\\rm\\TableComBin\\mrock.mission_client.bin");
+            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock.mission_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);
@@ -88,7 +89,7 @@ public class WeekSThread extends BaseThread {
                     continue;
                 } else {
                     for(int j = beginrow; j <= endrow; j++) {
-                        FileInputStream fis2 = new FileInputStream("D:\\rm\\TableComBin\\mrock.floornode_client.bin");
+                        FileInputStream fis2 = new FileInputStream(RMConstant.RM_ROOT + "TableComBin\\mrock.floornode_client.bin");
                         fis2.skip(8);
                         fis2.skip(128);
                         byte[] bytes2 = new byte[16];

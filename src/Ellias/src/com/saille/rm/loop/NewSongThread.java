@@ -1,6 +1,8 @@
 package com.saille.rm.loop;
 
+import com.GlobalConstant;
 import com.saille.rm.MrockSongClientAndroid;
+import com.saille.rm.RMConstant;
 import com.saille.sys.BaseThread;
 import com.saille.util.IOUtils;
 import jxl.Cell;
@@ -62,7 +64,7 @@ public class NewSongThread extends BaseThread {
     @Override
     protected int execute() {
         try {
-            File excel = new File("D:\\excel\\节奏大师歌曲.xls");
+            File excel = new File(GlobalConstant.DISKPATH + "excel\\节奏大师歌曲.xls");
             FileInputStream excelis = new FileInputStream(excel);
             workbook = Workbook.getWorkbook(excelis);
             statisticsheet = workbook.getSheet("KEY统计");
@@ -132,19 +134,19 @@ public class NewSongThread extends BaseThread {
         String song = map.get("m_szPath");
         String name = map.get("m_szSongName");
         double bpm = Double.parseDouble(map.get("m_szBPM"));
-        String filename = "D:\\rm\\song\\" + song + "\\" + song + ".mp3";
+        String filename = RMConstant.RM_ROOT + "song\\" + song + "\\" + song + ".mp3";
         download(song, song + ".mp3");
         download(song, song + ".jpg");
         download(song, song + "_title_ipad.jpg");
-        ret[0] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_4k_ez.imd", map);
-        ret[3] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_5k_ez.imd", map);
-        ret[6] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_6k_ez.imd", map);
-        ret[1] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_4k_nm.imd", map);
-        ret[4] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_5k_nm.imd", map);
-        ret[7] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_6k_nm.imd", map);
-        ret[2] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_4k_hd.imd", map);
-        ret[5] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_5k_hd.imd", map);
-        ret[8] = loadSingleImd(workbook, "D:\\rm\\song\\" + song + "\\" + song + "_6k_hd.imd", map);
+        ret[0] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_4k_ez.imd", map);
+        ret[3] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_5k_ez.imd", map);
+        ret[6] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_6k_ez.imd", map);
+        ret[1] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_4k_nm.imd", map);
+        ret[4] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_5k_nm.imd", map);
+        ret[7] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_6k_nm.imd", map);
+        ret[2] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_4k_hd.imd", map);
+        ret[5] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_5k_hd.imd", map);
+        ret[8] = loadSingleImd(workbook, RMConstant.RM_ROOT + "song\\" + song + "\\" + song + "_6k_hd.imd", map);
         return ret;
     }
 
@@ -296,7 +298,7 @@ public class NewSongThread extends BaseThread {
     private static boolean download(String song, String filename) throws Exception {
         URL url = new URL("http://game.ds.qq.com/Com_SongRes/song/" + song + "/" + filename);
         try {
-            File dir = new File("D:\\rm\\song\\" + song);
+            File dir = new File(RMConstant.RM_ROOT + "song\\" + song);
             if(!dir.exists()) {
                 dir.mkdirs();
             }
@@ -306,7 +308,7 @@ public class NewSongThread extends BaseThread {
             SimpleDateFormat sdf = new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
             String d = conn.getHeaderField("Last-Modified");
             if(filename.endsWith(".jpg")) {
-                File f = new File("d:\\rm\\song\\" + song + "\\" + filename.substring(0, filename.length() - 4) + ".png");
+                File f = new File(RMConstant.RM_ROOT + "song\\" + song + "\\" + filename.substring(0, filename.length() - 4) + ".png");
                 if(d != null && f.exists() && sdf.parse(d).getTime() <= f.lastModified()) {
                     return false;
                 }
@@ -331,7 +333,7 @@ public class NewSongThread extends BaseThread {
                     }
                 }
             } else {
-                File f = new File("d:\\rm\\song\\" + song + "\\" + filename);
+                File f = new File(RMConstant.RM_ROOT + "song\\" + song + "\\" + filename);
                 if(d != null && f.exists() && sdf.parse(d).getTime() <= f.lastModified()) {
                     return false;
                 }

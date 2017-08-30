@@ -1,6 +1,7 @@
 package com.saille.rm.loop;
 
 import com.google.common.io.LittleEndianDataInputStream;
+import com.saille.rm.RMConstant;
 import com.saille.rm.util.RMUtils;
 import com.saille.rm.DownloadZipUtil;
 import com.saille.sys.BaseThread;
@@ -58,7 +59,7 @@ public class FriendsongThread extends BaseThread {
         try {
             DownloadZipUtil.download();
             Map<String, List<int[]>> newList = new HashMap<String, List<int[]>>();
-            File f = new File("D:\\rm\\TableComBin\\mrock_Map_client.bin");
+            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock_Map_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);

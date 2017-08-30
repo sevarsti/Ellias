@@ -1,5 +1,6 @@
 package com.saille.bbs.yssy;
 
+import com.GlobalConstant;
 import com.saille.html.HTMLUtil;
 import com.saille.util.FileUtils;
 
@@ -24,7 +25,7 @@ public class AllIDSearch {
                     ret = ret.substring(0, ret.indexOf("</table><hr>"));
                     ret.replaceAll("\n", "\r\n");
 
-                    File f = new File("D:\\alluser\\" + "all" + ".txt");
+                    File f = new File(GlobalConstant.DISKPATH + "alluser\\" + "all" + ".txt");
                     FileUtils.WriteFile(f, ret, true);
                 }
 

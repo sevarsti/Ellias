@@ -1,5 +1,6 @@
 package com.saille.rm.action;
 
+import com.GlobalConstant;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionForm;
@@ -43,7 +44,7 @@ public class DownloadToolAction extends AbstractDispatchAction {
                 SettingDao dao = (SettingDao) GlobalContext.getContextBean(SettingDao.class);
                 String dir = dao.get("RM_TOOLPATH").getStrValue();
                 String realpath = dir + File.separator + path;
-                File logfile = new File("D:\\log\\rmdownload.txt");
+                File logfile = new File(GlobalConstant.DISKPATH + "log\\rmdownload.txt");
                 FileUtils.WriteFile(logfile, "\r\n" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " " + request.getRemoteAddr() + "\t" + name, true);
 
                 FileInputStream fis = new FileInputStream(realpath);

@@ -1,5 +1,6 @@
 package com.saille.bbs.yssy.service;
 
+import com.GlobalConstant;
 import com.saille.bbs.yssy.YSSYUtil;
 import com.saille.html.HTMLUtil;
 
@@ -64,7 +65,7 @@ public class YSSYDetectService {
 
     private static void init() {
         try {
-            f = new File("D:\\vbs\\target1new.txt");
+            f = new File(GlobalConstant.DISKPATH + "vbs\\target1new.txt");
             os = new FileOutputStream(f);
             writer = new BufferedWriter(new OutputStreamWriter(os));
             writer.write("id\tlogin time\tlife\tip\tpost\tlogintimes\tage\r\n");
@@ -86,7 +87,7 @@ public class YSSYDetectService {
         List list = new ArrayList();
         String tmp = null;
         try {
-            File f = new File("D:\\vbs\\target_new.txt");
+            File f = new File(GlobalConstant.DISKPATH + "vbs\\target_new.txt");
             InputStream is = new FileInputStream(f);
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             r.readLine();

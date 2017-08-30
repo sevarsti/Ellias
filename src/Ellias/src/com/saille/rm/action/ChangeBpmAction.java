@@ -1,5 +1,6 @@
 package com.saille.rm.action;
 
+import com.GlobalConstant;
 import servlet.AbstractDispatchAction;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -93,7 +94,7 @@ public class ChangeBpmAction extends AbstractDispatchAction {
             int[] offsets = MusicCut.changeImd(RMConstant.storepath + File.separator + now + "\\in.imd", now,  begin * 1000, (end - begin) * 1000);
             MusicCut.changemp3(RMConstant.storepath + File.separator + now + "\\in.mp3", now, offsets[0], offsets[1]);
 
-            FileInputStream fis = new FileInputStream("D:\\temp\\" + now + "_result.mp3");
+            FileInputStream fis = new FileInputStream(GlobalConstant.DISKPATH + "temp\\" + now + "_result.mp3");
             fos = new FileOutputStream(RMConstant.storepath + File.separator + now + "\\cut.mp3");
             while(fis.read(tmp) > 0) {
                 fos.write(tmp);
@@ -101,7 +102,7 @@ public class ChangeBpmAction extends AbstractDispatchAction {
             fis.close();
             fos.close();
 
-            fis = new FileInputStream("D:\\temp\\" + now + "_result.imd");
+            fis = new FileInputStream(GlobalConstant.DISKPATH + "temp\\" + now + "_result.imd");
             fos = new FileOutputStream(RMConstant.storepath + File.separator + now + "\\cut.imd");
             while(fis.read(tmp) > 0) {
                 fos.write(tmp);
@@ -109,13 +110,13 @@ public class ChangeBpmAction extends AbstractDispatchAction {
             fis.close();
             fos.close();
 
-            new File("D:\\temp\\" + now + "_result.imd").delete();
-            new File("D:\\temp\\" + now + "_result.mp3").delete();
+            new File(GlobalConstant.DISKPATH + "temp\\" + now + "_result.imd").delete();
+            new File(GlobalConstant.DISKPATH + "temp\\" + now + "_result.mp3").delete();
 
             BPMChange.changeImd(RMConstant.storepath + File.separator + now + "\\cut.imd", now, form.getRatio());
             BPMChange.changeMp3(RMConstant.storepath + File.separator + now + "\\cut.mp3", RMConstant.storepath + File.separator + now + "\\" + mp3name, form.getRatio());
 
-            fis = new FileInputStream("D:\\temp\\" + now + "_changebpm.imd");
+            fis = new FileInputStream(GlobalConstant.DISKPATH + "temp\\" + now + "_changebpm.imd");
             fos = new FileOutputStream(RMConstant.storepath + File.separator + now + "\\" + imdname);
             int count = 0;
             while((count = fis.read(tmp)) > 0) {
@@ -139,7 +140,7 @@ public class ChangeBpmAction extends AbstractDispatchAction {
                                 HttpServletResponse response) {
         ChangeBpmForm form = (ChangeBpmForm) _form;
         String filename = BPMChange.change(form.getSong(), form.getRatio(), request.getRemoteAddr());
-        File f = new File("D:\\temp\\" + filename + ".zip");
+        File f = new File(GlobalConstant.DISKPATH + "temp\\" + filename + ".zip");
 
         try {
             byte[] bytes = (form.getSong() + "-" + form.getRatio() + ".zip").getBytes("GBK");

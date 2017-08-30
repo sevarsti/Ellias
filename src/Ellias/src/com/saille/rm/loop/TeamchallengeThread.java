@@ -1,5 +1,7 @@
 package com.saille.rm.loop;
 
+import com.GlobalConstant;
+import com.saille.rm.RMConstant;
 import com.saille.sys.BaseThread;
 import com.saille.rm.util.RMUtils;
 import com.saille.rm.DownloadZipUtil;
@@ -33,7 +35,7 @@ public class TeamchallengeThread extends BaseThread {
 
     public static void main(String[] args) {
         try {
-            File f = new File("D:\\rm\\TableComBin\\mrock_guild_song_client.bin");
+            File f = new File(GlobalConstant.DISKPATH + "rm\\TableComBin\\mrock_guild_song_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);
@@ -74,7 +76,7 @@ public class TeamchallengeThread extends BaseThread {
     protected int execute() {
         try {
             DownloadZipUtil.download();
-            File f = new File("D:\\rm\\TableComBin\\mrock_guild_song_client.bin");
+            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock_guild_song_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);

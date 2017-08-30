@@ -1,5 +1,7 @@
 package com.saille.rm;
 
+import com.GlobalConstant;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ELLIAS
@@ -8,5 +10,6 @@ package com.saille.rm;
  * To change this template use File | Settings | File Templates.
  */
 public class RMConstant {
-    public final static String storepath = "D:\\apache-tomcat\\webapps\\ROOT\\musiccut";
+    public static String RM_ROOT = GlobalConstant.DISKPATH + "rm\\";
+    public final static String storepath = GlobalConstant.DISKPATH + "apache-tomcat\\webapps\\ROOT\\musiccut";
 }

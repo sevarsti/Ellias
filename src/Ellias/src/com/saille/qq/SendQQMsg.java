@@ -1,5 +1,6 @@
 package com.saille.qq;
 
+import com.GlobalConstant;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -125,7 +126,7 @@ public class SendQQMsg {
                 URL url = new URL(imagepath);
                 URLConnection conn = url.openConnection();
                 InputStream is = conn.getInputStream();
-                FileOutputStream fos = new FileOutputStream("D:\\verifycode.gif");
+                FileOutputStream fos = new FileOutputStream(GlobalConstant.DISKPATH + "verifycode.gif");
                 int read;
                 while((read = is.read()) >= 0) {
                     fos.write(read);

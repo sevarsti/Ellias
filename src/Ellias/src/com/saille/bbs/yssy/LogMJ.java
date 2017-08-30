@@ -37,7 +37,7 @@ public class LogMJ {
 //                System.out.println("请输入正确的晒mj类型，0：全部；1：<364；2：<119");
 //                System.exit(0);
 //            }
-//            File f = new File("D:\\vbs\\id.txt");
+//            File f = new File(GlobalConstant.DISKPATH + "vbs\\id.txt");
 //            FileReader fr = new FileReader(f);
 //            BufferedReader br = new BufferedReader(fr);
 //            String id;

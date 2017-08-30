@@ -1,5 +1,6 @@
 package com.saille.baidu.bos;
 
+import com.GlobalConstant;
 import com.baidubce.services.bos.model.BosObjectSummary;
 import com.baidubce.services.bos.model.BosObject;
 import com.saille.sys.BaseThread;
@@ -46,7 +47,7 @@ public class SynchronizeExcel extends BaseThread {
         return INSTANCE;
     }
 
-    private final static String EXCELPATH = "D:\\EXCEL";
+    private final static String EXCELPATH = GlobalConstant.DISKPATH + "EXCEL";
     public int execute() {
         try {
             if(hasExcel()) {

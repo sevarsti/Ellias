@@ -1,5 +1,6 @@
 package com.saille.bbs.yssy;
 
+import com.GlobalConstant;
 import com.saille.html.HTMLUtil;
 
 import java.io.*;
@@ -14,11 +15,11 @@ import java.io.*;
 public class GenerateMJ {
     public static void main(String[] args) {
         try {
-            File f = new File("D:\\vbs\\id2.txt");
+            File f = new File(GlobalConstant.DISKPATH + "vbs\\id2.txt");
             InputStream is = new FileInputStream(f);
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
 
-            File of = new File("D:\\vbs\\id21.txt");
+            File of = new File(GlobalConstant.DISKPATH + "vbs\\id21.txt");
             FileOutputStream os = new FileOutputStream(of);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
             String id;

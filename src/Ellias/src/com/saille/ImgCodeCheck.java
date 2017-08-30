@@ -1,5 +1,7 @@
 package com.saille;
 
+import com.GlobalConstant;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -210,7 +212,7 @@ public class ImgCodeCheck {
 
     public static void main(String[] args) throws IOException {
         try {
-            File f = new File("D:\\GetPicCode.png");
+            File f = new File(GlobalConstant.DISKPATH + "GetPicCode.png");
             FileInputStream fin = new FileInputStream(f);
             BufferedImage bi = ImageIO.read(fin);
             ImgCodeCheck flt = new ImgCodeCheck(bi);
@@ -219,7 +221,7 @@ public class ImgCodeCheck {
             flt.getBrighten();
             bi = flt.getProcessedImg();
 
-            String pname = "D:\\GetPicCode2.png";
+            String pname = GlobalConstant.DISKPATH + "GetPicCode2.png";
             File file = new File(pname + ".jpg");
             ImageIO.write(bi, "jpg", file);
         } catch(Exception ex) {

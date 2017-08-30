@@ -1,5 +1,6 @@
 package com.saille.aliyun;
 
+import com.GlobalConstant;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.ListObjectsRequest;
@@ -47,7 +48,7 @@ public class OssUtils {
         for(OSSObjectSummary obj : list) {
             if(obj.getKey().endsWith(".jpg")) {
                 String filename = obj.getKey().substring(obj.getKey().lastIndexOf("/") + 1);
-                File f = new File("D:\\bbs\\bbs10\\" + filename);
+                File f = new File(GlobalConstant.DISKPATH + "bbs\\bbs10\\" + filename);
                 obj.setLastModified(new Date(f.lastModified()));
                 System.out.println(obj);
 //                CopyObjectRequest copyReq = new CopyObjectRequest();

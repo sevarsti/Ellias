@@ -1,5 +1,6 @@
 package com.saille.rm.loop;
 
+import com.saille.rm.RMConstant;
 import com.saille.sys.BaseThread;
 import com.saille.rm.util.RMUtils;
 import com.saille.rm.DownloadZipUtil;
@@ -50,7 +51,7 @@ public class ScoreChangeThread extends BaseThread {
     protected int execute() {
         try {
             DownloadZipUtil.download();
-            File f = new File("D:\\rm\\TableComBin\\mrock.scoreexchange_client.bin");
+            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock.scoreexchange_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);

@@ -1,5 +1,6 @@
 package com.saille.bbs.yssy.service;
 
+import com.GlobalConstant;
 import com.saille.bbs.yssy.Board;
 import com.saille.bbs.yssy.BoardRecord;
 import com.saille.bbs.yssy.dao.IBoardDao;
@@ -18,7 +19,7 @@ public class YssyService {
 
     public void a() {
         try {
-            File f = new File("D:\\link.txt");
+            File f = new File(GlobalConstant.DISKPATH + "link.txt");
             FileInputStream fis = new FileInputStream(f);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);

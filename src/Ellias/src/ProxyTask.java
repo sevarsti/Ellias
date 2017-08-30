@@ -1,3 +1,5 @@
+import com.GlobalConstant;
+
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.io.*;
@@ -168,7 +170,7 @@ public class ProxyTask implements Runnable {
                 while((len = isOut.read(buffer)) != -1) {
                     if(len > 0) {
                         System.out.println(new String(buffer));
-                        File f = new File("D:\\temp\\asdf.zip");
+                        File f = new File(GlobalConstant.DISKPATH + "temp\\asdf.zip");
                         if(!f.exists()) {
                             f.createNewFile();
                         }

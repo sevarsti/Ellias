@@ -39,9 +39,9 @@ public class DownloadZipUtil {
                     break;
                 }
                 String filename = entry.getName();
-                File f = new File("D:\\rm\\TableComBin\\" + filename);
+                File f = new File(RMConstant.RM_ROOT + "TableComBin\\" + filename);
                 if(f.exists() && f.lastModified() < entry.getTime()) {
-                    String bakfilename = "D:\\rm\\TableComBin\\deprecated\\";
+                    String bakfilename = RMConstant.RM_ROOT + "TableComBin\\deprecated\\";
                     bakfilename += f.getName().substring(0, f.getName().lastIndexOf(".") + 1);
                     bakfilename += new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(f.lastModified()));
                     bakfilename += f.getName().substring(f.getName().lastIndexOf("."));

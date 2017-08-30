@@ -1,5 +1,7 @@
 package com.saille.bbs.yssy;
 
+import com.GlobalConstant;
+
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.URL;
@@ -106,7 +108,7 @@ public class Detect {
 
     private void init() {
         try {
-            File f = new File("D:\\vbs\\target1" + name + ".txt");
+            File f = new File(GlobalConstant.DISKPATH + "vbs\\target1" + name + ".txt");
             OutputStream os = new FileOutputStream(f);
             this.writer = new BufferedWriter(new OutputStreamWriter(os));
             this.writer.write("id\tlogin time\tlife\tip\tpost\tlogintimes\tage\r\n");
@@ -128,7 +130,7 @@ public class Detect {
         List<String> list = new ArrayList<String>();
         String tmp;
         try {
-            File f = new File("D:\\vbs\\target_" + name + ".txt");
+            File f = new File(GlobalConstant.DISKPATH + "vbs\\target_" + name + ".txt");
             InputStream is = new FileInputStream(f);
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             r.readLine();
@@ -204,7 +206,7 @@ public class Detect {
     }
 
     private static void writeOne(Map<String, String> map) throws Exception {
-        File f = new File("D:\\vbs\\target1" + name + ".txt");
+        File f = new File(GlobalConstant.DISKPATH + "vbs\\target1" + name + ".txt");
         FileOutputStream os = new FileOutputStream(f, true);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
         writer.write(map.get("info") + "\r\n");
@@ -213,7 +215,7 @@ public class Detect {
     }
 
     private static void writeAll(List<Map<String, String>> list) throws Exception {
-        File f = new File("D:\\vbs\\target1" + name + ".txt");
+        File f = new File(GlobalConstant.DISKPATH + "vbs\\target1" + name + ".txt");
         FileOutputStream os = new FileOutputStream(f, true);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
         writer.write("id\tlogin time\tlife\tip\tpost\tlogintimes\tage\r\n");

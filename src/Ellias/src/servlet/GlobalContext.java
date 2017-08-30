@@ -4,6 +4,7 @@ import com.saille.ogzq.AutoReloginLoopThread;
 import com.saille.ogzq.dailyLoop.ArenaThread;
 import com.saille.baidu.bos.SynchronizeExcel;
 import com.saille.aliyun.OssUtils;
+import com.saille.sys.Setting;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,26 +45,22 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
         DataSource ds = (DataSource)GlobalContext.getSpringContext().getBean("mysql_ds");
         JdbcTemplate jt = new JdbcTemplate(ds);
         {
-            String sql = "select strvalue from setting where setting = ?";
-            Map<String, Object> map = jt.queryForMap(sql, new Object[]{"OSS_ACCESSKEYID"});
-            String accessKeyId = map.get("strvalue").toString();
-            map = jt.queryForMap(sql, new Object[]{"OSS_ACCESSKEYSECRET"});
-            String accessKeySecret = map.get("strvalue").toString();
+            String accessKeyId = Setting.getSettingString("OSS_ACCESSKEYID");
+            String accessKeySecret = Setting.getSettingString("OSS_ACCESSKEYSECRET");
             OssUtils.setAccessKeyId(accessKeyId);
             OssUtils.setAccessKeySecret(accessKeySecret);
             LOGGER.info("阿里云OSS密钥加载完毕");
         }
 
         {
+            LOGGER.info("节奏大师根目录加载完毕");
+        }
+
+        {
             boolean startthread = true;
-            String sql = "select intvalue from setting where setting = 'STARTTHREAD'";
-            List<Map<String, Object>> list = jt.queryForList(sql);
-            if(list.size() > 0) {
-                Map<String, Object> m = list.get(0);
-                int intvalue = ((Number) m.get("intvalue")).intValue();
-                if(intvalue != 1) {
-                    startthread = false;
-                }
+            int intvalue = Setting.getSettingInteger("STARTTHREAD");
+            if(intvalue != 1) {
+                startthread = false;
             }
 
             if(startthread) {

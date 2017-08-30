@@ -135,7 +135,7 @@ public class BOSUtils {
         try {
             BosObject obj = CLIENT.getObject("testellias", "rm_song");
             System.out.println(obj);
-//            putObject(client, buketname, "rm_song", "d:\\excel\\节奏大师歌曲.xls");
+//            putObject(client, buketname, "rm_song", GlobalConstant.DISKPATH + "excel\\节奏大师歌曲.xls");
         } catch(Exception ex) {
             ex.printStackTrace();
         }

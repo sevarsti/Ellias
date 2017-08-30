@@ -1,3 +1,5 @@
+import com.GlobalConstant;
+
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.URL;
@@ -95,7 +97,7 @@ public class detectnew {
 
     private void init() {
         try {
-            this.f = new File("D:\\vbs\\target1new.txt");
+            this.f = new File(GlobalConstant.DISKPATH + "vbs\\target1new.txt");
             this.os = new FileOutputStream(this.f);
             this.writer = new BufferedWriter(new OutputStreamWriter(this.os));
             this.writer.write("id\tlogin time\tlife\tip\tpost\tlogintimes\tage\r\n");
@@ -117,7 +119,7 @@ public class detectnew {
         List<String> list = new ArrayList<String>();
         String tmp;
         try {
-            File f = new File("D:\\vbs\\target_new.txt");
+            File f = new File(GlobalConstant.DISKPATH + "vbs\\target_new.txt");
             InputStream is = new FileInputStream(f);
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             r.readLine();
@@ -192,7 +194,7 @@ public class detectnew {
     }
 
     private static void writeAll(List<Map<String, String>> list) throws Exception {
-        File f = new File("D:\\vbs\\target1new.txt");
+        File f = new File(GlobalConstant.DISKPATH + "vbs\\target1new.txt");
         FileOutputStream os = new FileOutputStream(f);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
         writer.write("id\tlogin time\tlife\tip\tpost\tlogintimes\tage\r\n");

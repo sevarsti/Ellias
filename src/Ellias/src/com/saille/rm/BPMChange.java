@@ -1,5 +1,6 @@
 package com.saille.rm;
 
+import com.GlobalConstant;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -27,7 +28,7 @@ public class BPMChange {
         try {
 //            changeImd("can", "4", "hd", 0.9);
 
-            File f = new File("D:\\rm\\can\\0.8.mp3");
+            File f = new File(GlobalConstant.DISKPATH + "rm\\can\\0.8.mp3");
             if(f.exists()) {
                 f.delete();
             }
@@ -60,7 +61,7 @@ public class BPMChange {
         }
         filepath = filepath.replaceAll("\\\\", "\\\\\\\\");
         outpath = outpath.replaceAll("\\\\", "\\\\\\\\");
-        String cmd = "D:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i " + filepath + " -filter:a \"atempo=" + ratio + "\" -vcodec copy -vn \"" + outpath + "\"";
+        String cmd = GlobalConstant.DISKPATH + "software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i " + filepath + " -filter:a \"atempo=" + ratio + "\" -vcodec copy -vn \"" + outpath + "\"";
         System.out.println(cmd);
         Process p = Runtime.getRuntime().exec(cmd);
         InputStream is = p.getErrorStream();
@@ -84,11 +85,11 @@ public class BPMChange {
             //1、改imd
 
             //2、改mp3
-            File f = new File("d:\\temp\\" + song + "-" + ratio + ".mp3");
+            File f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + ".mp3");
             if(f.exists()) {
                 f.delete();
             }
-            String cmd = "D:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i d:\\\\rm\\\\" + song + "\\\\" + song + ".mp3 -filter:a \"atempo=" + ratio + "\" -vcodec copy -vn d:\\\\temp\\\\" + song + "-" + ratio + ".mp3";
+            String cmd = GlobalConstant.DISKPATH + "software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i " + GlobalConstant.DISKPATH +  "\\rm\\\\" + song + "\\\\" + song + ".mp3 -filter:a \"atempo=" + ratio + "\" -vcodec copy -vn " + GlobalConstant.DISKPATH + "\\temp\\\\" + song + "-" + ratio + ".mp3";
             System.out.println(cmd);
             Process p = Runtime.getRuntime().exec(cmd);
             InputStream is = p.getErrorStream();
@@ -120,48 +121,48 @@ public class BPMChange {
             doZip(song + "-" + ratio, zipFilename);
 
             //5、delete files
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_readme.txt");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_readme.txt");
             if(f.exists()) {
                 f.delete();
             }
 
-            f = new File("d:\\temp\\" + song + "-" + ratio + ".mp3");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + ".mp3");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_4k_ez.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_4k_ez.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_4k_nm.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_4k_nm.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_4k_hd.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_4k_hd.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_5k_ez.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_5k_ez.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_5k_nm.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_5k_nm.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_5k_hd.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_5k_hd.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_6k_ez.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_6k_ez.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_6k_nm.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_6k_nm.imd");
             if(f.exists()) {
                 f.delete();
             }
-            f = new File("d:\\temp\\" + song + "-" + ratio + "_6k_hd.imd");
+            f = new File(GlobalConstant.DISKPATH + "temp\\" + song + "-" + ratio + "_6k_hd.imd");
             if(f.exists()) {
                 f.delete();
             }
@@ -173,7 +174,7 @@ public class BPMChange {
     }
 
     private static void doZip(String songpath, String filename) throws Exception {
-        FileOutputStream f = new FileOutputStream("D:\\temp\\" + filename + ".zip");
+        FileOutputStream f = new FileOutputStream(GlobalConstant.DISKPATH + "temp\\" + filename + ".zip");
         // 输出校验流,采用Adler32更快
        CheckedOutputStream csum = new CheckedOutputStream(f, new Adler32());
        //创建压缩输出流
@@ -182,7 +183,7 @@ public class BPMChange {
        //设置Zip文件注释
        zos.setComment("Create by Ellias");
 //       String[] filepaths = new String[]{"D:\\dl\\movie.swf", "d:\\dl\\debian_sn.txt"};
-        File dir = new File("d:\\temp");
+        File dir = new File(GlobalConstant.DISKPATH + "temp");
         File[] files = dir.listFiles();
        for(File s : files) {
            if(!s.getName().startsWith(songpath)) {
@@ -217,7 +218,7 @@ public class BPMChange {
 //            return;
 //        }
 
-        File outf = new File("D:\\temp\\" + now + "_changebpm.imd");
+        File outf = new File(GlobalConstant.DISKPATH + "temp\\" + now + "_changebpm.imd");
 //        File outf = new File("d:\\temp\\" + song + "-" + ratio + "_" + keys + "k_" + lv + ".imd");
 //        FileInputStream fis = new FileInputStream(f);
         DataInputStream dis = new DataInputStream(is);
@@ -298,7 +299,7 @@ public class BPMChange {
     }
 
     private static String getSongName(String path) throws Exception {
-        File f = new File("D:\\节奏大师歌曲.xls");
+        File f = new File(GlobalConstant.DISKPATH + "节奏大师歌曲.xls");
         FileInputStream fis = new FileInputStream(f);
         HSSFWorkbook workbook = new HSSFWorkbook(fis);
         HSSFSheet sheet = workbook.getSheet("歌曲");

@@ -1,5 +1,6 @@
 package com.saille.bbs.yssy;
 
+import com.GlobalConstant;
 import com.saille.html.HTMLUtil;
 
 import java.io.File;
@@ -19,7 +20,7 @@ public class YSSYstat {
     public static void main(String args[]) {
         try {
             YSSYUtil util = new YSSYUtil();
-            File f = new File("D:\\tmp.txt");
+            File f = new File(GlobalConstant.DISKPATH + "tmp.txt");
             FileReader fr = new FileReader(f);
             BufferedReader br = new BufferedReader(fr);
             String tmp;

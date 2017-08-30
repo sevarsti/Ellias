@@ -1,5 +1,7 @@
 package com.saille.rm;
 
+import com.GlobalConstant;
+
 import java.io.FileInputStream;
 import java.io.File;
 import java.util.Arrays;
@@ -19,7 +21,7 @@ public class ImdCheck {
         try {
 //            File dir = new File("D:\\rm\\song");
 //            run(dir);
-            check("D:\\rm\\song\\laozishuo\\laozishuo_4k_hd.imd");
+            check(GlobalConstant.DISKPATH + "rm\\song\\laozishuo\\laozishuo_4k_hd.imd");
         } catch(Exception ex) {
             ex.printStackTrace();
         }

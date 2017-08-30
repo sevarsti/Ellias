@@ -1,5 +1,6 @@
 package com.saille.sys.loop;
 
+import com.GlobalConstant;
 import com.saille.sys.BaseThread;
 import org.apache.log4j.Logger;
 
@@ -18,7 +19,7 @@ import java.nio.charset.Charset;
  * To change this template use File | Settings | File Templates.
  */
 public class DatabaseBackupThread extends BaseThread {
-    private final static String BACKUP_PATH = "D:\\dbbak";
+    private final static String BACKUP_PATH = GlobalConstant.DISKPATH + "dbbak";
     private final static Logger LOGGER = Logger.getLogger(DatabaseBackupThread.class);
     private static DatabaseBackupThread instance = null;
     public static DatabaseBackupThread getInstance(int interval) {

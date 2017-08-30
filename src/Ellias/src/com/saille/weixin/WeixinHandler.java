@@ -1,5 +1,6 @@
 package com.saille.weixin;
 
+import com.GlobalConstant;
 import com.saille.util.UtilFunctions;
 import com.saille.util.FileUtils;
 import com.saille.util.CommonUtils;
@@ -254,7 +255,7 @@ public class WeixinHandler {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
             String filename = sdf.format(new Date());
-            File f = new File("D:\\引领全服活跃" + filename + ".xls");
+            File f = new File(GlobalConstant.DISKPATH + "引领全服活跃" + filename + ".xls");
             FileInputStream fis = new FileInputStream(f);
             HSSFWorkbook workbook = new HSSFWorkbook(fis);
             HSSFSheet sheet = workbook.getSheet("明细");
@@ -306,7 +307,7 @@ public class WeixinHandler {
     private static String processRmTextInstruction(String text) {
         try {
             DecimalFormat df = new DecimalFormat("0");
-            File f = new File("D:\\excel\\节奏大师歌曲.xls");
+            File f = new File(GlobalConstant.DISKPATH + "excel\\节奏大师歌曲.xls");
             FileInputStream fis = new FileInputStream(f);
             HSSFWorkbook workbook = new HSSFWorkbook(fis);
             HSSFSheet sheet = workbook.getSheet("歌曲");
