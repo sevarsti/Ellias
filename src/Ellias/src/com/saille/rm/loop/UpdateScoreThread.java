@@ -1,6 +1,7 @@
 package com.saille.rm.loop;
 
 import com.GlobalConstant;
+import com.saille.rm.RMConstant;
 import com.saille.sys.BaseThread;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +51,7 @@ public class UpdateScoreThread extends BaseThread {
             return 5;
         }
         try {
-            File f = new File(GlobalConstant.DISKPATH + "excel\\½Ú×à´óÊ¦¸èÇú.xls");
+            File f = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
 
             DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
             JdbcTemplate jt = new JdbcTemplate(ds);

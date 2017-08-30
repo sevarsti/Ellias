@@ -299,7 +299,7 @@ public class BPMChange {
     }
 
     private static String getSongName(String path) throws Exception {
-        File f = new File(GlobalConstant.DISKPATH + "½Ú×à´óÊ¦¸èÇú.xls");
+        File f = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
         FileInputStream fis = new FileInputStream(f);
         HSSFWorkbook workbook = new HSSFWorkbook(fis);
         HSSFSheet sheet = workbook.getSheet("¸èÇú");

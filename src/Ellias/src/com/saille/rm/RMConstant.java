@@ -10,6 +10,7 @@ import com.GlobalConstant;
  * To change this template use File | Settings | File Templates.
  */
 public class RMConstant {
+    public final static String RM_EXCEL = "½Ú×à´óÊ¦¸èÇú.xls";
     public static String RM_ROOT = GlobalConstant.DISKPATH + "rm\\";
     public final static String storepath = GlobalConstant.DISKPATH + "apache-tomcat\\webapps\\ROOT\\musiccut";
 }

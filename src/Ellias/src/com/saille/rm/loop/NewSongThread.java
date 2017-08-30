@@ -64,7 +64,7 @@ public class NewSongThread extends BaseThread {
     @Override
     protected int execute() {
         try {
-            File excel = new File(GlobalConstant.DISKPATH + "excel\\节奏大师歌曲.xls");
+            File excel = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
             FileInputStream excelis = new FileInputStream(excel);
             workbook = Workbook.getWorkbook(excelis);
             statisticsheet = workbook.getSheet("KEY统计");

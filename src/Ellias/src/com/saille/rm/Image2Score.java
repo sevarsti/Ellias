@@ -676,7 +676,7 @@ public class Image2Score {
 
     public static List<String[]> getSongNames() throws Exception {
         List<String[]> ret = new ArrayList<String[]>();
-        File excel = new File(GlobalConstant.DISKPATH + "excel\\½Ú×à´óÊ¦¸èÇú.xls");
+        File excel = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
         FileInputStream excelis = new FileInputStream(excel);
         Workbook workbook = Workbook.getWorkbook(excelis);
         sheet = workbook.getSheet("¸èÇú");
