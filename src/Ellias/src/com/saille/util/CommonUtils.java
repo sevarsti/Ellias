@@ -1,5 +1,6 @@
 package com.saille.util;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedInputStream;
@@ -8,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CommonUtils {
@@ -15,14 +18,18 @@ public class CommonUtils {
     public static String getString(InputStream is, String charset) throws Exception {
         List list = new ArrayList();
         int i;
-        while((i = is.read()) != -1) {
-            list.add(Byte.valueOf((byte) i));
+        byte[] bytes = new byte[4096];
+        while((i = is.read(bytes)) > 0) {
+            list.addAll(Arrays.asList(ArrayUtils.toObject(Arrays.copyOfRange(bytes, 0, i))));
+//            list.add(Byte.valueOf((byte) i));
         }
-        byte[] bb = new byte[list.size()];
-        for(int ii = 0; ii < list.size(); ii++) {
-            bb[ii] = ((Byte) list.get(ii)).byteValue();
-        }
-        String ret = new String(bb, charset);
+        Byte[] bb = new Byte[list.size()];
+        list.toArray(bb);
+        bytes = ArrayUtils.toPrimitive(bb);
+//        for(int ii = 0; ii < list.size(); ii++) {
+//            bb[ii] = ((Byte) list.get(ii)).byteValue();
+//        }
+        String ret = new String(bytes, charset);
         return ret;
     }
 
