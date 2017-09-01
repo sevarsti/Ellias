@@ -72,6 +72,7 @@
             return;
         }
         /* 备份原始文件 */
+        long modifytime = entry.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         File excelfile = new File(GlobalConstant.DISKPATH + "\\excel\\" + RMConstant.RM_EXCEL);
         File backupfile = new File(GlobalConstant.DISKPATH + "\\backup\\" + RMConstant.RM_EXCEL + "." + sdf.format(new Date()));
@@ -81,9 +82,14 @@
         fos.close();
         zis.close();
         item.getInputStream().close();
+        excelfile.setLastModified(modifytime);
         if(needSynchronize) {
             System.out.println("need sync");
             BaseThread t = BaseThread.findThread("com.saille.baidu.bos.SynchronizeExcel");
+            if(t != null) {
+                t.interrupt();
+            }
+            t = BaseThread.findThread("com.saille.rm.loop.UpdateScoreThread");
             if(t != null) {
                 t.interrupt();
             }
