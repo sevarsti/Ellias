@@ -16,6 +16,9 @@ public class GlobalConstant {
     public static final SimpleDateFormat DF_YYYY_MM_DD_HH_MM_SS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static {
         String path = System.getProperty("ellias.root");
+        if(path == null) {
+            path = "D:\\";
+        }
         DISKPATH = path.substring(0, path.indexOf(File.separator) + File.separator.length());
     }
     private GlobalConstant() {
