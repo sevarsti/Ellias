@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.EofSensorInputStream;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.log4j.Logger;
@@ -33,12 +34,12 @@ public class LoadCardThread extends BaseThread {
     @Override
     protected int execute() {
         try {
-            String filepath = "D:" + "\\temp\\llcard.txt";
+            String filepath = "F:" + "\\temp\\llcard.txt";
             File tempfile = new File(filepath);
             if(!tempfile.exists()) {
                 tempfile.createNewFile();
             }
-//            downloadcard(filepath);
+            downloadcard(filepath);
             parseCard(filepath);
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -48,15 +49,41 @@ public class LoadCardThread extends BaseThread {
 
     private void parseCard(String filepath) throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/ellias", "root", "huaan");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/ellias", "root", "sjtuagent");
 
+        PreparedStatement ps;
+        String[] tables = new String[]{"ll_card","ll_cardability","ll_functionvoice","ll_leader","ll_periodvoice","ll_randomvoice","ll_series","ll_skill","ll_subscenario","ll_timevoice","ll_touchvoice", "ll_extra", "ll_specialvoice"};
+        for(String t : tables) {
+            ps = connection.prepareStatement("truncate table " + t);
+            ps.executeUpdate();
+            ps.close();
+        }
         FileInputStream fis = new FileInputStream(filepath);
         int i;
         int bracecount = 0;
         StringBuffer sb = new StringBuffer();
+        int count = 0;
+        boolean checkQuote = false;
         while((i = fis.read()) != -1) {
             if(bracecount > 0) {
-                sb.append((char) i);
+                char c = (char) i;
+                sb.append(c);
+                if(c == '\"') {
+                    char prvChar = sb.charAt(sb.length() - 2);
+                    if(prvChar != ' ' && prvChar != '[' && prvChar != '{') {
+                        checkQuote = true;
+                    } else {
+                        checkQuote = false;
+                    }
+                } else {
+                    if(checkQuote) {
+                        if(c == ':' || c == ' ' || c == ',' || c == ']' || c == '}') {
+                        } else {
+                            sb.insert(sb.length() - 2, "\\");
+                        }
+                    }
+                    checkQuote = false;
+                }
             }
             if(((char) i) == '{') {
                 if(bracecount == 0) {
@@ -67,7 +94,7 @@ public class LoadCardThread extends BaseThread {
                 bracecount--;
                 if(bracecount == 0) {
                     String s = StringEscapeUtils.unescapeJava(sb.toString());
-                    System.out.println(s);
+                    System.out.println(count++ + s);
                     JSONObject json = new JSONObject(s);
                     saveJSONObject(connection, json);
                     sb = new StringBuffer();
@@ -79,7 +106,6 @@ public class LoadCardThread extends BaseThread {
 
     private void saveJSONObject(Connection conn, JSONObject obj) throws Exception {
         int id = obj.getInt("id");
-//        String series = obj.getString("series");
         String upnavi = obj.getString("upnavi");
         String navi = obj.getString("navi");
         String attribute = obj.getString("attribute");
@@ -257,6 +283,35 @@ public class LoadCardThread extends BaseThread {
             ps2.executeUpdate();
         }
         ps2.close();
+        /* ll_extra */
+        JSONObject extraObj = obj.optJSONObject("extra");
+        if(extraObj != null) {
+            ps2 = conn.prepareStatement("insert into ll_extra(`id`, `val`, `tag`, `type`) values(?,?,?,?)");
+            int val = extraObj.getInt("val");
+            String tag = extraObj.getString("tag");
+            String extratype = extraObj.getString("type");
+            ps2.setInt(1, id);
+            ps2.setInt(2, val);
+            ps2.setString(3, tag);
+            ps2.setString(4, extratype);
+            ps2.executeUpdate();
+            ps2.close();
+        }
+        /* ll_specialvoice */
+        JSONArray specialVoiceArray = obj.getJSONArray("special_voice");
+        if(specialVoiceArray.length() > 0) {
+            ps2 = conn.prepareStatement("insert into ll_specialvoice(id, content,voice) values(?,?,?)");
+            for(int i = 0; i < specialVoiceArray.length(); i++) {
+                JSONObject subobj = specialVoiceArray.getJSONObject(i);
+                String content = subobj.getString("content");
+                String voice = subobj.getString("voice");
+                ps2.setInt(1, id);
+                ps2.setString(2, content);
+                ps2.setString(3, voice);
+                ps2.executeUpdate();
+            }
+            ps2.close();
+        }
         /* ll_touchvoice */
         ps2 = conn.prepareStatement("insert into ll_touchvoice(id, appearance, content,voice) values(?,?,?,?)");
         JSONArray touchVoiceArray = obj.optJSONArray("touch_voice");
@@ -297,8 +352,9 @@ public class LoadCardThread extends BaseThread {
                 ex.printStackTrace();
             }
             if(currentfile.exists() && currentfile.lastModified() == lastmodifydt) {
-                LOGGER.info("文件已经下载过，不再处理");
-                is.close();
+                LOGGER.info("文件已经下载过，不再处理，文件更新时间：" + new Date(currentfile.lastModified()));
+                ((EofSensorInputStream)is).abortConnection();
+//                is.close();
                 response.close();
                 gm.releaseConnection();
                 return false;
@@ -321,6 +377,7 @@ public class LoadCardThread extends BaseThread {
         fos.close();
         if(lastmodifydt > 0) {
             new File(filepath).setLastModified(lastmodifydt);
+            LOGGER.info("文件保存完毕，更新时间：" + new Date(lastmodifydt));
         }
         return true;
     }

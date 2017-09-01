@@ -2,16 +2,15 @@ package com.saille.aliyun;
 
 import com.GlobalConstant;
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.ListObjectsRequest;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.*;
 import org.apache.log4j.Logger;
 
 import javax.sql.DataSource;
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +23,9 @@ public class OssUtils {
     private final static Logger LOGGER = Logger.getLogger(OssUtils.class);
     private DataSource ds;
     private final static String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
+    public static OSSClient OssClient;
+    private static Map<String, OSSObject> OBJECT_CACHE = new HashMap<String, OSSObject>();
+    private static Map<String, Date> OBJECT_MODIFY_DATE = new HashMap<String, Date>();
 
     public static void setAccessKeyId(String accessKeyId) {
         OssUtils.accessKeyId = accessKeyId;
@@ -36,15 +38,19 @@ public class OssUtils {
     private static String accessKeyId = "";
     private static String accessKeySecret = "";
 
+    public static void init(String accessKeyId, String accessKeySecret) {
+        OssUtils.accessKeyId = accessKeyId;
+        OssUtils.accessKeySecret = accessKeySecret;
+        OssUtils.OssClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+    }
 
     public static void main(String[] args) {
-        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
         ListObjectsRequest req = new ListObjectsRequest();
         req.setBucketName("ellias-persistent");
         req.setPrefix("bbs/yssy/站庆/200");
         req.setDelimiter("/");
         req.setMaxKeys(1000);
-        List<OSSObjectSummary> list = ossClient.listObjects(req).getObjectSummaries();
+        List<OSSObjectSummary> list = OssClient.listObjects(req).getObjectSummaries();
         for(OSSObjectSummary obj : list) {
             if(obj.getKey().endsWith(".jpg")) {
                 String filename = obj.getKey().substring(obj.getKey().lastIndexOf("/") + 1);
@@ -54,7 +60,7 @@ public class OssUtils {
 //                CopyObjectRequest copyReq = new CopyObjectRequest();
 //                copyReq.
 //                ossClient.copyObject(CopyObjectRequest)
-                OSSObject obj2 = ossClient.getObject("ellias-persistent", obj.getKey());
+                OSSObject obj2 = OssClient.getObject("ellias-persistent", obj.getKey());
 //                System.out.println(obj2);
             }
         }
@@ -62,10 +68,70 @@ public class OssUtils {
 //        for(Bucket b : bucketList) {
 //            System.out.println(b);
 //        }
-        List<Bucket> bucketList = ossClient.listBuckets();
+        List<Bucket> bucketList = OssClient.listBuckets();
         for(Bucket b : bucketList) {
             System.out.println(b);
         }
+    }
+
+    public static boolean bucketExist(String bucketName) {
+        return OssClient.doesBucketExist(bucketName);
+    }
+
+    public static List<OSSObjectSummary> listFiles(String bucketName, String dir) {
+        ListObjectsRequest req = new ListObjectsRequest();
+        req.setBucketName(bucketName);
+        req.setPrefix(dir);
+        ObjectListing list = OssClient.listObjects(req);
+        return list.getObjectSummaries();
+    }
+
+    public static void downloadFile(String bucketName, String key, File localfile) {
+        if(localfile.exists() && localfile.isFile()) {
+            localfile.delete();
+        }
+//        String key = localfile.getName();
+        OssClient.getObject(new GetObjectRequest(bucketName, key), localfile);
+    }
+
+    public static OSSObject getObject(String bucketName, OSSObjectSummary summary) {
+        String key = summary.getKey();
+        if(OBJECT_MODIFY_DATE.containsKey("[" + bucketName + "]" + key)) {
+            if(summary.getLastModified().getTime() > OBJECT_MODIFY_DATE.get("[" + bucketName + "]" + key).getTime()) {
+                LOGGER.info("读取文件详情：[" + bucketName + "]" + key);
+                OSSObject obj = OssClient.getObject(bucketName, key);
+                OBJECT_CACHE.put("[" + bucketName + "]" + key, obj);
+                OBJECT_MODIFY_DATE.put("[" + bucketName + "]" + key, summary.getLastModified());
+            }
+            return OBJECT_CACHE.get("[" + bucketName + "]" + key);
+        } else {
+            LOGGER.info("读取文件详情：[" + bucketName + "]" + key);
+            OSSObject obj = OssClient.getObject(bucketName, key);
+            OBJECT_MODIFY_DATE.put("[" + bucketName + "]" + key, summary.getLastModified());
+            OBJECT_CACHE.put("[" + bucketName + "]" + key, obj);
+            return obj;
+        }
+    }
+
+    public static void copyObject(String srcBucketname, String srcKey, String desBucketname, String desKey) {
+        if(!OssClient.doesBucketExist(desBucketname)) {
+            OssClient.createBucket(desBucketname);
+        }
+        OssClient.copyObject(srcBucketname, srcKey, desBucketname, desKey);
+    }
+
+    public static void uploadFile(String bucketName, String key, File localfile) {
+        if(!localfile.exists() || localfile.isDirectory()) {
+            return;
+        }
+        ObjectMetadata meta = new ObjectMetadata();
+        meta.setLastModified(new Date(localfile.lastModified()));
+        Map<String, String> usermetadata = new HashMap<String, String>();
+        usermetadata.put("lastmodified", localfile.lastModified() + "");
+        meta.setUserMetadata(usermetadata);
+        LOGGER.info("上传文件：[" + bucketName + "]" + key);
+        PutObjectResult result = OssClient.putObject(bucketName, key, localfile, meta);
+        LOGGER.info("上传结果：" + result);
     }
 
     public static List<Bucket> sortBucket(List<Bucket> list, int start, int end) {
@@ -114,13 +180,5 @@ public class OssUtils {
         sortObject(list, start, pos);
         sortObject(list, pos + 1, end);
         return list;
-    }
-
-    public void setDs(DataSource ds) {
-        this.ds = ds;
-    }
-
-    public DataSource getDs() {
-        return ds;
     }
 }
