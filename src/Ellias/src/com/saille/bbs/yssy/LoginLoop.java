@@ -22,7 +22,7 @@ public class LoginLoop extends BaseThread {
     private static LoginLoop instance = null;
     private static String id;
     private static String pwd;
-    protected LoginLoop() {
+    private LoginLoop() {
         super();
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
         JdbcTemplate jt = new JdbcTemplate(ds);

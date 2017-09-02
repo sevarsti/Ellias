@@ -3,6 +3,7 @@ package com.saille.sys;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
@@ -31,7 +32,10 @@ public abstract class BaseThread extends Thread{
         if(!threads.containsKey(classname) || threads.get(classname) == null) {
             try {
                 Class c = Class.forName(classname);
-                Object obj = c.newInstance();
+                Constructor con = c.getDeclaredConstructor();
+                con.setAccessible(true);
+                Object obj = con.newInstance();
+                con.setAccessible(false);
                 if(!(obj instanceof BaseThread)) {
                     LOGGER.error(classname + "不是BaseThread的子类！");
                     return;

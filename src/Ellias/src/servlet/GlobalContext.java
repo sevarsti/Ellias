@@ -48,8 +48,7 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
         {
             String accessKeyId = Setting.getSettingString("OSS_ACCESSKEYID");
             String accessKeySecret = Setting.getSettingString("OSS_ACCESSKEYSECRET");
-            OssUtils.setAccessKeyId(accessKeyId);
-            OssUtils.setAccessKeySecret(accessKeySecret);
+            OssUtils.init(accessKeyId, accessKeySecret);
             LOGGER.info("∞¢¿Ô‘∆OSS√‹‘øº”‘ÿÕÍ±œ");
         }
 

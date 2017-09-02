@@ -4,6 +4,7 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.saille.sys.BaseThread;
 import com.saille.util.CommonUtils;
+import com.GlobalConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +26,10 @@ public class SynchronizeExcel extends BaseThread {
     private static String[] CHECK_SUFFIX = new String[]{".xls", ".xlsm"};
     private final static SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHHmmss");
     public static void main(String[] args) {
-        OssUtils.init("LTAID3hnLwsUASY4", "znxnT9S3n1vdK4SEuZT7LoW67WmAr4");
         new SynchronizeExcel().execute();
     }
 
-    private final static String EXCELPATH = "F:\\" + "EXCEL";
+    private final static String EXCELPATH = GlobalConstant.DISKPATH + "EXCEL";
 //    private final static String EXCELPATH = GlobalConstant.DISKPATH + "EXCEL";
     @Override
     protected int execute() {
