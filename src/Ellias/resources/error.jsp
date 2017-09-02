@@ -16,7 +16,7 @@
 <%
     Map<String, String> errors = new HashMap<String, String>();
     errors.put("noright", "对不起，您没有权限");
-    String errormsg = request.getParameter("noright");
+    String errormsg = request.getParameter("errormsg");
     if(errormsg == null) {
         errormsg = "未知错误";
     }

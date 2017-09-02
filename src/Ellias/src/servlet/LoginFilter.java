@@ -57,7 +57,7 @@ public class LoginFilter implements Filter {
         }
         boolean hasRight = checkRight(url, empObj == null ? 0 : ((Employee)empObj).getId());
         if(!hasRight) {
-            response.sendRedirect("/login.jsp?errormsg=noright");
+            response.sendRedirect("/error.jsp?errormsg=noright");
             return;
         }
         chain.doFilter(srequest, sresponse);
