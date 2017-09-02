@@ -4,6 +4,10 @@ package servlet;
 //import com.saille.sys.Resource;
 //import com.saille.sys.Employee;
 
+import com.saille.sys.Employee;
+import com.saille.sys.Resource;
+import com.saille.sys.dao.ResourceDao;
+import com.saille.sys.dao.RightDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +15,7 @@ import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -43,13 +48,34 @@ public class LoginFilter implements Filter {
         String method = request.getParameter("method");
         Socket s = new Socket();
         String username = String.valueOf(request.getSession().getAttribute("username"));
+        Object empObj = request.getSession().getAttribute("employee");
         if(username.equals("Ellias")) {
             ;
         }
         if(!"127.0.0.1".equals(request.getRemoteAddr())) {
             doLog(request);
         }
+        boolean hasRight = checkRight(url, empObj == null ? 0 : ((Employee)empObj).getId());
+        if(!hasRight) {
+            response.sendRedirect("/login.jsp?errormsg=noright");
+            return;
+        }
         chain.doFilter(srequest, sresponse);
+    }
+
+    private boolean checkRight(String url, int empId) {
+        ResourceDao resourceDao = ResourceDao.getInstance();
+        List<Resource> resources = resourceDao.findByUrl(url);
+        if(resources.size() == 0) {
+            return true;
+        }
+        RightDao rightDao = RightDao.getInstance();
+        for(int i = 0; i < resources.size(); i++) {
+            if(rightDao.hasRight(resources.get(i).getId(), empId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void doLog(HttpServletRequest request) {

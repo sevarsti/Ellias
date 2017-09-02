@@ -16,9 +16,12 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -52,7 +55,7 @@ public class LoadCardThread extends BaseThread {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/ellias", "root", "sjtuagent");
 
         PreparedStatement ps;
-        String[] tables = new String[]{"ll_card","ll_cardability","ll_functionvoice","ll_leader","ll_periodvoice","ll_randomvoice","ll_series","ll_skill","ll_subscenario","ll_timevoice","ll_touchvoice", "ll_extra", "ll_specialvoice"};
+        String[] tables = new String[]{"ll_card","ll_functionvoice","ll_periodvoice","ll_randomvoice","ll_series","ll_skill","ll_subscenario","ll_timevoice","ll_touchvoice", "ll_specialvoice"};
         for(String t : tables) {
             ps = connection.prepareStatement("truncate table " + t);
             ps.executeUpdate();
@@ -120,7 +123,15 @@ public class LoadCardThread extends BaseThread {
         String name = obj.getString("name");
         String rarity = obj.getString("rarity");
         int order = obj.getInt("order");
-        PreparedStatement ps = conn.prepareStatement("insert into ll_card(`id`,`order`,`upnavi`,`navi`,`attribute`,`cool_max`,`upicon`,`lv_max`,`pure_max`,`type`,`eponym`,`smile_max`,`icon`,`name`,`rarity`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        JSONArray hpArray = obj.getJSONArray("hp");
+        JSONArray smileArray = obj.getJSONArray("smile");
+        JSONArray pureArray = obj.getJSONArray("pure");
+        JSONArray coolArray = obj.getJSONArray("cool");
+        JSONObject extraObj = obj.optJSONObject("extra");
+        JSONObject leaderObj = obj.optJSONObject("leader");
+        PreparedStatement ps = conn.prepareStatement("insert into ll_card(" +
+                "`id`,`order`,`upnavi`,`navi`,`attribute`,`cool_max`,`upicon`,`lv_max`,`pure_max`,`type`,`eponym`,`smile_max`,`icon`,`name`,`rarity`," +
+                "`hparray`, `smilearray`, `purearray`, `coolarray`, `extraval`, `extratag`, `extratype`, `leadername`, `leadertext`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         ps.setInt(1, id);
         ps.setInt(2, order);
         ps.setString(3, upnavi);
@@ -136,33 +147,30 @@ public class LoadCardThread extends BaseThread {
         ps.setString(13, icon);
         ps.setString(14, name);
         ps.setString(15, rarity);
-        ps.executeUpdate();
-        /* ll_cardability */
-        JSONArray hpArray = obj.getJSONArray("hp");
-        JSONArray smileArray = obj.getJSONArray("smile");
-        JSONArray pureArray = obj.getJSONArray("pure");
-        JSONArray coolArray = obj.getJSONArray("cool");
-        PreparedStatement ps2 = conn.prepareStatement("insert into ll_cardability(`id`, `attribute`, `level`,`value`) values(?,?,?,?)");
-        for(int i = 0; i < hpArray.length(); i++) {
-            ps2.setInt(1, id);
-            ps2.setString(2, "hp");
-            ps2.setInt(3, i + 1);
-            ps2.setInt(4, hpArray.getInt(i));
-            ps2.executeUpdate();
-            ps2.setString(2, "smile");
-            ps2.setInt(4, smileArray.getInt(i));
-            ps2.executeUpdate();
-            ps2.setString(2, "pure");
-            ps2.setInt(4, pureArray.getInt(i));
-            ps2.executeUpdate();
-            ps2.setString(2, "cool");
-            ps2.setInt(4, coolArray.getInt(i));
-            ps2.executeUpdate();
+        ps.setString(16, hpArray.toString());
+        ps.setString(17, smileArray.toString());
+        ps.setString(18, pureArray.toString());
+        ps.setString(19, coolArray.toString());
+        if(extraObj != null) {
+            ps.setInt(20, extraObj.getInt("val"));
+            ps.setString(21, extraObj.getString("tag"));
+            ps.setString(22, extraObj.getString("type"));
+        } else {
+            ps.setNull(20, Types.INTEGER);
+            ps.setNull(21, Types.VARCHAR);
+            ps.setNull(22, Types.VARCHAR);
         }
-        ps2.close();
+        if(leaderObj != null) {
+            ps.setString(23, leaderObj.getString("name"));
+            ps.setString(24, leaderObj.getString("text"));
+        } else {
+            ps.setNull(23, Types.VARCHAR);
+            ps.setNull(24, Types.VARCHAR);
+        }
+        ps.executeUpdate();
         /* ll_functionvoice */
         JSONArray functionVoiceArray = obj.getJSONArray("function_voice");
-        ps2 = conn.prepareStatement("insert into ll_functionvoice(id, content, voice) values(?,?,?)");
+        PreparedStatement ps2 = conn.prepareStatement("insert into ll_functionvoice(id, content, voice) values(?,?,?)");
         for(int i = 0; i < functionVoiceArray.length(); i++) {
             JSONObject voiceObj = functionVoiceArray.getJSONObject(i);
             String content = voiceObj.optString("content");
@@ -170,16 +178,6 @@ public class LoadCardThread extends BaseThread {
             ps2.setInt(1, id);
             ps2.setString(2, content);
             ps2.setString(3, voice);
-            ps2.executeUpdate();
-        }
-        ps2.close();
-        /* ll_leader */
-        ps2 = conn.prepareStatement("insert into ll_leader(id, name, text) values(?,?,?)");
-        JSONObject leaderObj = obj.optJSONObject("leader");
-        if(leaderObj != null) {
-            ps2.setInt(1, id);
-            ps2.setString(2, leaderObj.getString("name"));
-            ps2.setString(3, leaderObj.getString("text"));
             ps2.executeUpdate();
         }
         ps2.close();
@@ -229,7 +227,7 @@ public class LoadCardThread extends BaseThread {
         }
         ps2.close();
         /* ll_skill */
-        ps2 = conn.prepareStatement("insert into ll_skill(id, name, type, level_max, level, text) values(?,?,?,?,?,?)");
+        ps2 = conn.prepareStatement("insert into ll_skill(id, name, type, level_max, level, text,triggertype, `interval`, `ratio`, `value`, perval) values(?,?,?,?,?,?,?,?,?,?,?)");
         JSONObject skillObj = obj.optJSONObject("skill");
         if(skillObj != null) {
             String skillname = skillObj.getString("name");
@@ -240,10 +238,37 @@ public class LoadCardThread extends BaseThread {
             ps2.setString(3, skilltype);
             ps2.setInt(4, level_max);
             JSONArray subArray = skillObj.getJSONArray("text");
+            String triggertype = "未知";
+            double perVal = 0;
+            int interval = 0;
+            int ratio = 0;
+            int value = 0;
             for(int j = 0; j < subArray.length(); j++) {
                 String text = subArray.getString(j);
+                if(text.contains("PERFECT")) {
+                    triggertype = "PERFECT";
+                } else if(text.contains("秒")) {
+                    triggertype = "秒";
+                } else if(text.contains("连击")) {
+                    triggertype = "连击";
+                } else if(text.contains("节奏图示")) {
+                    triggertype = "节奏图示";
+                }
+                Pattern p = Pattern.compile("\\D+(\\d+)\\D+(\\d+)\\D+(\\d+)\\D+");
+                Matcher m = p.matcher(text);
+                if(m.find()) {
+                    interval = Integer.parseInt(m.group(1));
+                    ratio = Integer.parseInt(m.group(2));
+                    value = Integer.parseInt(m.group(3));
+                    perVal = (double) value / (double) interval * (double) ratio / 100d;
+                }
                 ps2.setInt(5, j + 1);
                 ps2.setString(6, text);
+                ps2.setString(7, triggertype);
+                ps2.setInt(8, interval);
+                ps2.setInt(9, ratio);
+                ps2.setInt(10, value);
+                ps2.setDouble(11, perVal);
                 ps2.executeUpdate();
             }
         }
@@ -274,7 +299,7 @@ public class LoadCardThread extends BaseThread {
             String start = subobj.getString("start");
             String end = subobj.getString("end");
             String content = subobj.getString("content");
-            String voice = subobj.getString("voice");
+            String voice = subobj.optString("voice");
             ps2.setInt(1, id);
             ps2.setString(2, start);
             ps2.setString(3, end);
@@ -283,20 +308,6 @@ public class LoadCardThread extends BaseThread {
             ps2.executeUpdate();
         }
         ps2.close();
-        /* ll_extra */
-        JSONObject extraObj = obj.optJSONObject("extra");
-        if(extraObj != null) {
-            ps2 = conn.prepareStatement("insert into ll_extra(`id`, `val`, `tag`, `type`) values(?,?,?,?)");
-            int val = extraObj.getInt("val");
-            String tag = extraObj.getString("tag");
-            String extratype = extraObj.getString("type");
-            ps2.setInt(1, id);
-            ps2.setInt(2, val);
-            ps2.setString(3, tag);
-            ps2.setString(4, extratype);
-            ps2.executeUpdate();
-            ps2.close();
-        }
         /* ll_specialvoice */
         JSONArray specialVoiceArray = obj.getJSONArray("special_voice");
         if(specialVoiceArray.length() > 0) {
@@ -304,7 +315,7 @@ public class LoadCardThread extends BaseThread {
             for(int i = 0; i < specialVoiceArray.length(); i++) {
                 JSONObject subobj = specialVoiceArray.getJSONObject(i);
                 String content = subobj.getString("content");
-                String voice = subobj.getString("voice");
+                String voice = subobj.optString("voice");
                 ps2.setInt(1, id);
                 ps2.setString(2, content);
                 ps2.setString(3, voice);

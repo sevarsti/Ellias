@@ -21,6 +21,10 @@ import servlet.GlobalContext;
 public class RightDao extends BaseJdbcDao {
     private final Logger LOGGER = Logger.getLogger(getClass());
 
+    public static RightDao getInstance() {
+        return (RightDao)GlobalContext.getContextBean(RightDao.class);
+    }
+
     public Right get(int id) {
         String sql = "select * from `Right` where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
@@ -175,5 +179,32 @@ public class RightDao extends BaseJdbcDao {
         String sql = "select * from `Right` where removetag = 0 order by id";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new ObjectRowMapper(Right.class));
+    }
+
+    public boolean hasRight(int resId, int empId) {
+        String path = this.getClass().getResource("/").getPath();
+        path = path.substring(0, path.length() - 1);
+        path = path.substring(0, path.lastIndexOf("/"));
+        path = path.substring(0, path.lastIndexOf("/"));
+        path = path + "/cache";
+        File f = new File(path);
+        if(!f.exists()) {
+            f.mkdir();
+        }
+        f = new File(path + "/" + resId + ".txt");
+        if(!f.exists()) {
+            return false;
+        }
+        try {
+            FileReader fr = new FileReader(f);
+            BufferedReader br = new BufferedReader(fr);
+            String ids = br.readLine();
+            String[] empIds = ids.split(",");
+            List<String> list = Arrays.asList(empIds);
+            return list.indexOf(empId + "") >= 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 }

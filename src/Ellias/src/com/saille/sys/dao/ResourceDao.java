@@ -7,12 +7,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import com.saille.sys.Resource;
+import servlet.GlobalContext;
+
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ResourceDao extends BaseJdbcDao {
     private final Logger LOGGER = Logger.getLogger(getClass());
+
+    public static ResourceDao getInstance() {
+        return (ResourceDao)GlobalContext.getContextBean(ResourceDao.class);
+    }
 
     public Resource get(int id) {
         String sql = "select * from Resource where id = ?";
@@ -87,5 +94,17 @@ public class ResourceDao extends BaseJdbcDao {
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Resource> list = jt.query(sql, new Object[]{name, parentId}, new ObjectRowMapper(Resource.class));
         return list.size() > 0 ? list.get(0) : null;
+    }
+
+    public List<Resource> findByUrl(String url) {
+        String sql = "select * from `Resource` where removetag = 0 and url is not null and length(url) > 0";
+        JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
+        List<Resource> list = jt.query(sql, new ObjectRowMapper(Resource.class));
+        for(int i = list.size() - 1; i >= 0; i--) {
+            if(!url.startsWith(list.get(i).getUrl())) {
+                list.remove(i);
+            }
+        }
+        return list;
     }
 }
