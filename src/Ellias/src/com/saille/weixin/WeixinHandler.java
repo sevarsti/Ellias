@@ -121,7 +121,11 @@ public class WeixinHandler {
         try {
             if("text".equalsIgnoreCase(map.get("MsgType"))) {
                 String context = map.get("Content");
-                retText = processTextInstruction(from, context);
+                if("odhzEjkXuUxdq0AILoVA99qpNqSU".equals(from) && content.equalsIgnoreCase("ip")) {
+                    retText = "106.15.203.76";
+                } else {
+                    retText = processTextInstruction(from, context);
+                }
             }
             log(to, retText, new Date(), 2);
             return getSendString(to, from, createTime, retText, msgId);
