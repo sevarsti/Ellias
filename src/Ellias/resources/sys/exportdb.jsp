@@ -79,7 +79,7 @@
                 String t = tables.get(i);
         %>
         <tr class="row<%=i % 2 + 1%>"><td>
-            <input type="checkbox" name="table" value="<%=t%>" onclick="checkfull();"/><%=t%>
+            <input type="checkbox" name="table" value="<%=t%>" <%=(t.startsWith("sys_") || t.equalsIgnoreCase("setting")) ? "" : "checked"%> onclick="checkfull();"/><%=t%>
         </td></tr>
         <%
             }
