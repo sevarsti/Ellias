@@ -42,6 +42,7 @@ public class NewSongThread extends BaseThread {
     private static List<String> newImds = new ArrayList<String>();
     protected static int compareCells[] = new int[]{3, 4, 6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 62, 63, 70, 71};
     protected static String compareMaps[] = new String[]{"m_szBPM", "m_iGameTime", "m_ush4KeyEasy", "4e", "m_ush4KeyNormal", "4n", "m_ush4KeyHard", "4h", "m_ush5KeyEasy", "5e", "m_ush5KeyNormal", "5n", "m_ush5KeyHard", "5h", "m_ush6KeyEasy", "6e", "m_ush6KeyNormal", "6n", "m_ush6KeyHard", "6h"};
+    protected static String errmsg = null;
 
     private final static Logger LOGGER = Logger.getLogger(NewSongThread.class);
     public static void main(String[] args) {
@@ -51,6 +52,7 @@ public class NewSongThread extends BaseThread {
     @Override
     protected int execute() {
         try {
+            errmsg = null;
             File excel = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
             FileInputStream excelis = new FileInputStream(excel);
             workbook = Workbook.getWorkbook(excelis);
@@ -82,19 +84,22 @@ public class NewSongThread extends BaseThread {
                     isrunning |= instances[i].running;
                 }
             }
+            if(errmsg == null) {
+                System.out.println("新歌曲：");
+                for(String song : newSongs) {
+                    System.out.println(song);
+                }
+                System.out.println("新谱面：");
+                for(String key : newKeys) {
+                    System.out.println(key);
+                }
 
-            System.out.println("新歌曲：");
-            for(String song : newSongs) {
-                System.out.println(song);
-            }
-            System.out.println("新谱面：");
-            for(String key : newKeys) {
-                System.out.println(key);
-            }
-
-            System.out.println("新imd：");
-            for(String imd : newImds) {
-                System.out.println(imd);
+                System.out.println("新imd：");
+                for(String imd : newImds) {
+                    System.out.println(imd);
+                }
+            } else {
+                System.out.println("程序异常退出");
             }
             workbook.close();
             return 0;
@@ -348,13 +353,10 @@ public class NewSongThread extends BaseThread {
                     }
                 }
             }
-            return true;
         } catch(FileNotFoundException ex) {
-//            ex.printStackTrace();
-        } catch(Exception ex) {
-            ex.printStackTrace();
+
         }
-        return false;
+        return true;
     }
 }
 
@@ -418,6 +420,7 @@ class NewSongSubThread extends Thread {
         } catch(Exception ex) {
             ex.printStackTrace();
             NewSongThread.finish = true;
+            NewSongThread.errmsg = "网络异常：" + ex.getMessage();
         }
         running = false;
     }

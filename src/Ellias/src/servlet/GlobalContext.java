@@ -63,15 +63,20 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
                 startthread = false;
             }
             if(startthread) {
-                if(threads != null && threads.length > 0) {
-                    for(String s : threads) {
+                /* 查询需要启动的进程 */
+                String sql = "select class from sys_thread where state = '1'";
+                List<Map<String, Object>> list = jt.queryForList(sql);
+                for(Map<String, Object> m : list) {
+                    String s = m.get("class").toString();
+//                if(threads != null && threads.length > 0) {
+//                    for(String s : threads) {
                         int interval = defaultInterval;
                         if(threadsInterval.get(s) != null) {
                             interval = threadsInterval.get(s).intValue();
                         }
                         BaseThread.createInstance(s, interval);
                     }
-                }
+//                }
                 LOGGER.info("所有线程启动完毕");
             } else {
                 LOGGER.info("线程设置为不启动");
