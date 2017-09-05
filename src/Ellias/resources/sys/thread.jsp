@@ -5,7 +5,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ include file="include/include.jsp"%>
+<%@ include file="../include/include.jsp"%>
 <%
     String interruptThread = request.getParameter("thread");
     if(StringUtils.isNotEmpty(interruptThread)) {

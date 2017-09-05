@@ -13,7 +13,7 @@ public class EmpPositionDao extends BaseJdbcDao {
     private final Logger LOGGER = Logger.getLogger(getClass());
 
     public EmpPosition get(int id) {
-        String sql = "select * from `EmpPosition` where id = ?";
+        String sql = "select * from `SYS_EmpPosition` where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<EmpPosition> list = jt.query(sql, new Object[]{id}, new ObjectRowMapper(EmpPosition.class));
         return list.size() > 0 ? list.get(0) : null;
@@ -32,25 +32,25 @@ public class EmpPositionDao extends BaseJdbcDao {
     }
 
     public void remove(int id) {
-        String sql = "update `EmpPosition` set `removeTag` = 1 where id = ?";
+        String sql = "update `SYS_EmpPosition` set `removeTag` = 1 where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         jt.update(sql, new Object[]{id});
     }
 
     public List<EmpPosition> findAll() {
-        String sql = "select * from `EmpPosition` where `removeTag` = 0 order by id";
+        String sql = "select * from `SYS_EmpPosition` where `removeTag` = 0 order by id";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new ObjectRowMapper(EmpPosition.class));
     }
 
     public List<EmpPosition> findByEmpId(int empId) {
-        String sql = "select * from `EmpPosition` where `removeTag` = 0 and empId = ? order by positionId";
+        String sql = "select * from `SYS_EmpPosition` where `removeTag` = 0 and empId = ? order by positionId";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new Object[]{empId}, new ObjectRowMapper(EmpPosition.class));
     }
 
     public void removeByEmpId(int empId) {
-        String sql = "update `EmpPosition` set `removeTag` = 1 where `removeTag` = 0 and empId = ?";
+        String sql = "update `SYS_EmpPosition` set `removeTag` = 1 where `removeTag` = 0 and empId = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         jt.update(sql, new Object[]{empId});
     }

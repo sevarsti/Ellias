@@ -22,7 +22,7 @@ public class ResourceDao extends BaseJdbcDao {
     }
 
     public Resource get(int id) {
-        String sql = "select * from Resource where id = ?";
+        String sql = "select * from SYS_Resource where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Resource> list = jt.query(sql, new Object[]{id}, new ObjectRowMapper(Resource.class));
         return list.size() > 0 ? list.get(0) : null;
@@ -41,13 +41,13 @@ public class ResourceDao extends BaseJdbcDao {
     }
 
     public void remove(int id) {
-        String sql = "update `Resource` set removetag = 1 where id = ?";
+        String sql = "update `SYS_Resource` set removetag = 1 where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         jt.update(sql, new Object[]{id});
     }
 
     public List<Resource> findAll() {
-        String sql = "select * from Resource where removetag = 0 order by id";
+        String sql = "select * from SYS_Resource where removetag = 0 order by id";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new ObjectRowMapper(Resource.class));
     }
@@ -65,7 +65,7 @@ public class ResourceDao extends BaseJdbcDao {
             }
             return ret;
         } else {
-            String sql = "select * from `Resource` where removetag = 0 and parentId = ? order by id";
+            String sql = "select * from `SYS_Resource` where removetag = 0 and parentId = ? order by id";
             JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
             List<Resource> list = jt.query(sql, new Object[]{parent.getId()}, new ObjectRowMapper(Resource.class));
             for(Resource r : list) {
@@ -77,12 +77,12 @@ public class ResourceDao extends BaseJdbcDao {
 
     public Resource findByUrlMethod(String url, String method) {
         if(method == null || method.length() == 0) {
-            String sql = "SELECT * FROM `RESOURCE` WHERE removetag = 0 and URL = ? and methodname is null order by url desc";
+            String sql = "SELECT * FROM `SYS_RESOURCE` WHERE removetag = 0 and URL = ? and methodname is null order by url desc";
             JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
             List<Resource> list = jt.query(sql, new Object[]{url}, new ObjectRowMapper(Resource.class));
             return list.size() > 0 ? list.get(0) : null;
         } else {
-            String sql = "SELECT * FROM `RESOURCE` WHERE removetag = 0 and URL = ? and (methodname = ? or methodname is null) order by url desc";
+            String sql = "SELECT * FROM `SYS_RESOURCE` WHERE removetag = 0 and URL = ? and (methodname = ? or methodname is null) order by url desc";
             JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
             List<Resource> list = jt.query(sql, new Object[]{url, method}, new ObjectRowMapper(Resource.class));
             return list.size() > 0 ? list.get(0) : null;
@@ -90,14 +90,14 @@ public class ResourceDao extends BaseJdbcDao {
     }
 
     public Resource findByNameParentId(String name, int parentId) {
-        String sql = "select * from `Resource` where removetag = 0 and name = ? and parentId = ?";
+        String sql = "select * from `SYS_Resource` where removetag = 0 and name = ? and parentId = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Resource> list = jt.query(sql, new Object[]{name, parentId}, new ObjectRowMapper(Resource.class));
         return list.size() > 0 ? list.get(0) : null;
     }
 
     public List<Resource> findByUrl(String url) {
-        String sql = "select * from `Resource` where removetag = 0 and url is not null and length(url) > 0";
+        String sql = "select * from `SYS_Resource` where removetag = 0 and url is not null and length(url) > 0";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Resource> list = jt.query(sql, new ObjectRowMapper(Resource.class));
         for(int i = list.size() - 1; i >= 0; i--) {

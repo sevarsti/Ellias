@@ -73,17 +73,42 @@
 </head>
 <body>
 <form action="" method="post">
-    <table width="100%" border="0" cellpadding="1" cellspacing="1">
+    <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="black">
         <%
+            int col = 0;
+            int row = 1;
             for(int i = 0; i < tables.size(); i++) {
                 String t = tables.get(i);
+                if(i == 0) {
+                    out.print("<tr class=\"head\"><td style=\"font-weight: bold;\" colspan=\"5\">" + t.toUpperCase().charAt(0) + "</td></tr>");
+                    out.print("<tr class=\"row" + row + "\">");
+                    row = 3 - row;
+                } else if(t.charAt(0) != tables.get(i - 1).charAt(0)) {
+                    out.print("<td colspan=\"" + (5 - col) + "\"></td></tr>");
+                    out.print("<tr class=\"head\"><td style=\"font-weight: bold;\" colspan=\"5\">" + t.toUpperCase().charAt(0) + "</td></tr>");
+                    out.print("<tr class=\"row1\">");
+                    row = 2;
+                    col = 0;
+                } else if(col == 5) {
+                    col = 0;
+                    out.print("</tr>");
+                    out.print("<tr class=\"row" + row + "\">");
+                    row = 3 - row;
+                }
+                col++;
         %>
-        <tr class="row<%=i % 2 + 1%>"><td>
+        <td>
             <input type="checkbox" name="table" value="<%=t%>" <%=(t.startsWith("sys_") || t.equalsIgnoreCase("setting")) ? "" : "checked"%> onclick="checkfull();"/><%=t%>
-        </td></tr>
+        </td>
         <%
             }
         %>
+        <%
+            if(col != 5) {
+                out.print("<td colspan=\"" + (5 - col) + "\"></td>");
+            }
+        %>
+        </tr>
     </table>
     <input type="checkbox" id="full" name="full" onclick="updatefull();"/>
     <input type="submit" value="È·¶¨"/>

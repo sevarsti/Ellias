@@ -26,7 +26,7 @@ public class RightDao extends BaseJdbcDao {
     }
 
     public Right get(int id) {
-        String sql = "select * from `Right` where id = ?";
+        String sql = "select * from `SYS_Right` where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Right> list = jt.query(sql, new Object[]{id}, new ObjectRowMapper(Right.class));
         return list.size() > 0 ? list.get(0) : null;
@@ -78,7 +78,7 @@ public class RightDao extends BaseJdbcDao {
     }
 
     public void updateAllRight() {
-        String sql = "SELECT DISTINCT(RESOURCEID) AS RESOURCEID FROM `RIGHT` WHERE REMOVETAG = 0";
+        String sql = "SELECT DISTINCT(RESOURCEID) AS RESOURCEID FROM `SYS_RIGHT` WHERE REMOVETAG = 0";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Map<String, Integer>> list = jt.queryForList(sql);
         for(Map<String, Integer> map : list) {
@@ -160,14 +160,14 @@ public class RightDao extends BaseJdbcDao {
     }
 
     private List<Right> findByResourceId(int resourceId) {
-        String sql = "SELECT * FROM `RIGHT` WHERE REMOVETAG = 0 AND RESOURCEID = ?";
+        String sql = "SELECT * FROM `SYS_RIGHT` WHERE REMOVETAG = 0 AND RESOURCEID = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new Object[]{resourceId}, new ObjectRowMapper(Right.class));
     }
 
     public void remove(int id) {
         Right r = this.get(id);
-        String sql = "update `Right` set removetag = 1 where id = ?";
+        String sql = "update `SYS_Right` set removetag = 1 where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         jt.update(sql, new Object[]{id});
         if(r != null) {
@@ -176,7 +176,7 @@ public class RightDao extends BaseJdbcDao {
     }
 
     public List<Right> findAll() {
-        String sql = "select * from `Right` where removetag = 0 order by id";
+        String sql = "select * from `SYS_Right` where removetag = 0 order by id";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new ObjectRowMapper(Right.class));
     }

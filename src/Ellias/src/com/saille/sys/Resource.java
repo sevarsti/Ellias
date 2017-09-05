@@ -4,7 +4,7 @@ import com.saille.core.BaseEntity;
 import com.sinitek.dao.domain.PropertyDescription;
 import com.sinitek.dao.domain.ClassDescription;
 import java.sql.Types;
-@ClassDescription(table = "RESOURCE")
+@ClassDescription(table = "SYS_RESOURCE")
 public class Resource extends BaseEntity {
     public final static int ROOT_ID = 1;
     public final static int MENU_ROOT_ID = 2;

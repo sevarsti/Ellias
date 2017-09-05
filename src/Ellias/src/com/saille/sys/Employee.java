@@ -4,7 +4,7 @@ import com.saille.core.BaseEntity;
 import com.sinitek.dao.domain.PropertyDescription;
 import com.sinitek.dao.domain.ClassDescription;
 import java.sql.Types;
-@ClassDescription(table = "EMPLOYEE")
+@ClassDescription(table = "SYS_EMPLOYEE")
 public class Employee extends BaseEntity {
     private String name;
     private String loginname;

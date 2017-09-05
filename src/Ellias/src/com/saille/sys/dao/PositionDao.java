@@ -14,7 +14,7 @@ public class PositionDao extends BaseJdbcDao {
     private final Logger LOGGER = Logger.getLogger(getClass());
 
     public Position get(int id) {
-        String sql = "select * from Position where id = ?";
+        String sql = "select * from SYS_Position where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Position> list = jt.query(sql, new Object[]{id}, new ObjectRowMapper(Position.class));
         return list.size() > 0 ? list.get(0) : null;
@@ -33,13 +33,13 @@ public class PositionDao extends BaseJdbcDao {
     }
 
     public void remove(int id) {
-        String sql = "update `Position` set removetag = 1 where id = ?";
+        String sql = "update `SYS_Position` set removetag = 1 where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         jt.update(sql, new Object[]{id});
     }
 
     public List<Position> findAll() {
-        String sql = "select * from Position where removetag = 0 order by id";
+        String sql = "select * from SYS_Position where removetag = 0 order by id";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new ObjectRowMapper(Position.class));
     }
@@ -57,7 +57,7 @@ public class PositionDao extends BaseJdbcDao {
             }
             return ret;
         } else {
-            String sql = "select * from Position where parentId = ? order by id";
+            String sql = "select * from SYS_Position where parentId = ? order by id";
             JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
             List<Position> list = jt.query(sql, new Object[]{parent.getId()}, new ObjectRowMapper(Position.class));
             for(Position p : list) {

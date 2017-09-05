@@ -4,7 +4,7 @@ import com.saille.core.BaseEntity;
 import com.sinitek.dao.domain.PropertyDescription;
 import com.sinitek.dao.domain.ClassDescription;
 import java.sql.Types;
-@ClassDescription(table = "RIGHT")
+@ClassDescription(table = "SYS_RIGHT")
 public class Right extends BaseEntity {
     public final static int ORGTYPE_POSITION = 1;
     public final static int ORGTYPE_EMPLOYEE = 2;

@@ -18,7 +18,7 @@ public class EmployeeDao extends BaseJdbcDao {
     private final Logger LOGGER = Logger.getLogger(getClass());
 
     public Employee get(int id) {
-        String sql = "select * from Employee where id = ?";
+        String sql = "select * from SYS_Employee where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Employee> list = jt.query(sql, new Object[]{id}, new ObjectRowMapper(Employee.class));
         return list.size() > 0 ? list.get(0) : null;
@@ -26,7 +26,7 @@ public class EmployeeDao extends BaseJdbcDao {
 
     public Employee checkPwd(String loginname, String pwd) {
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
-        List<Employee> list = jt.query("select * from employee where removetag = 0 and loginname = ? and pwd = ?", new Object[]{loginname, pwd}, new ObjectRowMapper(Employee.class));
+        List<Employee> list = jt.query("select * from SYS_employee where removetag = 0 and loginname = ? and pwd = ?", new Object[]{loginname, pwd}, new ObjectRowMapper(Employee.class));
         return list.size() > 0 ? list.get(0) : null;
     }
 
@@ -49,7 +49,7 @@ public class EmployeeDao extends BaseJdbcDao {
             return ret;
         } else {
 //            List<Employee> list = jt.query("select * from employee where positionId = ?", new Object[]{posId}, new ObjectRowMapper(Employee.class));
-            List<Employee> list = jt.query("select * from employee where id in(select empid from `empposition` where positionid = ? and removetag = 0) and removetag = 0", new Object[]{posId}, new ObjectRowMapper(Employee.class));
+            List<Employee> list = jt.query("select * from SYS_employee where id in(select empid from `SYS_empposition` where positionid = ? and removetag = 0) and removetag = 0", new Object[]{posId}, new ObjectRowMapper(Employee.class));
             return list;
         }
     }
@@ -67,13 +67,13 @@ public class EmployeeDao extends BaseJdbcDao {
     }
 
     public void remove(int id) {
-        String sql = "update `Employee` set removetag = 1 where id = ?";
+        String sql = "update `SYS_Employee` set removetag = 1 where id = ?";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         jt.update(sql, new Object[]{id});
     }
 
     public List<Employee> findAll() {
-        String sql = "select * from Employee where removetag = 0 order by id";
+        String sql = "select * from SYS_Employee where removetag = 0 order by id";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         return jt.query(sql, new ObjectRowMapper(Employee.class));
     }

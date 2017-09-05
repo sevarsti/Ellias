@@ -4,7 +4,7 @@ import com.saille.core.BaseEntity;
 import com.sinitek.dao.domain.PropertyDescription;
 import com.sinitek.dao.domain.ClassDescription;
 import java.sql.Types;
-@ClassDescription(table = "POSITION")
+@ClassDescription(table = "SYS_POSITION")
 public class Position extends BaseEntity {
     private String name;
     private int parentId;
