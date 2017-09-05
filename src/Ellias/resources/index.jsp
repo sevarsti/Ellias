@@ -12,7 +12,7 @@
       <meta property="wb:webmaster" content="f33ce54d2a12dc9f" />
   </head>
   <FRAMESET cols="150, *">
-        <FRAME src="/frame/menu.jsp" name="frameLeft"/>
+        <FRAME src="/frame/menu2.jsp" name="frameLeft"/>
         <FRAME src="/frame/menu.jsp" name="right"/>
   </FRAMESET>
 </html>

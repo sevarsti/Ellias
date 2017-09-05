@@ -13,6 +13,8 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="javax.naming.InitialContext" %>
 <%@ page import="org.apache.tomcat.dbcp.dbcp.BasicDataSource" %>
+<%@ page import="java.util.zip.ZipOutputStream" %>
+<%@ page import="java.util.zip.ZipEntry" %>
 <%
     String method = request.getMethod();
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
@@ -20,10 +22,10 @@
         String full = request.getParameter("full");
         String[] tables = request.getParameterValues("table");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        byte[] bytes = (sdf.format(new Date()) + ".sql").getBytes("GBK");
+        byte[] bytes = (sdf.format(new Date()) + ".zip").getBytes("GBK");
         String encoded = new String(bytes, "ISO-8859-1");
         response.addHeader("Content-Disposition", "attachment; filename=" + encoded);
-        response.setHeader("Content-Type", "text/plain");
+        response.setHeader("Content-Type", " application/zip");
 
         List<String> commandstr = new ArrayList<String>();
         commandstr.add("mysqldump");
@@ -45,7 +47,9 @@
         ProcessBuilder pb = new ProcessBuilder(commands);
         Process p = pb.start();
         InputStream is = p.getInputStream();
-        FileCopyUtils.copy(is, response.getOutputStream());
+        ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+        zos.putNextEntry(new ZipEntry(sdf.format(new Date()) + ".sql"));
+        FileCopyUtils.copy(is, zos);
         is.close();
         p.destroy();
         out.clear();
