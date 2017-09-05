@@ -7,13 +7,13 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<head><title>Simple jsp page</title></head>
+<head><title>µÇÂ¼</title></head>
 <body onload="initTop();">
 <form action="/login.do" method="post">
     <input type="hidden" name="method" value="login"/>
     user=<input type="text" name="name"/>
     pwd=<input type="password" name="pwd"/>
-    <input type="button" onclick="doS();" value="µÇÂ¼"/>
+    <input type="submit" onclick="doS();" value="µÇÂ¼"/>
 </form>
 <script type="text/javascript">
     function initTop()
@@ -26,7 +26,7 @@
      }
     function doS()
     {
-        document.forms[0].submit();
+//        document.forms[0].submit();
     }
 </script>
 </body>
