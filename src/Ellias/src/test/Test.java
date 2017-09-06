@@ -2,6 +2,8 @@ package test;
 
 import com.baidubce.util.DateUtils;
 import com.baidubce.util.HttpUtils;
+import com.ibatis.db.util.ScriptRunner;
+import com.saille.rm.KeyLoad;
 import com.saille.util.CommonUtils;
 import com.saille.util.IOUtils;
 import org.apache.commons.codec.binary.Hex;
@@ -16,6 +18,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -25,6 +31,10 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.net.URLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.ZipInputStream;
@@ -42,59 +52,121 @@ import java.util.regex.Pattern;
 public class Test{
     public final static int size = 10;
     public static boolean ok[] = new boolean[10];
-    public static int getNext() {
-        for(int i = 0; i < ok.length; i++) {
-            if(ok[i]) {
+    static double r = 0;
+    static List<double[]> d = new ArrayList<double[]>();
+    private static double getLong(int i) {
+        return ((double)i / 120.0) / 4.0;
+    }
+    private static int indexOf(int t) {
+        for(int i=0;i<d.size();i++){
+            if(d.get(i)[0] == t) {
                 return i;
             }
         }
-        return -1;
+        return-1;
     }
-    private static int high(int in) {
-        while(in > 9) {
-            in /= 10;
+    private static void addData(int t, double v) {
+        int l = indexOf(t);
+        if(l != -1) {
+            d.get(l)[1] += v;
+        } else {
+            d.add(new double[]{t, v});
         }
-        return in;
     }
-    private static int[] yueshu(int in) {
-        int[] ret = new int[10];
-        int max = (int)Math.sqrt(in);
-        for(int i = 2; i <= max; i++) {
-            if(in % i == 0) {
-                ret[high(i)]++;
+
+    private static double getSlide(int t, int key) {
+//        data[index]["ActionData"][i] = [];
+//        data[index]["ActionData"][i][2] = buffer[index].getInt16(p, true);key type
+//        p += 2;
+//        data[index]["ActionData"][i][0] = buffer[index].getInt32(p, true);offset
+//        p += 4;
+//        data[index]["ActionData"][i][1] = buffer[index].getInt8(p, true);key place
+//        p += 1;
+//        data[index]["ActionData"][i][3] = buffer[index].getInt32(p, true);length
+//        p += 4;
+        return Math.abs((double)t) / (double)key;
+    }
+
+    private static double calcDifficult() throws Exception {
+        File f = new File("D:\\rm\\song\\canonrock\\canonrock_4k_HD.imd");
+        int key = 4;
+        FileInputStream fis = new FileInputStream(f);
+        byte[] bytes = new byte[4];
+        fis.skip(4);
+        fis.read(bytes);
+        int size = KeyLoad.byte2int(bytes);
+        fis.skip(size * 12);
+        fis.skip(2);
+        fis.read(bytes);
+        size = KeyLoad.byte2int(bytes);
+        bytes = new byte[11];
+        for(int i = 0; i < size; i++) {
+            fis.read(bytes);
+            int timeoffset = byte2int(new byte[]{bytes[2], bytes[3], bytes[4], bytes[5]});
+            int slidewidth = byte2int(new byte[]{bytes[7], bytes[8], bytes[9], bytes[10]});
+            if(slidewidth > 1000000) {
+                slidewidth = bytes[10];
+//                slidewidth = 4294967295 - slidewidth;
+            }
+            switch(bytes[0]) {
+                case 0x00:
+                    addData(timeoffset, 1);
+                    break;
+                case 0x01:
+                    addData(timeoffset, 2 + getSlide(slidewidth, key));
+                    break;
+                case 0x61:case -95: //A1
+                    addData(timeoffset, 1 + getSlide(slidewidth, key));
+                    break;
+                case 0x21:
+                    addData(timeoffset, 0 + getSlide(slidewidth, key));
+                    break;
+                case 0x02:case 0x62:case 0x22:case -94: //A2
+                    addData(timeoffset, 1 + getLong(slidewidth));
+                    break;
             }
         }
-        ret[1]++;
-        if(in != 1) {
-            ret[high(in)]++;
+        fis.close();
+        d = quicksort(d, 0, d.size());
+        d.add(0, new double[]{0, 0});
+        for(int i = 1; i < d.size(); i++) {
+            r += d.get(i)[1] / (d.get(i)[0] - d.get(i-1)[0]) * 120;
         }
-        return ret;
+        return Math.sqrt(r / 16);
     }
-    static int[] combine(int[] full, int[] cur) {
-        for(int i = 0; i < full.length; i++) {
-            full[i] += cur[i];
+    private static List<double[]> quicksort(List<double[]> list, int start, int end) {
+        if(start >= end) {
+            return list;
         }
-        return full;
+        int pos = start;
+        for(int i = pos + 1; i < end; i++) {
+            boolean needSwap = false;
+            if((int)list.get(i)[0] < (int)list.get(pos)[0]) {
+                needSwap = true;
+            }
+
+            if(needSwap) {
+                double[] tmp = list.get(i);
+                for(int m = i; m > pos; m--) {
+                    list.set(m, list.get(m - 1));
+                }
+                list.set(pos, tmp);
+            }
+            pos = i;
+        }
+        quicksort(list, start, pos);
+        quicksort(list, pos + 1, end);
+        return list;
     }
+
     public static void main(String[] args) {
 //        int i = 0;
         try {
             if(true) {
-                int[] result = new int[10];
-                Scanner in = new Scanner(System.in);
-                int begin = in.nextInt();
-                int end = in.nextInt();
-                long now = System.currentTimeMillis();
-                for(int i = begin; i <=end; i++) {
-                    int[] res = yueshu(i);
-                    result = combine(result, res);
-                }
-                now = System.currentTimeMillis() - now;
-                for(int i = 1; i < 10; i++) {
-                    System.out.println(result[i]);
-                }
-                System.out.println("cost" + now);
-                System.exit(0);
+//                byte[] bb = new byte[]{-127,-127,-127,-126};
+//                int i = byte2int(bb);
+//                System.out.println(i);
+                System.out.println(calcDifficult());
             }
             if(false) {
                 URL url = new URL("http://ll.webpatch.sdg-china.com/ll/prod/4.0.83/package/android/813d94519b012ad49973308fb0d067ec.1493032106");
