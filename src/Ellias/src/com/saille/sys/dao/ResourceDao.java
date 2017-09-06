@@ -97,7 +97,7 @@ public class ResourceDao extends BaseJdbcDao {
     }
 
     public List<Resource> findByUrl(String url) {
-        String sql = "select * from `SYS_Resource` where removetag = 0 and url is not null and length(url) > 0";
+        String sql = "select * from `SYS_Resource` where removetag = 0 and url is not null and length(url) > order by url desc";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Resource> list = jt.query(sql, new ObjectRowMapper(Resource.class));
         for(int i = list.size() - 1; i >= 0; i--) {

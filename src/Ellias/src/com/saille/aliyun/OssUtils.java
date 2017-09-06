@@ -6,7 +6,7 @@ import com.aliyun.oss.model.*;
 import org.apache.log4j.Logger;
 
 import javax.sql.DataSource;
-import java.io.File;
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +33,14 @@ public class OssUtils {
 
     public static void setAccessKeySecret(String accessKeySecret) {
         OssUtils.accessKeySecret = accessKeySecret;
+    }
+
+    public static String getAccessKeySecret() {
+        return accessKeySecret;
+    }
+
+    public static String getAccessKeyId() {
+        return accessKeyId;
     }
 
     private static String accessKeyId = "";
@@ -90,8 +98,20 @@ public class OssUtils {
         if(localfile.exists() && localfile.isFile()) {
             localfile.delete();
         }
-//        String key = localfile.getName();
         OssClient.getObject(new GetObjectRequest(bucketName, key), localfile);
+    }
+
+    public static byte[] download(String bucketName, String key, int size) {
+        byte[] bytes = new byte[size];
+        InputStream is = OssClient.getObject(bucketName, key).getObjectContent();
+        try {
+            is.read(bytes);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }finally {
+            try {is.close();} catch(IOException ex) {}
+        }
+        return bytes;
     }
 
     public static OSSObject getObject(String bucketName, OSSObjectSummary summary) {

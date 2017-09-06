@@ -52,10 +52,35 @@
       }
   %>
         <%
+            if("POST".equals(request.getMethod())) {
+                String bucket = request.getParameter("bucket");
+                String key = request.getParameter("key");
+                List<OSSObjectSummary> files = OssUtils.listFiles(bucket, key);
+                if(files.size() != 1) {
+//                    todo
+                }
+                OSSObjectSummary file = files.get(0);
+                if(file.getKey().endsWith("/")) {
+//                    todo
+                }
+                if(!file.getStorageClass().equals("Standard")) {
+//                    todo
+                }
+                long size = file.getSize();
+                if(size > (1024 * 1024 * 20)) { //>10M，下载到临时文件
+
+                } else { //<=10M，直接使用流下载
+                    byte[] bytes = OssUtils.download(bucket, key, (int)size);
+                    response.addHeader("Content-Disposition", "attachment; filename=" + new String(key.substring(key.lastIndexOf("/") + 1).getBytes("GBK"), "ISO-8859-1"));
+                    response.getOutputStream().write(bytes);
+                    out.clear();
+                    out = pageContext.pushBody();
+                }
+            }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             final String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
-            final String accessKeyId = "LTAID3hnLwsUASY4";
-            final String accessKeySecret = "znxnT9S3n1vdK4SEuZT7LoW67WmAr4";
+            final String accessKeyId = OssUtils.getAccessKeyId();
+            final String accessKeySecret = OssUtils.getAccessKeySecret();
             OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
             List<Bucket> buckets = ossClient.listBuckets();
             String bucketname = request.getParameter("bucket");
@@ -80,6 +105,7 @@
                 parentpath = prefix.substring(0, prefix.substring(0, prefix.length() - 1).lastIndexOf("/")) + "/";
             }
             String[] prefixs = prefix.split("/");
+            ossClient.shutdown();
         %>
         <%
             for(Bucket b : buckets) {
@@ -112,6 +138,7 @@
             <th>大小</th>
             <th>大小</th>
             <th>修改时间</th>
+            <th>操作</th>
         </tr>
         <tr class="row2">
             <td>
@@ -119,7 +146,7 @@
                     ..
                 </a>
             </td>
-            <td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
         </tr>
         <%
             for(int i = 0; i < dirs.size(); i++) {
@@ -129,7 +156,7 @@
             <td>
                 <a style="color:blue;" href="buckets.jsp?bucket=<%=bucketname%>&prefix=<%=dir%>"><%=dir.substring(prefix.length(),dir.length() - 1)%></a>
             </td>
-            <td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
         </tr>
         <%
             }
@@ -149,10 +176,25 @@
             <td>
                 <%=sdf.format(file.getLastModified())%>
             </td>
+            <td>
+                <input type="button" onclick="downloadKey('<%=bucketname%>', '<%=file.getKey()%>');" value="下载">
+            </td>
         </tr>
         <%
             }
         %>
     </table>
+  <script type="text/javascript">
+      function downloadKey(bucket, key)
+      {
+          document.getElementsByName('bucket')[0].value = bucket;
+          document.getElementsByName('key')[0].value = key;
+          document.forms[0].submit();
+      }
+  </script>
+  <form action="" method="post">
+      <input type="hidden" name="bucket"/>
+      <input type="hidden" name="key"/>
+  </form>
   </body>
 </html>
