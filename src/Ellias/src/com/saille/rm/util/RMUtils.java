@@ -20,7 +20,8 @@ public class RMUtils {
             if(b < 0) {
                 b = b + 256;
             }
-            ret = ret * 256 + b;
+            ret = (ret << 8) + b;
+//            ret = ret * 256 + b;
         }
         return (int)ret;
     }

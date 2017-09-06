@@ -12,8 +12,8 @@ import java.util.List;
 public class ImdUtils {
     public static void main(String[] args) {
         try {
-            File f = new File("F:\\rm\\song\\canonrock\\canonrock_4k_hd.imd");
-//            File f = new File("F:\\temp\\圆周率_4k_hd.imd");
+//            File f = new File("F:\\rm\\song\\canonrock\\canonrock_4k_hd.imd");
+            File f = new File("F:\\temp\\圆周率_4k_hd.imd");
 
             FileInputStream fis = new FileInputStream(f);
             byte[] bytes = new byte[(int)f.length()];
