@@ -14,15 +14,15 @@ public class RMUtils {
     }
 
     public static int getInt(byte[] bytes, int start, int length) {
-        int ret = 0;
+        long ret = 0;
         for(int i = start + length - 1; i >= start; i--) {
-            int b = (int) bytes[i];
+            long b = (int) bytes[i];
             if(b < 0) {
                 b = b + 256;
             }
             ret = ret * 256 + b;
         }
-        return ret;
+        return (int)ret;
     }
 
     public static void printBytes(byte[] bytes, int start, int length, boolean enter) {
