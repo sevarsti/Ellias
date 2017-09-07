@@ -202,6 +202,19 @@ table.table_body {
 	padding: 0px;
 	background-color: #8EAAE9;
 }
+td.head {
+/*	background-color: #92ABCF;
+	font-weight: bold;
+	color: white;
+	line-height: 1.2em;*/
+	font-size: 10px;
+	line-height: 150%;
+	font-weight: bold;
+	/*color: #FFFFFF;*/
+	text-decoration: none;
+	background-color: #8EAAE9;
+	text-align: center;
+}
 td.fieldname {
 	background-color: #E0EFFE;
 	padding-left: 2px;

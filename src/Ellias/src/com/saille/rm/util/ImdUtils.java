@@ -24,6 +24,11 @@ public class ImdUtils {
         }
     }
 
+    public static int getLength(byte[] imds) {
+        int length = RMUtils.getInt(imds, 0, 4);
+        return length;
+    }
+
     public static double calcRank(byte[] imds) {
         int skip = RMUtils.getInt(imds, 4, 4);
         int length = RMUtils.getInt(imds, 8 + skip * 12 + 2, 4);
@@ -97,7 +102,7 @@ public class ImdUtils {
         return ((double)i / 120.0) / 4.0;
     }
 
-    private static int getKey(byte[] imds) {
+    public static int getKey(byte[] imds) {
         int r = 0;
         int skip = RMUtils.getInt(imds, 4, 4);
         int length = RMUtils.getInt(imds, 8 + skip * 12 + 2, 4);
