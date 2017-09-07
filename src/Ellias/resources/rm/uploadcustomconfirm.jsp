@@ -10,6 +10,8 @@
 <%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.apache.commons.codec.digest.Md5Crypt" %>
+<%@ page import="com.saille.util.UtilFunctions" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -73,6 +75,7 @@
     Map<String, String> params = new HashMap<String, String>();
     Map<String, byte[]> files = new HashMap<String, byte[]>();
     Map<String, double[]> ranks = new HashMap<String, double[]>();
+    Map<String, String> imdmd5 = new HashMap<String, String>();
     List<String> sortedkey;
     DecimalFormat df = new DecimalFormat("#,##0.000");
     int maxlength = 0;
@@ -104,6 +107,7 @@
                     String filepath = System.getProperty("java.io.tmpdir") + File.separator + tmpname;
                     SysUtils.addTempFile(filepath, mp3Bytes, 60 * 10);
                     maxlength = Math.max(maxlength, FFMpegUtils.getAudioLength(filepath));
+                    params.put("md5", UtilFunctions.md5(mp3Bytes));
 //                    FileOutputStream fos = new FileOutputStream(f);
 //                    fos.write(mp3Bytes);
                 } else if(item.getFieldName().equals("imd")) {
@@ -123,6 +127,7 @@
                     SysUtils.addTempFile(filepath, filebytes, 60 * 10);
                     files.put(tmpname, filebytes);
                     ranks.put(tmpname, new double[]{ImdUtils.calcRank(filebytes), ImdUtils.calcDifficult(filebytes), ImdUtils.getKey(filebytes)});
+                    imdmd5.put(tmpname, UtilFunctions.md5(filebytes));
                     maxlength = Math.max(maxlength, ImdUtils.getLength(filebytes) / 1000);
                 }
             }
@@ -136,32 +141,38 @@
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black">
     <tr>
         <td class="fieldname">名字</td>
-        <td class="fieldvalue" colspan="3">
+        <td class="fieldvalue" colspan="4">
             <%=params.get("name")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">路径</td>
-        <td class="fieldvalue" colspan="3">
+        <td class="fieldvalue" colspan="4">
             <%=params.get("path")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">作者</td>
-        <td class="fieldvalue" colspan="3">
+        <td class="fieldvalue" colspan="4">
             <%=params.get("author")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">备注</td>
-        <td class="fieldvalue" colspan="3">
+        <td class="fieldvalue" colspan="4">
             <%=params.get("memo")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">长度</td>
-        <td class="fieldvalue" colspan="3">
+        <td class="fieldvalue" colspan="4">
             <%=convertLength(maxlength)%>
+        </td>
+    </tr>
+    <tr>
+        <td class="fieldname">MD5</td>
+        <td class="fieldvalue" colspan="4">
+            <%=params.get("md5")%>
         </td>
     </tr>
     <tr>
@@ -174,6 +185,9 @@
         </td>
         <td class="head">
             难度
+        </td>
+        <td class="head">
+            MD5
         </td>
     </tr>
     <%
@@ -191,6 +205,9 @@
         </td>
         <td class="fieldvalue">
             <%=df.format(ranks.get(key)[1])%>
+        </td>
+        <td class="fieldvalue">
+            <%=imdmd5.get(key)%>
         </td>
     </tr>
     <%

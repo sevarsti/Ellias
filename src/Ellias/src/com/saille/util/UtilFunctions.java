@@ -36,8 +36,11 @@ public class UtilFunctions {
     }
 
     public static String md5(String s) throws Exception {
+        return md5(s.getBytes());
+    }
+    public static String md5(byte[] s) throws Exception {
         MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(s.getBytes());
+        md.update(s);
         byte b[] = md.digest();
         int i;
         StringBuffer buf = new StringBuffer("");
