@@ -31,6 +31,9 @@ public class DatabaseBackupThread extends BaseThread {
     public static void main(String[] args) {
         new DatabaseBackupThread().execute();
     }
+
+    private DatabaseBackupThread() {}
+
     protected int execute() {
         try {
             Date now = new Date();

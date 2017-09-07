@@ -28,6 +28,8 @@ public class FriendsongThread extends BaseThread {
     public static void main(String[] args) {
     }
 
+    private FriendsongThread() {}
+
     private static List<String> getKeys(Map<String, List<int[]>> list) {
         List<String> ret = new ArrayList<String>();
         for(String key : list.keySet()) {

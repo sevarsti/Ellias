@@ -6,7 +6,15 @@ import com.saille.sys.Employee;
 import com.saille.sys.dao.ResourceDao;
 import com.saille.sys.dao.PositionDao;
 import com.saille.sys.dao.EmployeeDao;
+import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.JdbcTemplate;
 import servlet.GlobalContext;
+
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,6 +24,7 @@ import servlet.GlobalContext;
  * To change this template use File | Settings | File Templates.
  */
 public class SysUtils {
+    private final static Logger LOGGER = Logger.getLogger(SysUtils.class);
     public static Position getPosition(int posId) {
         PositionDao dao = (PositionDao) GlobalContext.getContextBean(PositionDao.class);
         return dao.get(posId);
@@ -77,5 +86,35 @@ public class SysUtils {
             }
         }
         return sb.toString();
+    }
+
+    public static boolean addTempFile(String filepath, byte[] content, long keepseconds) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date now = new Date();
+        try {
+            DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+            JdbcTemplate jt = new JdbcTemplate(ds);
+            Object[] param = new Object[3];
+            param[0] = filepath;
+            param[1] = sdf.format(now);
+            param[2] = sdf.format(new Date(now.getTime() + keepseconds * 1000));
+            jt.update("insert into sys_tempfile(filename, createtime, targettime, state) values(?,?,?,'1')", param);
+            if(content != null) {
+                File f = new File(filepath);
+                if(f.exists()) {
+                    LOGGER.error("文件已存在");
+                    return false;
+                }
+                f.createNewFile();
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(content);
+                fos.close();
+            }
+            return true;
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            LOGGER.error("文件保存失败");
+            return false;
+        }
     }
 }

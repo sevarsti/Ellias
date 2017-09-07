@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class DeleteFileThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(DeleteFileThread.class);
-
+    private DeleteFileThread() {}
     @Override
     protected int execute() {
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");

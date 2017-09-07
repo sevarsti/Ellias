@@ -24,16 +24,46 @@ public class ImdUtils {
         }
     }
 
+    public static double calcRank(byte[] imds) {
+        int skip = RMUtils.getInt(imds, 4, 4);
+        int length = RMUtils.getInt(imds, 8 + skip * 12 + 2, 4);
+        double r = 0;
+        for(int i = 0; i < length; i++) {
+            byte[] bytes = Arrays.copyOfRange(imds, 8 + skip * 12 + 2 + 4 + i * 11, 8 + skip * 12 + 2 + 4 + i * 11 + 11);
+            switch(bytes[0]) {
+                case 0x00:
+                    r += 1;
+                    break;
+                case 0x01:
+                    r += Math.abs(RMUtils.getInt(bytes, 7, 4)) + 2;
+                    break;
+                case 0x61:
+                case -95:
+                    r += Math.abs(RMUtils.getInt(bytes, 7, 4)) + 1;
+                    break;
+                case 0x21:
+                    r += Math.abs(RMUtils.getInt(bytes, 7, 4));
+                    break;
+                case 0x02:
+                case 0x62:
+                case 0x22:
+                case -94:
+                    r += Math.floor((double)RMUtils.getInt(bytes, 7, 4) / 120.0) + 1;
+                    break;
+            }
+        }
+        return Math.sqrt(r / 16);
+    }
+
     public static double calcDifficult(byte[] imds) {
         int skip = RMUtils.getInt(imds, 4, 4);
         int length = RMUtils.getInt(imds, 8 + skip * 12 + 2, 4);
+        int key = getKey(imds);
         List<double[]> d = new ArrayList<double[]>();
         for(int i = 0; i < length; i++) {
             byte[] bytes = Arrays.copyOfRange(imds, 8 + skip * 12 + 2 + 4 + i * 11, 8 + skip * 12 + 2 + 4 + i * 11 + 11);
             int timeoffset = RMUtils.getInt(bytes, 2, 4);
             int slidewidth = RMUtils.getInt(bytes, 7, 4);
-            int key = getKey(bytes);
-            key = 4;
             switch(bytes[0]) {
                 case 0x00:
                     addData(timeoffset, 1, d);
@@ -67,9 +97,36 @@ public class ImdUtils {
         return ((double)i / 120.0) / 4.0;
     }
 
-    private static int getKey(byte[] bytes) {
-//        todo
-        return 0;
+    private static int getKey(byte[] imds) {
+        int r = 0;
+        int skip = RMUtils.getInt(imds, 4, 4);
+        int length = RMUtils.getInt(imds, 8 + skip * 12 + 2, 4);
+        for(int i = 0; i < length; i++) {
+            int t = 0;
+            switch(imds[8 + skip * 12 + 2 + 4 + i * 11]) {
+                case 0x00:
+                case 0x02:
+                case 0x62:
+                case 0x22:
+                case -94:
+                    t = imds[8 + skip * 12 + 2 + 4 + i * 11 + 6] + 1;
+                    break;
+                case 0x01:
+                case 0x61:
+                case 0x21:
+                case -95:
+                    int slide = RMUtils.getInt(imds, 8 + skip * 12 + 2 + 4 + i * 11 + 7, 4);
+                    t = imds[8 + skip * 12 + 2 + 4 + i * 11 + 6] + 1;
+                    if(slide > 0) {
+                        t += slide;
+                    }
+                    break;
+            }
+            if(r < t) {
+                r = t;
+            }
+        }
+        return r;
     }
 
     private static double getSlide(int t, int key) {

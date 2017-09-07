@@ -20,7 +20,9 @@
     if(errormsg == null) {
         errormsg = "Î´Öª´íÎó";
     }
-    errormsg = errors.get(errormsg);
+    if(errors.containsKey(errormsg)) {
+        errormsg = errors.get(errormsg);
+    }
 %>
 <%=errormsg%>
 </body>

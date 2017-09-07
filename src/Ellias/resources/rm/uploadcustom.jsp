@@ -1,10 +1,3 @@
-<%@ page import="java.util.List" %>
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItem" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.HashMap" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -17,31 +10,8 @@
 <head>
     <title>上传自制谱</title>
 </head>
-<%
-    if("POST".equals(request.getMethod()) && request.getContentType() != null &&
-            request.getContentType().indexOf("multipart/form-data") >= 0) {
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        List<DiskFileItem> fileItems = upload.parseRequest(request);
-        Map<String, String> params = new HashMap<String, String>();
-        Map<String, byte[]> files = new HashMap<String, byte[]>();
-        for(DiskFileItem item : fileItems) {
-            if(item.getName() == null) {
-                byte[] bytes = new byte[(int)item.getSize()];
-                item.getInputStream().read(bytes);
-                item.getInputStream().close();
-                params.put(item.getFieldName(), new String(bytes, "GBK"));
-            } else {
-                byte[] bytes = new byte[(int)item.getSize()];
-                item.getInputStream().read(bytes);
-                item.getInputStream().close();
-                files.put(item.getName(), bytes);
-            }
-        }
-    }
-%>
 <body>
-<form action="" method="post" enctype="multipart/form-data" >
+<form action="uploadcustomconfirm.jsp" method="post" enctype="multipart/form-data" >
 <table border="0" cellpadding="1" cellspacing="1">
     <tr>
         <td class="fieldname">名字</td>
@@ -65,6 +35,12 @@
         <td class="fieldname">备注</td>
         <td class="fieldvalue">
             <input type="text" name="memo"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="fieldname" valign="top">MP3</td>
+        <td class="fieldvalue">
+            <input type="file" name="mp3"/>
         </td>
     </tr>
     <tr>

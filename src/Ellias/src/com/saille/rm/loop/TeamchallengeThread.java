@@ -31,6 +31,7 @@ import servlet.GlobalContext;
 public class TeamchallengeThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(TeamchallengeThread.class);
 
+    private TeamchallengeThread() {}
     public static void main(String[] args) {
         try {
             File f = new File(GlobalConstant.DISKPATH + "rm\\TableComBin\\mrock_guild_song_client.bin");
