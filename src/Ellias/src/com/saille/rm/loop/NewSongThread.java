@@ -71,7 +71,7 @@ public class NewSongThread extends BaseThread {
                 }
                 songcellList.add(cellstr);
             }
-            int nums = 20;
+            int nums = 5;
             NewSongSubThread[] instances = new NewSongSubThread[nums];
             for(int i = 0; i < instances.length; i++) {
                 instances[i] = new NewSongSubThread();
