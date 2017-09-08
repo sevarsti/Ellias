@@ -26,6 +26,8 @@
               return "±ê×¼";
           } else if(name.equals("Archive")) {
               return "¹éµµ";
+          } else if(name.equals("IA")) {
+              return "µÍÆµ";
           } else {
               return "´ý¶¨";
           }
@@ -160,8 +162,11 @@
         </tr>
         <%
             }
-            for(int i = 1; i < files.size(); i++) {
+            for(int i = 0; i < files.size(); i++) {
                 OSSObjectSummary file = files.get(i);
+                if(file.getKey().endsWith("/")) {
+                    continue;
+                }
         %>
         <tr class="row<%=(dirs.size() + i + 1) % 2 + 1%>">
             <td>

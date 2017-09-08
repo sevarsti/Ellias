@@ -1,20 +1,21 @@
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItem" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.FileOutputStream" %>
-<%@ page import="com.saille.sys.util.SysUtils" %>
 <%@ page import="com.saille.rm.util.ImdUtils" %>
-<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="com.saille.sys.util.SysUtils" %>
 <%@ page import="com.saille.util.FFMpegUtils" %>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.*" %>
-<%@ page import="org.apache.commons.codec.digest.Md5Crypt" %>
 <%@ page import="com.saille.util.UtilFunctions" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItem" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="org.springframework.jdbc.core.JdbcTemplate" %>
 <%@ page import="servlet.GlobalContext" %>
 <%@ page import="javax.sql.DataSource" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.*" %>
+<%@ page import="javax.imageio.ImageIO" %>
+<%@ page import="java.awt.image.BufferedImage" %>
+<%@ page import="java.io.ByteArrayInputStream" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -33,7 +34,7 @@
         if(in < 60) {
             return "0:" + in;
         } else {
-            return (in / 60) + ":" + (in % 60);
+            return (in / 60) + ":" + new DecimalFormat("00").format(in % 60);
         }
     }
 
@@ -73,6 +74,15 @@
         }
         return ret;
     }
+    void closeStream(List<DiskFileItem> list) {
+        for(DiskFileItem item : list) {
+            try {
+                item.getInputStream().close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 %>
 <%
     Map<String, String> params = new HashMap<String, String>();
@@ -83,6 +93,7 @@
     DecimalFormat df = new DecimalFormat("#,##0.000");
     int maxlength = 0;
     byte[] mp3Bytes = new byte[0];
+    byte[][] pngBytes = new byte[2][]; //0=小图，1=大图
     String now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     if("POST".equals(request.getMethod()) && request.getContentType() != null &&
             request.getContentType().indexOf("multipart/form-data") >= 0) {
@@ -94,40 +105,67 @@
             if(item.getName() == null) {
                 byte[] bytes = new byte[(int)item.getSize()];
                 item.getInputStream().read(bytes);
-                item.getInputStream().close();
                 params.put(item.getFieldName(), new String(bytes, "GBK"));
             } else {
                 if(item.getFieldName().equals("mp3")) {
                     if(!item.getName().toLowerCase().endsWith(".mp3")) {
                         out.println("mp3文件扩展名不正确");
-                        item.getInputStream().close();
+                        closeStream(fileItems);
                         return;
                     }
                     mp3Bytes = new byte[(int)item.getSize()];
                     item.getInputStream().read(mp3Bytes);
-                    item.getInputStream().close();
-                    String tmpname = "mp3_" + item.getName();
+                    String tmpname = "mp3_" + item.getName() + now;
                     String filepath = System.getProperty("java.io.tmpdir") + File.separator + tmpname;
                     SysUtils.addTempFile(filepath, mp3Bytes, 60 * 10);
                     maxlength = Math.max(maxlength, FFMpegUtils.getAudioLength(filepath));
                     params.put("md5", UtilFunctions.md5(mp3Bytes));
-//                    FileOutputStream fos = new FileOutputStream(f);
-//                    fos.write(mp3Bytes);
+                } else if(item.getFieldName().endsWith("png")) {
+                    if(!item.getName().toLowerCase().endsWith(".png")) {
+                        out.println("png文件扩展名不正确");
+                        closeStream(fileItems);
+                        return;
+                    }
+                    boolean hdPng = item.getFieldName().equals("hdpng"); //hdpng=小图
+                    if(hdPng) {
+                        pngBytes[0] = new byte[(int)item.getSize()];
+                        item.getInputStream().read(pngBytes[0]);
+                        ByteArrayInputStream bais = new ByteArrayInputStream(pngBytes[0]);
+                        BufferedImage bi = ImageIO.read(bais);
+                        bais.close();
+                        int width = bi.getWidth();
+                        int height = bi.getHeight();
+                        if(width != 140 || height != 60) {
+                            out.print("小图尺寸不是140x60");
+                            closeStream(fileItems);
+                            return;
+                        }
+                    } else {
+                        pngBytes[1] = new byte[(int)item.getSize()];
+                        item.getInputStream().read(pngBytes[1]);
+                        ByteArrayInputStream bais = new ByteArrayInputStream(pngBytes[1]);
+                        BufferedImage bi = ImageIO.read(bais);
+                        bais.close();
+                        int width = bi.getWidth();
+                        int height = bi.getHeight();
+                        if(width != 480 || height != 320) {
+                            out.print("大图尺寸不是480x320");
+                            closeStream(fileItems);
+                            return;
+                        }
+                    }
                 } else if(item.getFieldName().equals("imd")) {
                     if(StringUtils.isEmpty(item.getName())) {
                         continue;
                     }
                     if(!item.getName().toLowerCase().endsWith("imd")) {
                         out.println("imd文件扩展名不正确");
-                        item.getInputStream().close();
+                        closeStream(fileItems);
                         return;
                     }
                     byte[] filebytes = new byte[(int)item.getSize()];
                     item.getInputStream().read(filebytes);
-                    item.getInputStream().close();
                     String tmpname = files.size() + "_" + item.getName() + now;
-                    String filepath = System.getProperty("java.io.tmpdir") + File.separator + tmpname;
-                    SysUtils.addTempFile(filepath, filebytes, 60 * 10);
                     files.put(tmpname, filebytes);
                     ranks.put(tmpname, new double[]{ImdUtils.calcRank(filebytes), ImdUtils.calcDifficult(filebytes), ImdUtils.getKey(filebytes)});
                     imdmd5.put(tmpname, UtilFunctions.md5(filebytes));
@@ -135,6 +173,7 @@
                 }
             }
         }
+        closeStream(fileItems);
         params.put("length", maxlength + "");
     } else {
         out.print("请求格式不正确");
@@ -156,6 +195,7 @@
     request.getSession().setAttribute("rm_customsong_imdbytes", files);
     request.getSession().setAttribute("rm_customsong_imdranks", ranks); //key, rank, difficulty
     request.getSession().setAttribute("rm_customsong_imdmd5s", imdmd5);
+    request.getSession().setAttribute("rm_customsong_imgs", pngBytes);
 %>
 <body>
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black">
@@ -235,6 +275,18 @@
         }
     %>
 </table>
+<%
+    if(duplicatedMp3.size() > 0) {
+%>
+以下MP3文件MD5值重复：<br/>
+<%
+    for(int i = 0; i < duplicatedMp3.size(); i++) {
+%>
+<%=duplicatedMp3.get(i)[0]%>/<%=duplicatedMp3.get(i)[1]%>/<%=duplicatedMp3.get(i)[2]%><br/>
+<%
+        }
+    }
+%>
 <form action="uploadcustomdone.jsp">
     <input type="submit" value="确认">
 </form>

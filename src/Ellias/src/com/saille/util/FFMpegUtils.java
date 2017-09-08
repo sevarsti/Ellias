@@ -19,8 +19,8 @@ public class FFMpegUtils {
     }
     public static int getAudioLength(String filepath) {
         try {
-//            String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
-            String ffmpegpath = "F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe";
+            String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
+//            String ffmpegpath = "F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe";
             ProcessBuilder pb = new ProcessBuilder();
             pb = pb.command(ffmpegpath, "-i", filepath);
             Process p = pb.start();

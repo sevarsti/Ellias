@@ -51,6 +51,19 @@ public class SettingAction extends AbstractDispatchAction {
             form.setStrValue(setting.getStrValue());
             form.setDateValue(setting.getDateValue());
             form.setPattern(setting.getPattern());
+            switch (setting.getType()) {
+                case 1:
+                    form.setSettingValue(setting.getIntValue() + "");
+                    break;
+                case 2:
+                    form.setSettingValue(setting.getStrValue());
+                    break;
+                case 3:
+                    form.setSettingValue(setting.getNumberValue().doubleValue() + "");
+                    break;
+                case 4:
+                    form.setSettingValue(new SimpleDateFormat(setting.getPattern()).format(setting.getDateValue()));
+            }
         }
         return mapping.findForward("edit");
     }

@@ -40,13 +40,25 @@
     <tr>
         <td class="fieldname" valign="top">MP3</td>
         <td class="fieldvalue">
-            <input type="file" name="mp3"/>
+            <input type="file" name="mp3" accept=".MP3"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="fieldname" valign="top">小图</td>
+        <td class="fieldvalue">
+            <input type="file" name="hdpng" accept=".PNG"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="fieldname" valign="top">大图</td>
+        <td class="fieldvalue">
+            <input type="file" name="png" accept=".PNG"/>
         </td>
     </tr>
     <tr>
         <td class="fieldname" valign="top">IMD</td>
         <td class="fieldvalue">
-            <input type="file" name="imd"/><input type="button" onclick="doadd(this)" value="增加" id="btn"/>
+            <input type="file" name="imd" accept=".IMD"/><input type="button" onclick="doadd(this)" value="增加" id="btn"/>
         </td>
     </tr>
 </table>
@@ -69,6 +81,7 @@
             var file = document.createElement("input");
             file.type = "file";
             file.name = "imd";
+            file.accept = ".IMD";
             obj.parentNode.appendChild(file);
             var button = document.createElement("input");
             button.type = "button";

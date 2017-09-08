@@ -140,6 +140,12 @@ public class OssUtils {
         OssClient.copyObject(srcBucketname, srcKey, desBucketname, desKey);
     }
 
+    public static void uploadFile(String bucketName, String key, byte[] bytes) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        OssClient.putObject(bucketName, key, bais);
+        try {bais.close();} catch (Exception ex) {}
+    }
+
     public static void uploadFile(String bucketName, String key, File localfile) {
         if(!localfile.exists() || localfile.isDirectory()) {
             return;

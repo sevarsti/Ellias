@@ -77,7 +77,8 @@
                         ֵ
                     </td>
                     <td class="fieldvalue">
-                        <input type="text" name="settingValue"/>
+                        <html:text property="settingValue"/>
+                        <%--<input type="text" name="settingValue"/>--%>
                     </td>
                 </tr>
             </table>

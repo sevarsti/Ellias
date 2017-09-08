@@ -6,6 +6,11 @@
 <%@ page import="javax.sql.DataSource" %>
 <%@ page import="com.saille.core.dao.BaseJdbcDao" %>
 <%@ page import="com.saille.sys.dao.EmployeeDao" %>
+<%@ page import="java.io.File" %>
+<%@ page import="com.saille.sys.Setting" %>
+<%@ page import="java.io.FileOutputStream" %>
+<%@ page import="com.saille.aliyun.OssUtils" %>
+<%@ page import="java.util.HashMap" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -13,7 +18,7 @@
   Time: 16:30
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="../include/include.jsp"%>
 <html>
 <head>
     <title>finish upload custom song</title>
@@ -68,7 +73,10 @@
     Map<String, byte[]> files = (Map<String, byte[]>)request.getSession().getAttribute("rm_customsong_imdbytes");
     Map<String, double[]> ranks = (Map<String, double[]>)request.getSession().getAttribute("rm_customsong_imdranks"); //key, rank, difficulty
     Map<String, String> imdmd5 = (Map<String, String>)request.getSession().getAttribute("rm_customsong_imdmd5s");
+    byte[][] pngBytes = (byte[][])request.getSession().getAttribute("rm_customsong_imgs"); //0=小图，1=大图
 
+
+    /* 保存数据库信息 */
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     JdbcTemplate jt = new JdbcTemplate(ds);
     BaseJdbcDao dao = (BaseJdbcDao) GlobalContext.getContextBean(EmployeeDao.class);
@@ -102,8 +110,68 @@
         objs[3] = ((double)((int)(ranks.get(key)[0] * 1000))) / 1000d;
         objs[4] = ((double)((int)(ranks.get(key)[1] * 1000))) / 1000d;
         objs[5] = imdmd5.get(key);
-        jt.update("insert into rm_customsongimd(songid, `key`, `level`, rank, difficulty, md5) values(?,?,?,?,?,?)", objs);
+        jt.update("insert into rm_customsongimd(songid, `key`, `level`, rank, difficulty, imdmd5) values(?,?,?,?,?,?)", objs);
     }
+
+    /* 保存文件 */
+    Map<String, byte[]> imdnames = new HashMap<String, byte[]>();
+    String dir = Setting.getSettingString("RM_PATH") + "zizhi" + File.separator + path;
+    File directory = new File(dir);
+    directory.mkdirs();
+    File mp3file = new File(dir + File.separator + path + ".mp3");
+    mp3file.createNewFile();
+    FileOutputStream fos = new FileOutputStream(mp3file);
+    fos.write(mp3Bytes);
+    fos.close();
+
+    File pngfile = new File(dir + File.separator + path + ".png");
+    pngfile.createNewFile();
+    fos = new FileOutputStream(pngfile);
+    fos.write(pngBytes[1]);
+    fos.close();
+
+    File pnghdfile = new File(dir + File.separator + path + "_title_ipad.png");
+    pnghdfile.createNewFile();
+    fos = new FileOutputStream(pnghdfile);
+    fos.write(pngBytes[0]);
+    fos.close();
+
+    prvkey = 0;
+    keycount = 1;
+    for(int i = 0; i < sortedkey.size(); i++) {
+        String imdkey = sortedkey.get(i);
+        int newkey = (int)ranks.get(imdkey)[2];
+        if(newkey == prvkey) {
+            keycount++;
+        } else {
+            prvkey = newkey;
+            keycount = 1;
+        }
+        String level = "";
+        if(keycount == 3) {
+            level = "hd";
+        } else if(keycount == 2) {
+            level = "nm";
+        } else {
+            level = "ez";
+        }
+        String filename = path + "_" + newkey + "k_" + level + ".imd";
+        File imdfile = new File(dir + File.separator + filename);
+        imdfile.createNewFile();
+        fos = new FileOutputStream(imdfile);
+        fos.write(files.get(imdkey));
+        fos.close();
+        imdnames.put(filename, files.get(imdkey));
+    }
+
+    /* 保存OSS */
+    OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".mp3", mp3Bytes);
+    for(String key : imdnames.keySet()) {
+        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + key, imdnames.get(key));
+    }
+    OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".png", pngBytes[1]);
+    OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + "_title_ipad.png", pngBytes[0]);
+    out.print("文件保存完成，路径：" + path);
 %>
 <body>
 
