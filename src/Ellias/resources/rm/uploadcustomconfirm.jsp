@@ -12,6 +12,9 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.apache.commons.codec.digest.Md5Crypt" %>
 <%@ page import="com.saille.util.UtilFunctions" %>
+<%@ page import="org.springframework.jdbc.core.JdbcTemplate" %>
+<%@ page import="servlet.GlobalContext" %>
+<%@ page import="javax.sql.DataSource" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -79,7 +82,7 @@
     List<String> sortedkey;
     DecimalFormat df = new DecimalFormat("#,##0.000");
     int maxlength = 0;
-    byte[] mp3Bytes;
+    byte[] mp3Bytes = new byte[0];
     String now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     if("POST".equals(request.getMethod()) && request.getContentType() != null &&
             request.getContentType().indexOf("multipart/form-data") >= 0) {
@@ -132,10 +135,27 @@
                 }
             }
         }
+        params.put("length", maxlength + "");
     } else {
         out.print("请求格式不正确");
         return;
     }
+    /* 检查是否有MD5重复 */
+    DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+    JdbcTemplate jt = new JdbcTemplate(ds);
+    List<String[]> duplicatedMp3 = new ArrayList<String[]>();
+    List<Map<String, Object>> list = jt.queryForList("select name, path, author from rm_customsong where md5 = ?", new Object[]{params.get("md5")});
+    for(Map<String, Object> m : list) {
+        String name = m.get("name").toString();
+        String path = m.get("path").toString();
+        String author = m.get("author").toString();
+        duplicatedMp3.add(new String[]{name, path, author});
+    }
+    request.getSession().setAttribute("rm_customsong_param", params);
+    request.getSession().setAttribute("rm_customsong_mp3bytes", mp3Bytes);
+    request.getSession().setAttribute("rm_customsong_imdbytes", files);
+    request.getSession().setAttribute("rm_customsong_imdranks", ranks); //key, rank, difficulty
+    request.getSession().setAttribute("rm_customsong_imdmd5s", imdmd5);
 %>
 <body>
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black">
@@ -215,5 +235,8 @@
         }
     %>
 </table>
+<form action="uploadcustomdone.jsp">
+    <input type="submit" value="确认">
+</form>
 </body>
 </html>
