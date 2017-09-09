@@ -9,6 +9,7 @@
  * @param obj row对象
  * @param sortby 根据第几列排序
  * @param number 是否为数字
+ * @param type 是否有最底说明行
  */
 function resort(obj, sortby, number,type)
 {

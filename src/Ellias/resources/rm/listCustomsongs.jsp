@@ -3,6 +3,7 @@
 <%@ page import="javax.sql.DataSource" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.text.DecimalFormat" %>
 <%--
   Created by IntelliJ IDEA.
   User: Ellias
@@ -16,6 +17,9 @@
     <title>自制谱查询</title>
 </head>
 <%!
+    String convertLength(int in) {
+        return (in / 60) + ":" + new DecimalFormat("00").format(in % 60);
+    }
     String convertLevel(int in) {
         switch (in) {
             case 1:
@@ -32,10 +36,11 @@
 <body>
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black" id="table">
     <tr class="head">
-        <td>歌曲</td>
-        <td>路径</td>
-        <td>作者</td>
-        <td>md5</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 0, false,0)">歌曲</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 1, false,0)">路径</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 2, false,0)">作者</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 3, false,0)">长度</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 4, false,0)">md5</td>
         <td>键数</td>
         <td>难度</td>
         <td>Rank</td>
@@ -53,6 +58,7 @@
         <td><%=m.get("name")%></td>
         <td><%=m.get("path")%></td>
         <td><%=m.get("author")%></td>
+        <td><%=convertLength(((Number)m.get("length")).intValue())%></td>
         <td><%=m.get("md5")%></td>
         <td><%=m.get("key")%></td>
         <td><%=convertLevel(((Number)m.get("level")).intValue())%></td>

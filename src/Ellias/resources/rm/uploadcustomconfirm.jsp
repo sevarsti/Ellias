@@ -29,6 +29,11 @@
     <title></title>
 </head>
 <%!
+    boolean checkPathValid(JdbcTemplate jt, String path) {
+        int count = jt.queryForInt("select count(1) from rm_customsong where path = ?", new Object[]{path});
+        return count == 0;
+    }
+
     String convertLength(int in) {
         String ret = "";
         if(in < 60) {
@@ -175,13 +180,20 @@
         }
         closeStream(fileItems);
         params.put("length", maxlength + "");
+
     } else {
         out.print("请求格式不正确");
         return;
     }
-    /* 检查是否有MD5重复 */
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     JdbcTemplate jt = new JdbcTemplate(ds);
+
+    boolean valid = checkPathValid(jt, params.get("path"));
+    if(!valid) {
+        out.print("path重复");
+        return;
+    }
+    /* 检查是否有MD5重复 */
     List<String[]> duplicatedMp3 = new ArrayList<String[]>();
     List<Map<String, Object>> list = jt.queryForList("select name, path, author from rm_customsong where md5 = ?", new Object[]{params.get("md5")});
     for(Map<String, Object> m : list) {
