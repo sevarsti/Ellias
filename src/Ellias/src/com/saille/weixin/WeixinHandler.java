@@ -61,9 +61,9 @@ public class WeixinHandler {
                 LOGGER.warn("=============verify failed=============");
                 return;
             }
-//            if(request.getParameterMap().size() == 4) { //只有四个参数，说明是测试验证连通性
-//                response.getWriter().write(echostr);
-//            }
+            if(request.getParameterMap().size() == 4) { //只有四个参数，说明是测试验证连通性
+                response.getWriter().write(echostr);
+            }
 
             request.setCharacterEncoding("UTF-8");
             response.setCharacterEncoding("UTF-8");

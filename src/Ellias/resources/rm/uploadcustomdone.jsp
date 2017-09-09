@@ -81,6 +81,7 @@
     JdbcTemplate jt = new JdbcTemplate(ds);
     BaseJdbcDao dao = (BaseJdbcDao) GlobalContext.getContextBean(EmployeeDao.class);
 
+    System.out.println("保存自制谱信息");
     Object[] objs = new Object[7];
     objs[0] = name;
     objs[1] = path;
@@ -114,6 +115,7 @@
     }
 
     /* 保存文件 */
+    System.out.println("保存文件");
     Map<String, byte[]> imdnames = new HashMap<String, byte[]>();
     String dir = Setting.getSettingString("RM_PATH") + "zizhi" + File.separator + path;
     File directory = new File(dir);
@@ -165,12 +167,22 @@
     }
 
     /* 保存OSS */
+    System.out.println("上传OSS");
     OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".mp3", mp3Bytes);
     for(String key : imdnames.keySet()) {
         OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + key, imdnames.get(key));
     }
     OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".png", pngBytes[1]);
     OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + "_title_ipad.png", pngBytes[0]);
+
+    /* 清理session */
+    request.getSession().removeAttribute("rm_customsong_param");
+    request.getSession().removeAttribute("rm_customsong_mp3bytes");
+    request.getSession().removeAttribute("rm_customsong_imdbytes");
+    request.getSession().removeAttribute("rm_customsong_imdranks");
+    request.getSession().removeAttribute("rm_customsong_imdmd5s");
+    request.getSession().removeAttribute("rm_customsong_imgs");
+
     out.print("文件保存完成，路径：" + path);
 %>
 <body>

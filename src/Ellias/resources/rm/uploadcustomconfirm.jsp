@@ -90,6 +90,13 @@
     }
 %>
 <%
+    request.getSession().removeAttribute("rm_customsong_param");
+    request.getSession().removeAttribute("rm_customsong_mp3bytes");
+    request.getSession().removeAttribute("rm_customsong_imdbytes");
+    request.getSession().removeAttribute("rm_customsong_imdranks");
+    request.getSession().removeAttribute("rm_customsong_imdmd5s");
+    request.getSession().removeAttribute("rm_customsong_imgs");
+
     Map<String, String> params = new HashMap<String, String>();
     Map<String, byte[]> files = new HashMap<String, byte[]>();
     Map<String, double[]> ranks = new HashMap<String, double[]>();
@@ -118,11 +125,13 @@
                         closeStream(fileItems);
                         return;
                     }
+                    System.out.println("读取mp3:" + item.getName());
                     mp3Bytes = new byte[(int)item.getSize()];
                     item.getInputStream().read(mp3Bytes);
                     String tmpname = "mp3_" + item.getName() + now;
                     String filepath = System.getProperty("java.io.tmpdir") + File.separator + tmpname;
                     SysUtils.addTempFile(filepath, mp3Bytes, 60 * 10);
+                    System.out.println("解析mp3长度");
                     maxlength = Math.max(maxlength, FFMpegUtils.getAudioLength(filepath));
                     params.put("md5", UtilFunctions.md5(mp3Bytes));
                 } else if(item.getFieldName().endsWith("png")) {
@@ -131,6 +140,7 @@
                         closeStream(fileItems);
                         return;
                     }
+                    System.out.println("读取png:" + item.getName());
                     boolean hdPng = item.getFieldName().equals("hdpng"); //hdpng=小图
                     if(hdPng) {
                         pngBytes[0] = new byte[(int)item.getSize()];
@@ -140,11 +150,11 @@
                         bais.close();
                         int width = bi.getWidth();
                         int height = bi.getHeight();
-                        if(width != 140 || height != 60) {
-                            out.print("小图尺寸不是140x60");
-                            closeStream(fileItems);
-                            return;
-                        }
+//                        if(width != 140 || height != 60) {
+//                            out.print("小图尺寸不是140x60");
+//                            closeStream(fileItems);
+//                            return;
+//                        }
                     } else {
                         pngBytes[1] = new byte[(int)item.getSize()];
                         item.getInputStream().read(pngBytes[1]);
@@ -153,11 +163,11 @@
                         bais.close();
                         int width = bi.getWidth();
                         int height = bi.getHeight();
-                        if(width != 480 || height != 320) {
-                            out.print("大图尺寸不是480x320");
-                            closeStream(fileItems);
-                            return;
-                        }
+//                        if(width != 480 || height != 320) {
+//                            out.print("大图尺寸不是480x320");
+//                            closeStream(fileItems);
+//                            return;
+//                        }
                     }
                 } else if(item.getFieldName().equals("imd")) {
                     if(StringUtils.isEmpty(item.getName())) {
@@ -168,6 +178,7 @@
                         closeStream(fileItems);
                         return;
                     }
+                    System.out.println("读取imd:" + item.getName());
                     byte[] filebytes = new byte[(int)item.getSize()];
                     item.getInputStream().read(filebytes);
                     String tmpname = files.size() + "_" + item.getName() + now;
@@ -185,6 +196,7 @@
         out.print("请求格式不正确");
         return;
     }
+    System.out.println("文件读取完毕，开始校验");
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     JdbcTemplate jt = new JdbcTemplate(ds);
 

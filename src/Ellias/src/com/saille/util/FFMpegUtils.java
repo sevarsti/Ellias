@@ -29,9 +29,9 @@ public class FFMpegUtils {
             BufferedReader out = new BufferedReader(new InputStreamReader(new BufferedInputStream(is), Charset.forName("GB2312")));
             BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(errStream)));
             String ostr;
-            while((ostr = out.readLine()) != null) {
-                System.out.println(ostr);
-            }
+//            while((ostr = out.readLine()) != null) {
+//                System.out.println(ostr);
+//            }
             System.out.println("============================");
             Pattern pattern = Pattern.compile("\\s*Duration: ([0-9]{2}):([0-9]{2}):([0-9]{2})\\.[0-9]{2},.+");
             while((ostr = err.readLine()) != null) {
