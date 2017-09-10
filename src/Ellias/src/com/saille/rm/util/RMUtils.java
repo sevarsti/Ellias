@@ -3,6 +3,7 @@ package com.saille.rm.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -195,5 +196,10 @@ public class RMUtils {
         if(enter) {
             System.out.println();
         }
+    }
+
+    public static String convertLength(int length) {
+        DecimalFormat df = new DecimalFormat("00");
+        return length / 60 + ":" + df.format(length % 60);
     }
 }

@@ -9,8 +9,11 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.JdbcTemplate;
+import servlet.GlobalContext;
 
 import javax.imageio.ImageIO;
+import javax.sql.DataSource;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
@@ -52,6 +55,9 @@ public class NewSongThread extends BaseThread {
     @Override
     protected int execute() {
         try {
+            DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+            JdbcTemplate jt = new JdbcTemplate(ds);
+
             errmsg = null;
             File excel = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
             FileInputStream excelis = new FileInputStream(excel);
@@ -74,7 +80,7 @@ public class NewSongThread extends BaseThread {
             int nums = 5;
             NewSongSubThread[] instances = new NewSongSubThread[nums];
             for(int i = 0; i < instances.length; i++) {
-                instances[i] = new NewSongSubThread();
+                instances[i] = new NewSongSubThread(jt);
                 instances[i].start();
             }
             boolean isrunning = true;
@@ -362,6 +368,10 @@ public class NewSongThread extends BaseThread {
 
 class NewSongSubThread extends Thread {
     protected boolean running = true;
+    private JdbcTemplate jt;
+    public NewSongSubThread(JdbcTemplate jt) {
+        this.jt = jt;
+    }
     public void run() {
         try {
             while(!NewSongThread.finish) {
@@ -415,6 +425,16 @@ class NewSongSubThread extends Thread {
                     System.out.println(map.get("m_szSongName") + "Ã»ÓÐÕÒµ½£¡");
                     String newSong = map.get("m_szSongName") + "\t" + map.get("m_szArtist") + "\t" + map.get("m_szPath") + "\t" + map.get("m_ushSongID") + "\t" + map.get("m_szBPM") + "\t" + (length / 60) + ":" + df.format(length % 60) + "\t" + map.get("m_ush4KeyEasy").trim() + "\t" + map.get("4e") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush4KeyNormal").trim() + "\t" + map.get("4n") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush4KeyHard").trim() + "\t" + map.get("4h") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush5KeyEasy").trim() + "\t" + map.get("5e") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush5KeyNormal").trim() + "\t" + map.get("5n") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush5KeyHard").trim() + "\t" + map.get("5h") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush6KeyEasy").trim() + "\t" + map.get("6e") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush6KeyNormal").trim() + "\t" + map.get("6n") + "\t" + "\t\t\t\t\t\t" + map.get("m_ush6KeyHard").trim() + "\t" + map.get("6h");
                     NewSongThread.newSongs.add(newSong);
+                } else {
+                    String songId = map.get("m_ushSongID");
+                    String isFree = map.get("m_bIsFree");
+                    String isReward = map.get("m_bIsReward");
+                    String style = map.get("m_iStyle");
+                    String region = map.get("m_iRegion");
+                    String isOpen = map.get("m_ucIsOpen");
+                    String isHide = map.get("m_bIsHide");
+                    Object[] params = new Object[]{Integer.parseInt(isHide), Integer.parseInt(style), Integer.parseInt(isOpen), Integer.parseInt(isReward), Integer.parseInt(isFree), Integer.parseInt(region), Integer.parseInt(songId)};
+                    jt.update("update rm_song set ishide = ?, style = ?, isopen = ?, isreward = ?, isfree = ?, region = ? where songid = ?", params);
                 }
             }
         } catch(Exception ex) {

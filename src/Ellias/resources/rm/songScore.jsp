@@ -13,7 +13,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ include file="../include/include.jsp"%>
 <html>
-  <head><title>Simple jsp page</title></head>
+  <head><title>·ÖÊı²éÑ¯</title></head>
   <body>
         <%
             List<String[]> songs = new ArrayList<String[]>();

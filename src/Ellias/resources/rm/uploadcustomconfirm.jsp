@@ -16,6 +16,7 @@
 <%@ page import="javax.imageio.ImageIO" %>
 <%@ page import="java.awt.image.BufferedImage" %>
 <%@ page import="java.io.ByteArrayInputStream" %>
+<%@ page import="com.saille.rm.util.RMUtils" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -32,15 +33,6 @@
     boolean checkPathValid(JdbcTemplate jt, String path) {
         int count = jt.queryForInt("select count(1) from rm_customsong where path = ?", new Object[]{path});
         return count == 0;
-    }
-
-    String convertLength(int in) {
-        String ret = "";
-        if(in < 60) {
-            return "0:" + in;
-        } else {
-            return (in / 60) + ":" + new DecimalFormat("00").format(in % 60);
-        }
     }
 
     List<String> sortKey(Map<String, double[]> map) {
@@ -250,7 +242,7 @@
     <tr>
         <td class="fieldname">³¤¶È</td>
         <td class="fieldvalue" colspan="4">
-            <%=convertLength(maxlength)%>
+            <%=RMUtils.convertLength(maxlength)%>
         </td>
     </tr>
     <tr>

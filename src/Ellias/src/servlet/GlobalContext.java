@@ -64,28 +64,25 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
             }
             if(startthread) {
                 /* 查询需要启动的进程 */
-                String sql = "select class from sys_thread where state = '1'";
+                String sql = "select class, `interval`, state from sys_thread";
                 List<Map<String, Object>> list = jt.queryForList(sql);
                 for(Map<String, Object> m : list) {
                     String s = m.get("class").toString();
-//                if(threads != null && threads.length > 0) {
-//                    for(String s : threads) {
-                        int interval = defaultInterval;
-                        if(threadsInterval.get(s) != null) {
-                            interval = threadsInterval.get(s).intValue();
+                    int interval = 0;
+                    int start = ((Number) m.get("state")).intValue();
+                    try {
+                        interval = ((Number) m.get("interval")).intValue();
+                    } catch (Exception ex) {}
+                        if(interval == 0) {
+                            interval = defaultInterval;
                         }
-                        BaseThread.createInstance(s, interval);
+                        BaseThread.createInstance(s, start, interval);
                     }
-//                }
                 LOGGER.info("所有线程启动完毕");
             } else {
                 LOGGER.info("线程设置为不启动");
             }
         }
-//        SynchronizeExcel synchronizeExcel = SynchronizeExcel.getInstance();
-//        synchronizeExcel.start();
-//        Thread t = new AutoReloginLoopThread();
-//        t.start();
     }
 
     public static Object getContextBean(String name) {

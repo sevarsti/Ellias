@@ -4,6 +4,7 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.DecimalFormat" %>
+<%@ page import="com.saille.rm.util.RMUtils" %>
 <%--
   Created by IntelliJ IDEA.
   User: Ellias
@@ -17,9 +18,6 @@
     <title>×ÔÖÆÆ×²éÑ¯</title>
 </head>
 <%!
-    String convertLength(int in) {
-        return (in / 60) + ":" + new DecimalFormat("00").format(in % 60);
-    }
     String convertLevel(int in) {
         switch (in) {
             case 1:
@@ -58,7 +56,7 @@
         <td><%=m.get("name")%></td>
         <td><%=m.get("path")%></td>
         <td><%=m.get("author")%></td>
-        <td><%=convertLength(((Number)m.get("length")).intValue())%></td>
+        <td><%=RMUtils.convertLength(((Number)m.get("length")).intValue())%></td>
         <td><%=m.get("md5")%></td>
         <td><%=m.get("key")%></td>
         <td><%=convertLevel(((Number)m.get("level")).intValue())%></td>

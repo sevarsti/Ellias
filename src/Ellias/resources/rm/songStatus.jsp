@@ -14,7 +14,7 @@
 --%>
 <%@ include file="../include/include.jsp"%>
 <html>
-  <head><title>Simple jsp page</title></head>
+  <head><title>分数统计</title></head>
   <body>
         <%
             DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");

@@ -18,17 +18,17 @@ import java.util.HashMap;
 public abstract class BaseThread extends Thread{
     private final static Logger LOGGER = Logger.getLogger(BaseThread.class);
     protected abstract int execute();
-    private static BaseThread INSTANCE = null;
     private Date lastExecuteTime = null;
     private Date nextExecuteTime = null;
     private int interval;
+    private int start;
     protected boolean running = false;
     public static Map<String, BaseThread> threads = new HashMap<String, BaseThread>();
 
     protected BaseThread() {
     }
 
-    public static synchronized void createInstance(String classname, int interval) {
+    public static synchronized void createInstance(String classname, int start, int interval) {
         if(!threads.containsKey(classname) || threads.get(classname) == null) {
             try {
                 Class c = Class.forName(classname);
@@ -42,6 +42,7 @@ public abstract class BaseThread extends Thread{
                 }
                 BaseThread instance = (BaseThread) obj;
                 instance.setDaemon(true);
+                instance.start = start;
                 instance.interval = interval;
                 threads.put(instance.getClass().getName(), instance);
                 instance.start();
@@ -62,7 +63,9 @@ public abstract class BaseThread extends Thread{
             int waittime = 0;
             try {
                 this.running = true;
-                waittime = execute();
+                if(start == 1) {
+                    waittime = execute();
+                }
                 this.running = false;
             } catch(Exception ex) {
                 ex.printStackTrace();
