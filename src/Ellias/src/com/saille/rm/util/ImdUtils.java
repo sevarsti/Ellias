@@ -2,9 +2,8 @@ package com.saille.rm.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.FileOutputStream;
+import java.util.*;
 
 /**
  * Created by Ellias on 2017-09-07.
@@ -12,13 +11,13 @@ import java.util.List;
 public class ImdUtils {
     public static void main(String[] args) {
         try {
-//            File f = new File("F:\\rm\\song\\canonrock\\canonrock_4k_hd.imd");
-            File f = new File("F:\\temp\\圆周率_4k_hd.imd");
-
+            File f = new File("F:\\rm\\song\\canonrock\\canonrock_4k_hd.imd");
             FileInputStream fis = new FileInputStream(f);
-            byte[] bytes = new byte[(int)f.length()];
+            fis.skip(12);
+            byte[] bytes = new byte[8];
             fis.read(bytes);
-            System.out.println(calcDifficult(bytes));
+            fis.close();
+//            System.out.println(RMUtils(bytes));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -94,14 +93,69 @@ public class ImdUtils {
             r += d.get(i)[1] / (d.get(i)[0] - d.get(i-1)[0]) * 120;
         }
         return Math.sqrt(r / 16);
-//        System.out.println(bytes);
-//        return 0;
     }
 
     private static double getLong(int i) {
         return ((double)i / 120.0) / 4.0;
     }
 
+    public static double getBpm(byte[] bytes) {
+        Map<Double, Integer> bpms = new HashMap<Double, Integer>();
+        int count = RMUtils.getInt(bytes, 4, 4);
+        for(int i = 0; i < count; i++) {
+            double bpm = RMUtils.getDouble(bytes, 12 + i * 12, 8);
+            if(bpms.containsKey(bpm)) {
+                bpms.put(bpm, bpms.get(bpm).intValue() + 1);
+            } else {
+                bpms.put(bpm, 1);
+            }
+        }
+        double retBpm = 0d;
+        count = 0;
+        for(Double d : bpms.keySet()) {
+            int c = bpms.get(d);
+            if(c > count) {
+                retBpm = d.doubleValue();
+                count = c;
+            }
+        }
+        return retBpm;
+    }
+
+    /* 获取imd的最大连击数 */
+    public static int getTotalKeys(byte[] imds) {
+        int ret = 0;
+        int skip = RMUtils.getInt(imds, 4, 4);
+        double bpm = getBpm(imds);
+        int length = RMUtils.getInt(imds, 8 + skip * 12 + 2, 4);
+        for(int i = 0; i < length; i++) {
+            int t = imds[8 + skip * 12 + 2 + 4 + i * 11];
+            switch (t) {
+                case 0: //单键
+                case -95: //面条结尾划键
+                case 0x21: //面条中间划键
+                case 0x61: //面条开始划键
+                    ret += 1;
+                    break;
+                case 1: //划键
+                    ret += 1;
+                    break;
+                case -94: //面条结尾长键
+                case 0x22: //面条中间长键
+                    ret += ((RMUtils.getInt(imds, 8 + skip * 12 + 2 + 4 + i * 11 + 7, 4) / ((int) (60000d / bpm / 4d))));
+                    break;
+                case 2: //长键
+                case 0x62: //面条开始长键
+                    ret += ((RMUtils.getInt(imds, 8 + skip * 12 + 2 + 4 + i * 11 + 7, 4) / ((int) (60000d / bpm / 4d)))) + 1;
+                    break;
+                case -96: //a0
+                    ret--;
+            }
+        }
+        return ret;
+    }
+
+    /* 判断imd是4k还是5k还是6k */
     public static int getKey(byte[] imds) {
         int r = 0;
         int skip = RMUtils.getInt(imds, 4, 4);

@@ -34,6 +34,7 @@ public class DeleteFileThread extends BaseThread {
                 jt.update("update sys_tempfile set state = 2, deletetime = ? where filename = ? and state = 1", new Object[]{now, filename});
             } else {
                 LOGGER.info("ÎÄ¼þÉ¾³ýÊ§°Ü");
+                jt.update("update sys_tempfile set state = 3, deletetime = ? where filename = ? and state = 1", new Object[]{now, filename});
             }
         }
         return 0;
