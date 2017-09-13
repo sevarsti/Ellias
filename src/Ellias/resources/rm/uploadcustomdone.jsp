@@ -67,6 +67,7 @@
     String path = params.get("path");
     String author = params.get("author");
     String memo = params.get("memo");
+    double bpm = Double.parseDouble(params.get("bpm"));
     String mp3md5 = params.get("md5");
     byte[] mp3Bytes = (byte[]) request.getSession().getAttribute("rm_customsong_mp3bytes");
     int length = Integer.parseInt(params.get("length"));
@@ -132,7 +133,8 @@
         objs[4] = length;
         objs[5] = songid;
         objs[6] = memo;
-        jt.update("insert into rm_customsong(name, path, author, md5, length, id, memo) values(?,?,?,?,?,?,?)", objs);
+        objs[7] = bpm;
+        jt.update("insert into rm_customsong(name, path, author, md5, length, id, memo, bpm) values(?,?,?,?,?,?,?,?)", objs);
 
     }
     /* ±£´æÎÄ¼þ */

@@ -93,6 +93,7 @@
     Map<String, byte[]> files = new HashMap<String, byte[]>();
     Map<String, double[]> ranks = new HashMap<String, double[]>();
     Map<String, String> imdmd5 = new HashMap<String, String>();
+    double bpm = 0d;
     List<String> sortedkey;
     DecimalFormat df = new DecimalFormat("#,##0.000");
     int maxlength = 0;
@@ -178,11 +179,22 @@
                     ranks.put(tmpname, new double[]{ImdUtils.calcRank(filebytes), ImdUtils.calcDifficult(filebytes), ImdUtils.getKey(filebytes)});
                     imdmd5.put(tmpname, UtilFunctions.md5(filebytes));
                     maxlength = Math.max(maxlength, ImdUtils.getLength(filebytes) / 1000);
+                    double newbpm = ImdUtils.getBpm(filebytes);
+                    if(bpm == 0) {
+                        bpm = newbpm;
+                    } else if(bpm > 0 && bpm != newbpm) {
+                        bpm = -1;
+                    }
                 }
             }
         }
         closeStream(fileItems);
         params.put("length", maxlength + "");
+        if(bpm > 0) {
+            params.put("bpm", bpm + "");
+        } else {
+            params.put("bpm", "0");
+        }
 
     } else {
         out.print("请求格式不正确");
@@ -360,6 +372,11 @@
 <%=duplicatedImd.get(i)[0]%>/<%=duplicatedImd.get(i)[1]%><br/>
 <%
         }
+    }
+    if(bpm <= 0) {
+%>
+谱面BPM不一致，请自行计算！<br/>
+<%
     }
 %>
 <form action="uploadcustomdone.jsp">

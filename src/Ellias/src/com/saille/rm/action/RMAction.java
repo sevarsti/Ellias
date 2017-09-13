@@ -10,6 +10,7 @@ import servlet.GlobalContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,12 +92,31 @@ public class RMAction extends AbstractDispatchAction{
             songs.get(i).put("targetpath", list.get(i - hasCount).get("path").toString());
         }
         StringBuilder sb = new StringBuilder();
+        int[][] levels = new int[3][3];
+        String bpm = "";
+        DecimalFormat df = new DecimalFormat("0.#");
         for(int i = 0; i < songs.size(); i++) {
             Map<String, String> m = songs.get(i);
             if(m.get("type").equals("1")) {
-
+                list = jt.queryForList("select songlevel, `key`, `level` from rm_songkey where songid = ?", new Object[]{Integer.parseInt(m.get("songid"))});
+                for(Map<String, Object> map : list) {
+                    int key = ((Number)map.get("key")).intValue();
+                    int level = ((Number)map.get("level")).intValue();
+                    int songlevel = ((Number)map.get("songlevel")).intValue();
+                    levels[key - 4][level - 1] = songlevel;
+                }
+                Map<String, Object> map = jt.queryForMap("select bpm from rm_song where songid = ?", new Object[]{Integer.parseInt(m.get("songid"))});
+                bpm = df.format(((Number)map.get("bpm")).doubleValue());
             } else {
                 list = jt.queryForList("select difficulty, `key`, `level` from rm_customsongimd where songid = ?", new Object[]{Integer.parseInt(m.get("objid"))});
+                for(Map<String, Object> map : list) {
+                    int key = ((Number)map.get("key")).intValue();
+                    int level = ((Number)map.get("level")).intValue();
+                    int difficulty = ((Number)map.get("difficulty")).intValue();
+                    levels[key - 4][level - 1] = difficulty;
+                }
+                Map<String, Object> map = jt.queryForMap("select bpm from rm_customsong where songid = ?", new Object[]{Integer.parseInt(m.get("objid"))});
+                bpm = df.format(((Number)map.get("bpm")).doubleValue());
             }
             sb.append("<SongConfig_Client version=\"1\">\r\n");
             sb.append("    <m_ushSongID>").append(m.get("targetid")).append("</m_ushSongID>");
@@ -124,7 +144,7 @@ public class RMAction extends AbstractDispatchAction{
                 sb.append("    <m_ucIsHot>1 </m_ucIsHot>\r\n");
             }
             sb.append("    <m_ucIsRecommend>0 </m_ucIsRecommend>\r\n");
-            sb.append("    <m_szBPM>152</m_szBPM>\r\n");//todo
+            sb.append("    <m_szBPM>").append(bpm).append("</m_szBPM>\r\n");
             sb.append("    <m_ucIsOpen>1 </m_ucIsOpen>\r\n");
             sb.append("    <m_ucCanBuy>0x0 </m_ucCanBuy>\r\n");
             sb.append("    <m_iOrderIndex>").append(m.get("order")).append(" </m_iOrderIndex>\r\n");
@@ -132,15 +152,15 @@ public class RMAction extends AbstractDispatchAction{
             sb.append("    <m_bSongPkg>0x0 </m_bSongPkg>\r\n");
             sb.append("    <m_szFreeBeginTime></m_szFreeBeginTime>\r\n");
             sb.append("    <m_szFreeEndTime></m_szFreeEndTime>\r\n");
-            sb.append("    <m_ush4KeyEasy>0 </m_ush4KeyEasy>\r\n");//todo
-            sb.append("    <m_ush4KeyNormal>0 </m_ush4KeyNormal>\r\n");//todo
-            sb.append("    <m_ush4KeyHard>10 </m_ush4KeyHard>\r\n");//todo
-            sb.append("    <m_ush5KeyEasy>0 </m_ush5KeyEasy>\r\n");//todo
-            sb.append("    <m_ush5KeyNormal>0 </m_ush5KeyNormal>\r\n");//todo
-            sb.append("    <m_ush5KeyHard>0 </m_ush5KeyHard>\r\n");//todo
-            sb.append("    <m_ush6KeyEasy>0 </m_ush6KeyEasy>\r\n");//todo
-            sb.append("    <m_ush6KeyNormal>0 </m_ush6KeyNormal>\r\n");//todo
-            sb.append("    <m_ush6KeyHard>0 </m_ush6KeyHard>\r\n");//todo
+            sb.append("    <m_ush4KeyEasy>").append(levels[0][0]).append(" </m_ush4KeyEasy>\r\n");
+            sb.append("    <m_ush4KeyNormal>").append(levels[0][1]).append(" </m_ush4KeyNormal>\r\n");
+            sb.append("    <m_ush4KeyHard>").append(levels[0][2]).append(" </m_ush4KeyHard>\r\n");
+            sb.append("    <m_ush5KeyEasy>").append(levels[1][0]).append(" </m_ush5KeyEasy>\r\n");
+            sb.append("    <m_ush5KeyNormal>").append(levels[1][1]).append(" </m_ush5KeyNormal>\r\n");
+            sb.append("    <m_ush5KeyHard>").append(levels[1][2]).append(" </m_ush5KeyHard>\r\n");
+            sb.append("    <m_ush6KeyEasy>").append(levels[2][0]).append(" </m_ush6KeyEasy>\r\n");
+            sb.append("    <m_ush6KeyNormal>").append(levels[2][1]).append(" </m_ush6KeyNormal>\r\n");
+            sb.append("    <m_ush6KeyHard>").append(levels[2][2]).append(" </m_ush6KeyHard>\r\n");
             sb.append("    <m_iPrice>0 </m_iPrice>\r\n");
             sb.append("    <m_szNoteNumber></m_szNoteNumber>\r\n");
             sb.append("    <m_szProductID></m_szProductID>\r\n");
@@ -149,45 +169,7 @@ public class RMAction extends AbstractDispatchAction{
             sb.append("    <m_bIsReward>0x0 </m_bIsReward>\r\n");
             sb.append("    <m_bIsLevelReward>0x0 </m_bIsLevelReward>\r\n");
             sb.append("</SongConfig_Client>\r\n");
-
         }
-//        <m_ushSongID>138</m_ushSongID>
-//        <m_iVersion>0 </m_iVersion>
-//        <m_szSongName>4 Mi.Mi.85 SS</m_szSongName>
-//        <m_szPath>nobody</m_szPath>
-//        <m_szArtist>M8 Floor Node 85</m_szArtist>
-//        <m_szComposer></m_szComposer>
-//        <m_szSongTime>0.104861</m_szSongTime>
-//        <m_iGameTime>120 </m_iGameTime>
-//        <m_iRegion>1 </m_iRegion>
-//        <m_iStyle>4 </m_iStyle>
-//        <m_ucIsNew>0 </m_ucIsNew>
-//        <m_ucIsHot>1 </m_ucIsHot>
-//        <m_ucIsRecommend>0 </m_ucIsRecommend>
-//        <m_szBPM>150</m_szBPM>
-//        <m_ucIsOpen>1 </m_ucIsOpen>
-//        <m_ucCanBuy>0x0 </m_ucCanBuy>
-//        <m_iOrderIndex>513 </m_iOrderIndex>
-//        <m_bIsFree>0x0 </m_bIsFree>
-//        <m_bSongPkg>0x0 </m_bSongPkg>
-//        <m_szFreeBeginTime></m_szFreeBeginTime>
-//        <m_szFreeEndTime></m_szFreeEndTime>
-//        <m_ush4KeyEasy>1 </m_ush4KeyEasy>
-//        <m_ush4KeyNormal>1 </m_ush4KeyNormal>
-//        <m_ush4KeyHard>9 </m_ush4KeyHard>
-//        <m_ush5KeyEasy>1 </m_ush5KeyEasy>
-//        <m_ush5KeyNormal>1 </m_ush5KeyNormal>
-//        <m_ush5KeyHard>9 </m_ush5KeyHard>
-//        <m_ush6KeyEasy>1 </m_ush6KeyEasy>
-//        <m_ush6KeyNormal>1 </m_ush6KeyNormal>
-//        <m_ush6KeyHard>9 </m_ush6KeyHard>
-//        <m_iPrice>0 </m_iPrice>
-//        <m_szNoteNumber>0,0,2333,0,0,2333,0,0,2333</m_szNoteNumber>
-//        <m_szProductID></m_szProductID>
-//        <m_iVipFlag>0 </m_iVipFlag>
-//        <m_bIsHide>0x0 </m_bIsHide>
-//        <m_bIsReward>0x0 </m_bIsReward>
-//        <m_bIsLevelReward>0x0 </m_bIsLevelReward>
         return mapping.findForward("confirm");
     }
 
