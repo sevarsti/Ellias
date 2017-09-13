@@ -217,6 +217,10 @@ public class NewSongThread extends BaseThread {
                     System.out.println(key + "£¬»®¼ü");
                 }
             } else if(b == 3 || b == -93) { //03, a3
+                key++;
+                if(showlog) {
+                    System.out.println(key + "£¬03/a3Ê²Ã´¹í");
+                }
             } else if(b == 0x02) { //02, ok
                 int ii = bb[7] >= 0 ? bb[7] : (256 + bb[7]);
                 int c = (int) (((bb[8] * 256 + ii) / ((int) (60000d / bpm / 4d)))) + 1;

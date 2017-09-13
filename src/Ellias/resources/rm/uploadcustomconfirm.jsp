@@ -30,8 +30,8 @@
     <title></title>
 </head>
 <%!
-    boolean checkPathValid(JdbcTemplate jt, String path) {
-        int count = jt.queryForInt("select count(1) from rm_customsong where path = ?", new Object[]{path});
+    boolean checkPathValid(JdbcTemplate jt, String path, String md5) {
+        int count = jt.queryForInt("select count(*) from rm_customsong where path = ? and md5 <> ?", new Object[]{path, md5});
         return count == 0;
     }
 
@@ -192,12 +192,12 @@
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     JdbcTemplate jt = new JdbcTemplate(ds);
 
-    boolean valid = checkPathValid(jt, params.get("path"));
+    boolean valid = checkPathValid(jt, params.get("path"), params.get("md5"));
     if(!valid) {
         out.print("path重复");
         return;
     }
-    /* 检查是否有MD5重复 */
+    /* 检查是否有mp3 MD5重复 */
     List<String[]> duplicatedMp3 = new ArrayList<String[]>();
     List<Map<String, Object>> list = jt.queryForList("select name, path, author from rm_customsong where md5 = ?", new Object[]{params.get("md5")});
     for(Map<String, Object> m : list) {
@@ -206,10 +206,59 @@
         String author = m.get("author").toString();
         duplicatedMp3.add(new String[]{name, path, author});
     }
+
+    /* 检查是否有imd MD5重复 */
+    StringBuilder sql = new StringBuilder("select imdmd5 from rm_customsongimd where songid = (select id from rm_customsong where path=?) and imdmd5 in(");
+    List<String[]> duplicatedImd = new ArrayList<String[]>();
+    int count = 0;
+    for(String key : imdmd5.keySet()) {
+        if(count > 0) {
+            sql.append(",");
+        }
+        sql.append("'").append(imdmd5.get(key)).append("'");
+        count++;
+    }
+    sql.append(")");
+    list = jt.queryForList(sql.toString(), new Object[]{params.get("path")});
+    if(list.size() > 0) {
+        for(Map<String, Object> m : list) {
+            String md5 = m.get("imdmd5").toString();
+            List<String> keys = new ArrayList<String>();
+            for(String k : imdmd5.keySet()) {
+                keys.add(k);
+            }
+            for(String k : keys) {
+                if(imdmd5.get(k).equals(md5)) {
+                    duplicatedImd.add(new String[]{k, md5});
+                    files.remove(k);
+                    ranks.remove(k);
+                    imdmd5.remove(k);
+                }
+            }
+        }
+    }
+
+    /* 检查相同path下某个键数的谱面是否超过3个 */
+    int[] keycount = new int[3];
+    for(double[] dd : ranks.values()) {
+        keycount[(int)dd[2] - 4]++;
+    }
+    list = jt.queryForList("select `key`, count(1) as c from rm_customsongimd where songid = (select id from rm_customsong where path = ?) group by `key`", new Object[]{params.get("path")});
+    if(list.size() > 0) {
+        for(Map<String, Object> m : list) {
+            int key = ((Number)m.get("key")).intValue();
+            count = ((Number)m.get("c")).intValue();
+            if((keycount[key - 4] + count) > 3) {
+                out.println("mp3重复，" + key + "KEY谱面总和超过3个");
+                return;
+            }
+        }
+    }
+
     request.getSession().setAttribute("rm_customsong_param", params);
     request.getSession().setAttribute("rm_customsong_mp3bytes", mp3Bytes);
     request.getSession().setAttribute("rm_customsong_imdbytes", files);
-    request.getSession().setAttribute("rm_customsong_imdranks", ranks); //key, rank, difficulty
+    request.getSession().setAttribute("rm_customsong_imdranks", ranks); //rank, difficulty, key
     request.getSession().setAttribute("rm_customsong_imdmd5s", imdmd5);
     request.getSession().setAttribute("rm_customsong_imgs", pngBytes);
 %>
@@ -267,7 +316,7 @@
         </td>
     </tr>
     <%
-        int count = 0;
+        count = 0;
         sortedkey = sortKey(ranks);
         for(String key : sortedkey) {
 
@@ -299,6 +348,16 @@
     for(int i = 0; i < duplicatedMp3.size(); i++) {
 %>
 <%=duplicatedMp3.get(i)[0]%>/<%=duplicatedMp3.get(i)[1]%>/<%=duplicatedMp3.get(i)[2]%><br/>
+<%
+        }
+    }
+    if(duplicatedImd.size() > 0) {
+%>
+以下IMD文件MD5值重复，将会过滤：<br/>
+<%
+    for(int i = 0; i < duplicatedImd.size(); i++) {
+%>
+<%=duplicatedImd.get(i)[0]%>/<%=duplicatedImd.get(i)[1]%><br/>
 <%
         }
     }

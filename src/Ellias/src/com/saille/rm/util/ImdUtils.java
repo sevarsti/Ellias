@@ -135,6 +135,7 @@ public class ImdUtils {
                 case -95: //面条结尾划键
                 case 0x21: //面条中间划键
                 case 0x61: //面条开始划键
+                case 0x03: //卧槽这是什么鬼？首尾重合的面条？
                     ret += 1;
                     break;
                 case 1: //划键

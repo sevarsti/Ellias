@@ -138,7 +138,7 @@ public class TeamchallengeThread extends BaseThread {
                 LOGGER.info("战队竞技歌曲需要更新");
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                list = jt.queryForList("select startdate from rm_teamchallenge where enddate is null");
+                list = jt.queryForList("select startdate from rm_teamchallenge where enddate is null or length(enddate) = 0");
                 String startdate = list.get(0).get("startdate").toString();
                 c.setTime(sdf.parse(startdate));
                 newList = sortUpdateList(newList);
@@ -147,7 +147,7 @@ public class TeamchallengeThread extends BaseThread {
                     while(c.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY && c.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
                         c.add(Calendar.DATE, 1);
                     }
-                    jt.update("update rm_teamchallenge set enddate = ? where enddate is null", new Object[]{sdf.format(c.getTime())});
+                    jt.update("update rm_teamchallenge set enddate = ? where enddate is null or length(enddate) = 0", new Object[]{sdf.format(c.getTime())});
                     c.add(Calendar.DATE, 1);
                     jt.update("insert into rm_teamchallenge(startdate, totalindex, songid, level, `key`,targettype, targetnumber) values(?, ?,?,?,?,?,?)",
                               new Object[]{sdf.format(c.getTime()), obj[0], obj[1], obj[2], obj[3], obj[4], obj[5]});

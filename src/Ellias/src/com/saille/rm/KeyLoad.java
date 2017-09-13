@@ -206,7 +206,8 @@ public class KeyLoad extends Thread {
                     System.out.println(key + "£¬»®¼ü");
                 }
             } else if(b == 3 || b == -93) { //03, a3
-//                System.out.println("03/a3");
+                key++;
+                System.out.println("03/a3");
 //                return 0;
 //                int ii = bb[7] >= 0 ? bb[7] : (256 + bb[7]);
 //                key += Math.round(((bb[8] * 256 + ii) / (60000d / bpm / 4d))) + 1;

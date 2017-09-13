@@ -80,21 +80,23 @@
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     JdbcTemplate jt = new JdbcTemplate(ds);
     BaseJdbcDao dao = (BaseJdbcDao) GlobalContext.getContextBean(EmployeeDao.class);
+    int songid;
 
+    /* 检查mp3的md5是否存在 */
+    boolean mp3exist = false;
+    List<Map<String, Object>> list = jt.queryForList("select * from rm_customsong where md5 = ? and path = ?", new Object[]{mp3md5, path});
+    if(list.size() > 0) {
+        songid = ((Number)list.get(0).get("id")).intValue();
+        mp3exist = true;
+    } else {
+        songid = dao.getId("RM_CUSTOMSONG");
+    }
     System.out.println("保存自制谱信息");
-    Object[] objs = new Object[7];
-    objs[0] = name;
-    objs[1] = path;
-    objs[2] = author;
-    objs[3] = mp3md5;
-    objs[4] = length;
-    int songid = dao.getId("RM_CUSTOMSONG");
-    objs[5] = songid;
-    objs[6] = memo;
-    jt.update("insert into rm_customsong(name, path, author, md5, length, id, memo) values(?,?,?,?,?,?,?)", objs);
     List<String> sortedkey = sortKey(ranks);
     int prvkey = 0;
     int keycount = 1;
+    Object[] objs;
+    List<Object[]> insertparams = new ArrayList<Object[]>();
     for(int i = 0; i < sortedkey.size(); i++) {
         String key = sortedkey.get(i);
         objs = new Object[6];
@@ -103,6 +105,10 @@
         objs[1] = newkey;
         if(newkey == prvkey) {
             keycount++;
+            if(keycount > 3) {
+                out.println(prvkey + "key的谱面数量超过3个");
+                return;
+            }
         } else {
             prvkey = newkey;
             keycount = 1;
@@ -111,32 +117,50 @@
         objs[3] = ((double)((int)(ranks.get(key)[0] * 1000))) / 1000d;
         objs[4] = ((double)((int)(ranks.get(key)[1] * 1000))) / 1000d;
         objs[5] = imdmd5.get(key);
-        jt.update("insert into rm_customsongimd(songid, `key`, `level`, rank, difficulty, imdmd5) values(?,?,?,?,?,?)", objs);
+        insertparams.add(objs);
+    }
+    for(Object[] obj : insertparams) {
+        jt.update("insert into rm_customsongimd(songid, `key`, `level`, rank, difficulty, imdmd5) values(?,?,?,?,?,?)", obj);
     }
 
+    if(!mp3exist) {
+        objs = new Object[7];
+        objs[0] = name;
+        objs[1] = path;
+        objs[2] = author;
+        objs[3] = mp3md5;
+        objs[4] = length;
+        objs[5] = songid;
+        objs[6] = memo;
+        jt.update("insert into rm_customsong(name, path, author, md5, length, id, memo) values(?,?,?,?,?,?,?)", objs);
+
+    }
     /* 保存文件 */
     System.out.println("保存文件");
     Map<String, byte[]> imdnames = new HashMap<String, byte[]>();
     String dir = Setting.getSettingString("RM_PATH") + "zizhi" + File.separator + path;
-    File directory = new File(dir);
-    directory.mkdirs();
-    File mp3file = new File(dir + File.separator + path + ".mp3");
-    mp3file.createNewFile();
-    FileOutputStream fos = new FileOutputStream(mp3file);
-    fos.write(mp3Bytes);
-    fos.close();
 
-    File pngfile = new File(dir + File.separator + path + ".png");
-    pngfile.createNewFile();
-    fos = new FileOutputStream(pngfile);
-    fos.write(pngBytes[1]);
-    fos.close();
+    if(!mp3exist) {
+        File directory = new File(dir);
+        directory.mkdirs();
+        File mp3file = new File(dir + File.separator + path + ".mp3");
+        mp3file.createNewFile();
+        FileOutputStream fos = new FileOutputStream(mp3file);
+        fos.write(mp3Bytes);
+        fos.close();
 
-    File pnghdfile = new File(dir + File.separator + path + "_title_ipad.png");
-    pnghdfile.createNewFile();
-    fos = new FileOutputStream(pnghdfile);
-    fos.write(pngBytes[0]);
-    fos.close();
+        File pngfile = new File(dir + File.separator + path + ".png");
+        pngfile.createNewFile();
+        fos = new FileOutputStream(pngfile);
+        fos.write(pngBytes[1]);
+        fos.close();
+
+        File pnghdfile = new File(dir + File.separator + path + "_title_ipad.png");
+        pnghdfile.createNewFile();
+        fos = new FileOutputStream(pnghdfile);
+        fos.write(pngBytes[0]);
+        fos.close();
+    }
 
     prvkey = 0;
     keycount = 1;
@@ -160,7 +184,7 @@
         String filename = path + "_" + newkey + "k_" + level + ".imd";
         File imdfile = new File(dir + File.separator + filename);
         imdfile.createNewFile();
-        fos = new FileOutputStream(imdfile);
+        FileOutputStream fos = new FileOutputStream(imdfile);
         fos.write(files.get(imdkey));
         fos.close();
         imdnames.put(filename, files.get(imdkey));
@@ -168,12 +192,14 @@
 
     /* 保存OSS */
     System.out.println("上传OSS");
-    OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".mp3", mp3Bytes);
     for(String key : imdnames.keySet()) {
         OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + key, imdnames.get(key));
     }
-    OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".png", pngBytes[1]);
-    OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + "_title_ipad.png", pngBytes[0]);
+    if(!mp3exist) {
+        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".mp3", mp3Bytes);
+        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".png", pngBytes[1]);
+        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + "_title_ipad.png", pngBytes[0]);
+    }
 
     /* 清理session */
     request.getSession().removeAttribute("rm_customsong_param");
