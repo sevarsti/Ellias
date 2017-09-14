@@ -176,7 +176,7 @@
                     item.getInputStream().read(filebytes);
                     String tmpname = files.size() + "_" + item.getName() + now;
                     files.put(tmpname, filebytes);
-                    ranks.put(tmpname, new double[]{ImdUtils.calcRank(filebytes), ImdUtils.calcDifficult(filebytes), ImdUtils.getKey(filebytes)});
+                    ranks.put(tmpname, new double[]{ImdUtils.calcRank(filebytes), ImdUtils.calcDifficult(filebytes), ImdUtils.getKey(filebytes), ImdUtils.getTotalKeys(filebytes)});
                     imdmd5.put(tmpname, UtilFunctions.md5(filebytes));
                     maxlength = Math.max(maxlength, ImdUtils.getLength(filebytes) / 1000);
                     double newbpm = ImdUtils.getBpm(filebytes);
@@ -270,7 +270,7 @@
     request.getSession().setAttribute("rm_customsong_param", params);
     request.getSession().setAttribute("rm_customsong_mp3bytes", mp3Bytes);
     request.getSession().setAttribute("rm_customsong_imdbytes", files);
-    request.getSession().setAttribute("rm_customsong_imdranks", ranks); //rank, difficulty, key
+    request.getSession().setAttribute("rm_customsong_imdranks", ranks); //rank, difficulty, key,totalkey
     request.getSession().setAttribute("rm_customsong_imdmd5s", imdmd5);
     request.getSession().setAttribute("rm_customsong_imgs", pngBytes);
 %>
@@ -278,37 +278,37 @@
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black">
     <tr>
         <td class="fieldname">名字</td>
-        <td class="fieldvalue" colspan="4">
+        <td class="fieldvalue" colspan="5">
             <%=params.get("name")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">路径</td>
-        <td class="fieldvalue" colspan="4">
+        <td class="fieldvalue" colspan="5">
             <%=params.get("path")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">作者</td>
-        <td class="fieldvalue" colspan="4">
+        <td class="fieldvalue" colspan="5">
             <%=params.get("author")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">备注</td>
-        <td class="fieldvalue" colspan="4">
+        <td class="fieldvalue" colspan="5">
             <%=params.get("memo")%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">长度</td>
-        <td class="fieldvalue" colspan="4">
+        <td class="fieldvalue" colspan="5">
             <%=RMUtils.convertLength(maxlength)%>
         </td>
     </tr>
     <tr>
         <td class="fieldname">MD5</td>
-        <td class="fieldvalue" colspan="4">
+        <td class="fieldvalue" colspan="5">
             <%=params.get("md5")%>
         </td>
     </tr>
@@ -322,6 +322,9 @@
         </td>
         <td class="head">
             难度
+        </td>
+        <td class="head">
+            键数
         </td>
         <td class="head">
             MD5
@@ -342,6 +345,9 @@
         </td>
         <td class="fieldvalue">
             <%=df.format(ranks.get(key)[1])%>
+        </td>
+        <td class="fieldvalue">
+            <%=(int)ranks.get(key)[3]%>
         </td>
         <td class="fieldvalue">
             <%=imdmd5.get(key)%>

@@ -38,17 +38,20 @@
         <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 1, false,0)">路径</td>
         <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 2, false,0)">作者</td>
         <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 3, false,0)">长度</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 3, false,0)">BPM</td>
         <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 4, false,0)">md5</td>
         <td>键数</td>
         <td>难度</td>
         <td>Rank</td>
         <td>Difficulty</td>
+        <td>最大连击</td>
         <td>md5</td>
     </tr>
 <%
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+    DecimalFormat df = new DecimalFormat("0.#");
     JdbcTemplate jt = new JdbcTemplate(ds);
-    List<Map<String, Object>> songs = jt.queryForList("select a.*, b.key, b.level, b.rank, b.difficulty, b.imdmd5 from rm_customsong a left join rm_customsongimd b on a.id = b.songid order by a.name, a.author, b.key, b.level");
+    List<Map<String, Object>> songs = jt.queryForList("select a.*, b.key, b.level, b.rank, b.difficulty, b.imdmd5, b.totalkey from rm_customsong a left join rm_customsongimd b on a.id = b.songid order by a.name, a.author, b.key, b.level");
     for(int i = 0; i < songs.size(); i++) {
         Map<String, Object> m = songs.get(i);
 %>
@@ -56,12 +59,14 @@
         <td><%=m.get("name")%></td>
         <td><%=m.get("path")%></td>
         <td><%=m.get("author")%></td>
-        <td><%=RMUtils.convertLength(((Number)m.get("length")).intValue())%></td>
+        <td><%=RMUtils.convertLength(((Number) m.get("length")).intValue())%></td>
+        <td><%=df.format(((Number)m.get("BPM")).doubleValue())%></td>
         <td><%=m.get("md5")%></td>
         <td><%=m.get("key")%></td>
         <td><%=convertLevel(((Number)m.get("level")).intValue())%></td>
         <td><%=m.get("rank")%></td>
         <td><%=m.get("difficulty")%></td>
+        <td><%=m.get("totalkey")%></td>
         <td><%=m.get("imdmd5")%></td>
     </tr>
 <%
@@ -80,7 +85,7 @@
             else if(table.rows[i].cells[1].innerHTML == table.rows[i - 1].cells[1].innerHTML && i == (table.rows.length - 1))
             {
                 rowLength += 1;
-                for(var cols = 3; cols >= 0; cols--)
+                for(var cols = 4; cols >= 0; cols--)
                 {
                     table.rows[startRow].cells[cols].rowSpan = rowLength;
                     for(var j = startRow + 1; j < startRow + rowLength; j++)

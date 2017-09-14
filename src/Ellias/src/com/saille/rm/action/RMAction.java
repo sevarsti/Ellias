@@ -162,7 +162,7 @@ public class RMAction extends AbstractDispatchAction{
             sb.append("    <m_ush6KeyNormal>").append(levels[2][1]).append(" </m_ush6KeyNormal>\r\n");
             sb.append("    <m_ush6KeyHard>").append(levels[2][2]).append(" </m_ush6KeyHard>\r\n");
             sb.append("    <m_iPrice>0 </m_iPrice>\r\n");
-            sb.append("    <m_szNoteNumber></m_szNoteNumber>\r\n");
+            sb.append("    <m_szNoteNumber>482,710,910,483,716,912,483,725,919</m_szNoteNumber>\r\n");//todo
             sb.append("    <m_szProductID></m_szProductID>\r\n");
             sb.append("    <m_iVipFlag>0 </m_iVipFlag>\r\n");
             sb.append("    <m_bIsHide>0x0 </m_bIsHide>\r\n");

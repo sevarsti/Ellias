@@ -72,7 +72,7 @@
     byte[] mp3Bytes = (byte[]) request.getSession().getAttribute("rm_customsong_mp3bytes");
     int length = Integer.parseInt(params.get("length"));
     Map<String, byte[]> files = (Map<String, byte[]>)request.getSession().getAttribute("rm_customsong_imdbytes");
-    Map<String, double[]> ranks = (Map<String, double[]>)request.getSession().getAttribute("rm_customsong_imdranks"); //key, rank, difficulty
+    Map<String, double[]> ranks = (Map<String, double[]>)request.getSession().getAttribute("rm_customsong_imdranks"); //rank, difficulty, key, totalkey
     Map<String, String> imdmd5 = (Map<String, String>)request.getSession().getAttribute("rm_customsong_imdmd5s");
     byte[][] pngBytes = (byte[][])request.getSession().getAttribute("rm_customsong_imgs"); //0=小图，1=大图
 
@@ -86,21 +86,27 @@
     /* 检查mp3的md5是否存在 */
     boolean mp3exist = false;
     List<Map<String, Object>> list = jt.queryForList("select * from rm_customsong where md5 = ? and path = ?", new Object[]{mp3md5, path});
+    int[] existcount = new int[3]; //新增谱面需要记录当前谱面数量
     if(list.size() > 0) {
         songid = ((Number)list.get(0).get("id")).intValue();
         mp3exist = true;
+        list = jt.queryForList("select `key`, count(1) as c from rm_customsongimd where songid = ? group by `key`", new Object[]{songid});
+        for(Map<String, Object> m : list) {
+            existcount[((Number)m.get("key")).intValue() - 4] = ((Number)m.get("c")).intValue();
+        }
     } else {
         songid = dao.getId("RM_CUSTOMSONG");
     }
+
     System.out.println("保存自制谱信息");
     List<String> sortedkey = sortKey(ranks);
-    int prvkey = 0;
-    int keycount = 1;
+    int prvkey = 4;
+    int keycount = existcount[0];
     Object[] objs;
     List<Object[]> insertparams = new ArrayList<Object[]>();
     for(int i = 0; i < sortedkey.size(); i++) {
         String key = sortedkey.get(i);
-        objs = new Object[6];
+        objs = new Object[7];
         objs[0] = songid;
         int newkey = (int)ranks.get(key)[2];
         objs[1] = newkey;
@@ -112,20 +118,21 @@
             }
         } else {
             prvkey = newkey;
-            keycount = 1;
+            keycount = existcount[newkey - 4] + 1;
         }
         objs[2] = keycount;
         objs[3] = ((double)((int)(ranks.get(key)[0] * 1000))) / 1000d;
         objs[4] = ((double)((int)(ranks.get(key)[1] * 1000))) / 1000d;
         objs[5] = imdmd5.get(key);
+        objs[6] = (int)(ranks.get(key)[3]);
         insertparams.add(objs);
     }
     for(Object[] obj : insertparams) {
-        jt.update("insert into rm_customsongimd(songid, `key`, `level`, rank, difficulty, imdmd5) values(?,?,?,?,?,?)", obj);
+        jt.update("insert into rm_customsongimd(songid, `key`, `level`, rank, difficulty, imdmd5, totalkey) values(?,?,?,?,?,?,?)", obj);
     }
 
     if(!mp3exist) {
-        objs = new Object[7];
+        objs = new Object[8];
         objs[0] = name;
         objs[1] = path;
         objs[2] = author;
@@ -164,8 +171,8 @@
         fos.close();
     }
 
-    prvkey = 0;
-    keycount = 1;
+    prvkey = 4;
+    keycount = existcount[0];
     for(int i = 0; i < sortedkey.size(); i++) {
         String imdkey = sortedkey.get(i);
         int newkey = (int)ranks.get(imdkey)[2];
@@ -173,7 +180,7 @@
             keycount++;
         } else {
             prvkey = newkey;
-            keycount = 1;
+            keycount = existcount[newkey - 4] + 1;
         }
         String level = "";
         if(keycount == 3) {

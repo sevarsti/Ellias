@@ -87,7 +87,9 @@ public class ImdUtils {
             }
         }
         d = quicksort(d, 0, d.size());
-        d.add(0, new double[]{0, 0});
+        if(d.get(0)[0] != 0d) {
+            d.add(0, new double[]{0, 0});
+        }
         double r = 0;
         for(int i = 1; i < d.size(); i++) {
             r += d.get(i)[1] / (d.get(i)[0] - d.get(i-1)[0]) * 120;
