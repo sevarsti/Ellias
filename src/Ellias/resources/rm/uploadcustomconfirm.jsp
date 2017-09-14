@@ -347,7 +347,7 @@
             <%=df.format(ranks.get(key)[1])%>
         </td>
         <td class="fieldvalue">
-            <%=(int)ranks.get(key)[3]%>
+            <%=new DecimalFormat("0").format(ranks.get(key)[3])%>
         </td>
         <td class="fieldvalue">
             <%=imdmd5.get(key)%>

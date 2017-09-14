@@ -93,27 +93,32 @@ public class RMAction extends AbstractDispatchAction{
         }
         StringBuilder sb = new StringBuilder();
         int[][] levels = new int[3][3];
+        int[][] totalkeys = new int[3][3];
         String bpm = "";
         DecimalFormat df = new DecimalFormat("0.#");
         for(int i = 0; i < songs.size(); i++) {
             Map<String, String> m = songs.get(i);
             if(m.get("type").equals("1")) {
-                list = jt.queryForList("select songlevel, `key`, `level` from rm_songkey where songid = ?", new Object[]{Integer.parseInt(m.get("songid"))});
+                list = jt.queryForList("select songlevel, `key`, `level`, totalkey from rm_songkey where songid = ?", new Object[]{Integer.parseInt(m.get("songid"))});
                 for(Map<String, Object> map : list) {
                     int key = ((Number)map.get("key")).intValue();
                     int level = ((Number)map.get("level")).intValue();
                     int songlevel = ((Number)map.get("songlevel")).intValue();
+                    int totalkey = ((Number)map.get("totalkey")).intValue();
                     levels[key - 4][level - 1] = songlevel;
+                    totalkeys[key - 4][level - 1] = totalkey;
                 }
                 Map<String, Object> map = jt.queryForMap("select bpm from rm_song where songid = ?", new Object[]{Integer.parseInt(m.get("songid"))});
                 bpm = df.format(((Number)map.get("bpm")).doubleValue());
             } else {
-                list = jt.queryForList("select difficulty, `key`, `level` from rm_customsongimd where songid = ?", new Object[]{Integer.parseInt(m.get("objid"))});
+                list = jt.queryForList("select difficulty, `key`, `level`, totalkey from rm_customsongimd where songid = ?", new Object[]{Integer.parseInt(m.get("objid"))});
                 for(Map<String, Object> map : list) {
                     int key = ((Number)map.get("key")).intValue();
                     int level = ((Number)map.get("level")).intValue();
                     int difficulty = ((Number)map.get("difficulty")).intValue();
+                    int totalkey = ((Number)map.get("totalkey")).intValue();
                     levels[key - 4][level - 1] = difficulty;
+                    totalkeys[key - 4][level - 1] = totalkey;
                 }
                 Map<String, Object> map = jt.queryForMap("select bpm from rm_customsong where songid = ?", new Object[]{Integer.parseInt(m.get("objid"))});
                 bpm = df.format(((Number)map.get("bpm")).doubleValue());
@@ -162,7 +167,16 @@ public class RMAction extends AbstractDispatchAction{
             sb.append("    <m_ush6KeyNormal>").append(levels[2][1]).append(" </m_ush6KeyNormal>\r\n");
             sb.append("    <m_ush6KeyHard>").append(levels[2][2]).append(" </m_ush6KeyHard>\r\n");
             sb.append("    <m_iPrice>0 </m_iPrice>\r\n");
-            sb.append("    <m_szNoteNumber>482,710,910,483,716,912,483,725,919</m_szNoteNumber>\r\n");//todo
+            sb.append("    <m_szNoteNumber>");
+            for(int j = 0; j < 3; j++) {
+                for(int k = 0; k < 3; k++) {
+                    if(j != 0 || k != 0) {
+                        sb.append(",");
+                    }
+                    sb.append(totalkeys[j][k]);
+                }
+            }
+            sb.append("</m_szNoteNumber>\r\n");
             sb.append("    <m_szProductID></m_szProductID>\r\n");
             sb.append("    <m_iVipFlag>0 </m_iVipFlag>\r\n");
             sb.append("    <m_bIsHide>0x0 </m_bIsHide>\r\n");

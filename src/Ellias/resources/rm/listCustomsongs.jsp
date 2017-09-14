@@ -34,12 +34,12 @@
 <body>
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black" id="table">
     <tr class="head">
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 0, false,0)">歌曲</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 1, false,0)">路径</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 2, false,0)">作者</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 3, false,0)">长度</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 3, false,0)">BPM</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 4, false,0)">md5</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 0, false,0);merge();">歌曲</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 1, false,0);merge();">路径</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 2, false,0);merge();">作者</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 3, true,0);merge();">长度</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 4, true,0);merge();">BPM</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 5, false,0);merge();">md5</td>
         <td>键数</td>
         <td>难度</td>
         <td>Rank</td>
@@ -59,8 +59,8 @@
         <td><%=m.get("name")%></td>
         <td><%=m.get("path")%></td>
         <td><%=m.get("author")%></td>
-        <td><%=RMUtils.convertLength(((Number) m.get("length")).intValue())%></td>
-        <td><%=df.format(((Number)m.get("BPM")).doubleValue())%></td>
+        <td value="<%=((Number) m.get("length")).intValue()%>"><%=RMUtils.convertLength(((Number) m.get("length")).intValue())%></td>
+        <td value="<%=((Number)m.get("BPM")).doubleValue()%>"><%=df.format(((Number)m.get("BPM")).doubleValue())%></td>
         <td><%=m.get("md5")%></td>
         <td><%=m.get("key")%></td>
         <td><%=convertLevel(((Number)m.get("level")).intValue())%></td>
@@ -73,9 +73,33 @@
     }
 %>
 <script type="text/javascript">
-    var table = document.getElementById("table");
-//    for(var cols = 3; cols >= 0; cols--) {
+    function merge()
+    {
+        var table = document.getElementById("table");
         var startRow = 1, rowLength = 1;
+        var rowclass = 1;
+
+        for(var i = 2; i < table.rows.length; i++)
+        {
+            if(table.rows[i].cells.length < 12)
+            {
+                for(var j = 5; j >= 0; j--)
+                {
+                    table.rows[i].insertCell(0);
+                    table.rows[i].cells[0].innerHTML = table.rows[i - 1].cells[j].innerHTML;
+                    var atts = table.rows[i - 1].cells[j].attributes;
+                    for(var k = 0; k < atts.length; k++) {
+                        table.rows[i].cells[0].setAttribute(atts[k].name, atts[k].value);
+                    }
+                    table.rows[startRow].cells[j].rowspan = table.rows[startRow].cells[j].rowspan - 1;
+                }
+            }
+            else
+            {
+                startRow = i;
+            }
+        }
+        startRow = 1, rowLength = 1;
         for(var i = 2; i < table.rows.length; i++)
         {
             if(table.rows[i].cells[1].innerHTML == table.rows[i - 1].cells[1].innerHTML && i != (table.rows.length - 1))
@@ -84,8 +108,13 @@
             }
             else if(table.rows[i].cells[1].innerHTML == table.rows[i - 1].cells[1].innerHTML && i == (table.rows.length - 1))
             {
+                table.rows[startRow].className = 'row' + rowclass;
                 rowLength += 1;
-                for(var cols = 4; cols >= 0; cols--)
+                for(var j = startRow + 1; j < startRow + rowLength; j++)
+                {
+                    table.rows[j].className = 'row' + rowclass;
+                }
+                for(var cols = 5; cols >= 0; cols--)
                 {
                     table.rows[startRow].cells[cols].rowSpan = rowLength;
                     for(var j = startRow + 1; j < startRow + rowLength; j++)
@@ -95,10 +124,16 @@
                 }
                 rowLength = 1;
                 startRow = i;
+                rowclass = 3 - rowclass;
             }
             else
             {
-                for(var cols = 3; cols >= 0; cols--)
+                table.rows[startRow].className = 'row' + rowclass;
+                for(var j = startRow + 1; j < startRow + rowLength; j++)
+                {
+                    table.rows[j].className = 'row' + rowclass;
+                }
+                for(var cols = 5; cols >= 0; cols--)
                 {
                     table.rows[startRow].cells[cols].rowSpan = rowLength;
                     for(var j = startRow + 1; j < startRow + rowLength; j++)
@@ -108,6 +143,7 @@
                 }
                 rowLength = 1;
                 startRow = i;
+                rowclass = 3 - rowclass;
             }
         }
         if(rowLength > 1)
@@ -118,7 +154,8 @@
                 table.rows[j].deleteCell(cols);
             }
         }
-//    }
+    }
+    merge();
 </script>
 </body>
 </html>
