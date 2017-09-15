@@ -3,15 +3,16 @@
 <struts-config>
     <form-beans>
         <form-bean name="changeBpmForm" type="com.saille.rm.form.ChangeBpmForm" />
+        <form-bean name="rmForm" type="com.saille.rm.form.RMForm" />
     </form-beans>
 
     <action-mappings>
         <action path="/rm"
-                type="com.saille.rm.action.ChangeBpmAction"
-                name="changeBpmForm"
+                type="com.saille.rm.action.RMAction"
+                name="rmForm"
                 parameter="method"
                 scope="request">
-            <forward name="error" path="/rm/changebpm.jsp"/>
+            <!--<forward name="error" path="/rm/changebpm.jsp"/>-->
             <forward name="success" path="/rm/success.jsp"/>
         </action>
 

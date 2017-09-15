@@ -102,7 +102,8 @@
                 col++;
         %>
         <td>
-            <input type="checkbox" name="table" value="<%=t%>" <%=(t.startsWith("sys_") || t.equalsIgnoreCase("setting")) ? "" : "checked"%> onclick="checkfull();"/><%=t%>
+            <input type="checkbox" name="table" id="<%=t%>" value="<%=t%>" <%=(t.startsWith("sys_") || t.equalsIgnoreCase("setting")) ? "" : "checked"%> onclick="checkfull();"/>
+            <label for="<%=t%>" style="cursor: pointer;"><%=t%></label>
         </td>
         <%
             }
@@ -115,6 +116,8 @@
         </tr>
     </table>
     <input type="checkbox" id="full" name="full" onclick="updatefull();"/>
+    <label for="full" style="cursor: pointer;">全选</label>
+    <br/>
     <input type="submit" value="确定"/>
 </form>
 <script type="text/javascript">

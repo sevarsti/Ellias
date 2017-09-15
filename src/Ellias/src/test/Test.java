@@ -4,8 +4,11 @@ import com.baidubce.util.DateUtils;
 import com.baidubce.util.HttpUtils;
 import com.ibatis.db.util.ScriptRunner;
 import com.saille.rm.KeyLoad;
+import com.saille.rm.util.ImdUtils;
+import com.saille.rm.util.RMUtils;
 import com.saille.util.CommonUtils;
 import com.saille.util.IOUtils;
+import com.saille.util.UtilFunctions;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -28,6 +31,7 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.net.Socket;
 import java.net.URLEncoder;
 import java.net.URLConnection;
 import java.net.URL;
@@ -41,6 +45,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,120 +58,92 @@ public class Test{
     public final static int size = 10;
     public static boolean ok[] = new boolean[10];
     static double r = 0;
-    static List<double[]> d = new ArrayList<double[]>();
-    private static double getLong(int i) {
-        return ((double)i / 120.0) / 4.0;
-    }
-    private static int indexOf(int t) {
-        for(int i=0;i<d.size();i++){
-            if(d.get(i)[0] == t) {
-                return i;
+    private static void checkdir(File f) throws Exception {
+        if(f.isDirectory()) {
+            File[] ff = f.listFiles();
+            for(File fff : ff) {
+                checkdir(fff);
             }
-        }
-        return-1;
-    }
-    private static void addData(int t, double v) {
-        int l = indexOf(t);
-        if(l != -1) {
-            d.get(l)[1] += v;
         } else {
-            d.add(new double[]{t, v});
-        }
-    }
-
-    private static double getSlide(int t, int key) {
-//        data[index]["ActionData"][i] = [];
-//        data[index]["ActionData"][i][2] = buffer[index].getInt16(p, true);key type
-//        p += 2;
-//        data[index]["ActionData"][i][0] = buffer[index].getInt32(p, true);offset
-//        p += 4;
-//        data[index]["ActionData"][i][1] = buffer[index].getInt8(p, true);key place
-//        p += 1;
-//        data[index]["ActionData"][i][3] = buffer[index].getInt32(p, true);length
-//        p += 4;
-        return Math.abs((double)t) / (double)key;
-    }
-
-    private static double calcDifficult() throws Exception {
-        File f = new File("D:\\rm\\song\\canonrock\\canonrock_4k_HD.imd");
-        int key = 4;
-        FileInputStream fis = new FileInputStream(f);
-        byte[] bytes = new byte[4];
-        fis.skip(4);
-        fis.read(bytes);
-        int size = KeyLoad.byte2int(bytes);
-        fis.skip(size * 12);
-        fis.skip(2);
-        fis.read(bytes);
-        size = KeyLoad.byte2int(bytes);
-        bytes = new byte[11];
-        for(int i = 0; i < size; i++) {
-            fis.read(bytes);
-            int timeoffset = byte2int(new byte[]{bytes[2], bytes[3], bytes[4], bytes[5]});
-            int slidewidth = byte2int(new byte[]{bytes[7], bytes[8], bytes[9], bytes[10]});
-            if(slidewidth > 1000000) {
-                slidewidth = bytes[10];
-//                slidewidth = 4294967295 - slidewidth;
-            }
-            switch(bytes[0]) {
-                case 0x00:
-                    addData(timeoffset, 1);
-                    break;
-                case 0x01:
-                    addData(timeoffset, 2 + getSlide(slidewidth, key));
-                    break;
-                case 0x61:case -95: //A1
-                    addData(timeoffset, 1 + getSlide(slidewidth, key));
-                    break;
-                case 0x21:
-                    addData(timeoffset, 0 + getSlide(slidewidth, key));
-                    break;
-                case 0x02:case 0x62:case 0x22:case -94: //A2
-                    addData(timeoffset, 1 + getLong(slidewidth));
-                    break;
-            }
-        }
-        fis.close();
-        d = quicksort(d, 0, d.size());
-        d.add(0, new double[]{0, 0});
-        for(int i = 1; i < d.size(); i++) {
-            r += d.get(i)[1] / (d.get(i)[0] - d.get(i-1)[0]) * 120;
-        }
-        return Math.sqrt(r / 16);
-    }
-    private static List<double[]> quicksort(List<double[]> list, int start, int end) {
-        if(start >= end) {
-            return list;
-        }
-        int pos = start;
-        for(int i = pos + 1; i < end; i++) {
-            boolean needSwap = false;
-            if((int)list.get(i)[0] < (int)list.get(pos)[0]) {
-                needSwap = true;
-            }
-
-            if(needSwap) {
-                double[] tmp = list.get(i);
-                for(int m = i; m > pos; m--) {
-                    list.set(m, list.get(m - 1));
+            if(f.getName().toLowerCase().endsWith(".mp3")) {
+                byte[] bytes = new byte[(int)f.length()];
+                FileInputStream fis = new FileInputStream(f);
+                fis.read(bytes);
+                fis.close();
+                String md5 = UtilFunctions.md5(bytes);
+                Socket s = new Socket("106.15.203.76", 9527);
+                OutputStream os = s.getOutputStream();
+                InputStream is = s.getInputStream();
+                os.write(md5.getBytes());
+                bytes = new byte[4];
+                is.read(bytes);
+                String str = new String(bytes);
+                if("0001".equals(str)) {
+                    System.out.println(f.getParentFile().getCanonicalPath());
                 }
-                list.set(pos, tmp);
             }
-            pos = i;
         }
-        quicksort(list, start, pos);
-        quicksort(list, pos + 1, end);
-        return list;
     }
-
     public static void main(String[] args) {
 //        int i = 0;
         try {
             if(true) {
-//                byte[] bb = new byte[]{-127,-127,-127,-126};
-//                int i = byte2int(bb);
-//                System.out.println(i);
-                System.out.println(calcDifficult());
+                File f = new File("D:\\temp\\a\\out.zip");
+                if(!f.exists()) {
+                    f.createNewFile();
+                }
+                FileOutputStream fos = new FileOutputStream(f);
+                ZipOutputStream zos = new ZipOutputStream(fos);
+                zos.putNextEntry(new ZipEntry("a/b.txt"));
+                zos.write("asdf".getBytes());
+                zos.close();
+                fos.close();
+                System.exit(0);
+            }
+            if(false) {
+                File baseDir = new File("D:\\Ellias\\rm\\Ms家族自制谱集合\\自制谱1（改好名）");
+                checkdir(baseDir);
+//                Socket s = new Socket("106.15.203.76", 9527);
+//                OutputStream os = s.getOutputStream();
+//                InputStream is = s.getInputStream();
+//                os.write("cfceada950f21a27c885da709a8854f8".getBytes());
+//                byte[] bytes = new byte[4];
+//                is.read(bytes);
+//                System.out.println(new String(bytes));
+                System.exit(0);
+            }
+            if(false) {
+                while(true) {
+                    System.out.println("input dir:");
+                    String dir = IOUtils.readLine();
+                    File[] ff = new File(dir).listFiles();
+                    for(File f : ff) {
+                        if(f.getName().toLowerCase().endsWith(".imd") ||
+                                f.getName().toLowerCase().endsWith(".mp3")) {
+                            byte[] bytes = new byte[(int)f.length()];
+                            FileInputStream fis = new FileInputStream(f);
+                            fis.read(bytes);
+                            fis.close();
+                            if(f.getName().toLowerCase().endsWith(".imd")) {
+                                System.out.println(f.getName() + "\t" + ImdUtils.getBpm(bytes) + "\t" + ImdUtils.calcDifficult(bytes) + "\t" + UtilFunctions.md5(bytes));
+                            } else {
+                                System.out.println(f.getName() + "\t" + UtilFunctions.md5(bytes));
+                            }
+                        }
+                    }
+                }
+            }
+            if(false) {
+                while(true) {
+                    System.out.println("input filename:");
+                    String file = IOUtils.readLine();
+                    File f = new File(file);
+                    FileInputStream fis = new FileInputStream(f);
+                    byte[] bytes = new byte[(int)f.length()];
+                    fis.read(bytes);
+                    fis.close();
+                    System.out.println(UtilFunctions.md5(bytes));
+                }
             }
             if(false) {
                 URL url = new URL("http://ll.webpatch.sdg-china.com/ll/prod/4.0.83/package/android/813d94519b012ad49973308fb0d067ec.1493032106");
@@ -244,7 +221,7 @@ public class Test{
 //                String cards = CommonUtils.getString(resp.getEntity().getContent(), "GBK");
 
             }
-            if(true) {
+            if(false) {
                 String url = "http://ll.webpatch.sdg-china.com/ll/prod/4.0.83/micro_download/android/assets/image/unit/22003001/tx_u_22003001_normal_icon.texb";
                 DefaultHttpClient client = new DefaultHttpClient();
                 HttpGet gm = new HttpGet(url);
