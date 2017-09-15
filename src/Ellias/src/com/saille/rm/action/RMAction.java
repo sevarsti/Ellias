@@ -1,5 +1,9 @@
 package com.saille.rm.action;
 
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ListObjectsRequest;
+import com.aliyun.oss.model.ObjectListing;
+import com.saille.aliyun.OssUtils;
 import com.saille.rm.RMConstant;
 import com.saille.rm.form.RMForm;
 import com.saille.rm.util.RMUtils;
@@ -9,6 +13,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.FileCopyUtils;
 import servlet.AbstractDispatchAction;
 import servlet.GlobalContext;
 
@@ -229,6 +234,9 @@ public class RMAction extends AbstractDispatchAction{
             List<String> usedSongids = new ArrayList<String>();
             for(Map<String, Object> m : list) {
                 String songId = m.get("songid").toString();
+                if(songId.compareTo("251") >= 0 && songId.compareTo("262") <= 0) { //过滤等级歌
+                    continue;
+                }
                 songIdList.add(songId);
 //                songIdMap.put(songId, m);
             }
@@ -236,7 +244,7 @@ public class RMAction extends AbstractDispatchAction{
             for(int i = 0; i < songs.size(); i++) {
                 if(songs.get(i).get("type").equals("1") && songIdList.contains(songs.get(i).get("songid"))) {
                     Map<String, String> m = songs.remove(i);
-                    usedSongids.add(songs.get(i).get("songid"));
+                    usedSongids.add(m.get("songid"));
                     songs.add(0, m);
                     hasCount++;
                 }
@@ -274,11 +282,11 @@ public class RMAction extends AbstractDispatchAction{
             sb.append("        <DataOffset>136 </DataOffset>\r\n");
             sb.append("    </resHeadExt>\r\n");
             sb.append("</TResHeadAll>\r\n");
-            int[][] levels = new int[3][3];
-            int[][] totalkeys = new int[3][3];
             String bpm = "";
             DecimalFormat df = new DecimalFormat("0.#");
             for(int i = 0; i < songs.size(); i++) {
+                int[][] levels = new int[3][3];
+                int[][] totalkeys = new int[3][3];
                 Map<String, String> m = songs.get(i);
                 if(m.get("type").equals("1")) {
                     list = jt.queryForList("select songlevel, `key`, `level`, totalkey from rm_songkey where songid = ?", new Object[]{Integer.parseInt(m.get("songid"))});
@@ -299,7 +307,7 @@ public class RMAction extends AbstractDispatchAction{
                         int level = ((Number)map.get("level")).intValue();
                         int difficulty = ((Number)map.get("difficulty")).intValue();
                         int totalkey = ((Number)map.get("totalkey")).intValue();
-                        levels[key - 4][level - 1] = difficulty;
+                        levels[key - 4][level - 1] = difficulty > 10 ? 10 : difficulty;
                         totalkeys[key - 4][level - 1] = totalkey;
                     }
                     Map<String, Object> map = jt.queryForMap("select bpm from rm_customsong where id = ?", new Object[]{Integer.parseInt(m.get("objid"))});
@@ -308,7 +316,7 @@ public class RMAction extends AbstractDispatchAction{
                 sb.append("<SongConfig_Client version=\"1\">\r\n");
                 sb.append("    <m_ushSongID>").append(m.get("targetid")).append("</m_ushSongID>\r\n");
                 sb.append("    <m_iVersion>0 </m_iVersion>\r\n");
-                sb.append("    <m_szSongName>").append(m.get("name")).append("</m_szSongName>\r\n");
+                sb.append("    <m_szSongName>").append(m.get("type").equals("1") ? "" : getKeyDesc(totalkeys)).append(" ").append(m.get("name")).append("</m_szSongName>\r\n");
                 sb.append("    <m_szPath>").append(m.get("targetpath")).append("</m_szPath>\r\n");
                 sb.append("    <m_szArtist></m_szArtist>\r\n");
                 sb.append("    <m_szComposer></m_szComposer>\r\n");
@@ -366,55 +374,133 @@ public class RMAction extends AbstractDispatchAction{
                 sb.append("    <m_bIsLevelReward>0x0 </m_bIsLevelReward>\r\n");
                 sb.append("</SongConfig_Client>\r\n");
             }
-            File f = new File("D:\\test.xml");
+            sb.append("</SongConfig_Client_Tab>\r\n");
+            File f = new File("F:\\temp\\a\\test.xml");
+            if(!f.exists()) {
+                f.createNewFile();
+            }
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(sb.toString().getBytes("UTF-8"));
             fos.close();
 
-            f = new File("D:\\temp\\a\\song.zip");
+            f = new File("F:\\temp\\a\\song.zip");
             if(!f.exists()) {
                 f.createNewFile();
             }
             fos = new FileOutputStream(f);
             ZipOutputStream zos = new ZipOutputStream(fos);
-            byte[] bytes = new byte[8192];
-            int bytecount = 0;
             FileInputStream fis;
+            byte[] bytes = new byte[4096];
+            int bytecount = 0;
             for(int i = 0; i < songs.size(); i++) {
                 Map<String, String> m = songs.get(i);
+                System.out.println(i + "/" + songs.size() + ":" + m.get("type") + "_" + m.get("path") + "->" + m.get("targetpath"));
+                String targetpath = m.get("targetpath");
                 if(m.get("type").equals("1")) { //官谱
                     File dir = new File(RMConstant.RM_ROOT + "song\\" + m.get("path"));
                     File[] files = dir.listFiles();
                     for(File file : files) {
-                        zos.putNextEntry(new ZipEntry("songs\\" + m.get("path") + "\\" + file.getName()));
+                        String oldname = file.getName();
+                        String newname;
+                        if(oldname.indexOf("_") >= 0) {
+                            newname = m.get("targetpath") + oldname.substring(oldname.indexOf("_"));
+                        } else {
+                            newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
+                        }
+                        zos.putNextEntry(new ZipEntry("songs\\" + m.get("path") + "\\" + newname));
                         fis = new FileInputStream(file);
-                        while((bytecount = fis.read(bytes)) > 0) {
+                        while ((bytecount = fis.read(bytes)) > 0) {
                             zos.write(bytes, 0, bytecount);
                         }
                         fis.close();
                     }
                 } else { //自制
-                    File dir = new File(RMConstant.RM_ROOT + "song\\" + m.get("targetpath"));
-                    File[] files = dir.listFiles();
-                    for(File file : files) {
-                        String oldname = file.getName();
-                        String newname = m.get("targetpath")
-                        zos.putNextEntry(new ZipEntry("songs\\" + m.get("targetpath") + "\\" + file.getName()));
-                        fis = new FileInputStream(file);
-                        while((bytecount = fis.read(bytes)) > 0) {
-                            zos.write(bytes, 0, bytecount);
+                    File dir = new File(RMConstant.RM_ROOT + "song\\" + m.get("path"));
+                    if(dir.exists()) { //本地有文件，不需要读取OSS
+                        File[] files = dir.listFiles();
+                        for(File file : files) {
+                            String oldname = file.getName();
+                            String newname;
+                            if(oldname.indexOf("_") >= 0) {
+                                newname = m.get("targetpath") + oldname.substring(oldname.indexOf("_"));
+                            } else {
+                                newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
+                            }
+                            zos.putNextEntry(new ZipEntry("songs\\" + m.get("targetpath") + "\\" + newname));
+                            fis = new FileInputStream(file);
+                            while ((bytecount = fis.read(bytes)) > 0) {
+                                zos.write(bytes, 0, bytecount);
+                            }
+                            fis.close();
                         }
-                        fis.close();
-                    }
+                    } else { //本地没有，需要从OSS下载
+                        final String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
+                        final String accessKeyId = OssUtils.getAccessKeyId();
+                        final String accessKeySecret = OssUtils.getAccessKeySecret();
+                        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
 
+                        ListObjectsRequest req = new ListObjectsRequest();
+                        req.setBucketName("ellias-ia");
+                        req.setPrefix("rm/zizhi/" + m.get("path") + "/");
+                        req.setDelimiter("/");
+                        ObjectListing objectListing = ossClient.listObjects(req);
+                        for(int j = 0; j < objectListing.getObjectSummaries().size(); j++) {
+                            InputStream ossIs = ossClient.getObject("ellias-ia", objectListing.getObjectSummaries().get(j).getKey()).getObjectContent();
+                            String oldname = objectListing.getObjectSummaries().get(j).getKey();
+                            oldname = oldname.substring(oldname.lastIndexOf("/") + 1);
+                            String newname;
+                            if(oldname.indexOf("_") >= 0) {
+                                newname = m.get("targetpath") + oldname.substring(oldname.indexOf("_"));
+                            } else {
+                                newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
+                            }
+                            zos.putNextEntry(new ZipEntry("songs\\" + m.get("targetpath") + "\\" + newname));
+                            while ((bytecount = ossIs.read(bytes)) > 0) {
+                                zos.write(bytes, 0, bytecount);
+                            }
+                            ossIs.close();
+                        }
+                        ossClient.shutdown();
+                    }
                 }
             }
+            zos.close();
+            fos.close();
             return null;
 //            return mapping.findForward("confirm");
         } catch(Exception ex) {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    private String getKeyDesc(int[][] keys) {
+        StringBuilder sb[] = new StringBuilder[3];
+        char[] desc = new char[]{'e', 'n', 'h'};
+        for(int i = 0; i < 3; i++) {
+            if(keys[i][0] > 0 && keys[i][1] > 0 && keys[i][2] > 0) {
+                sb[i] = new StringBuilder();
+                sb[i].append(i + 4);
+                sb[i].append("k");
+            } else if(keys[i][0] == 0 && keys[i][1] == 0 && keys[i][2] == 0) {
+                continue;
+            } else {
+                sb[i] = new StringBuilder();
+                sb[i].append(i + 4);
+                for(int j = 0; j < 3; j++) {
+                    if(keys[i][j] > 0) {
+                        sb[i].append(desc[j]);
+                    }
+                }
+            }
+        }
+        StringBuilder ret = new StringBuilder();
+        for(StringBuilder s : sb) {
+            if(s != null && s.length() > 0) {
+                ret.append(s);
+            }
+        }
+        return ret.toString();
     }
 
     private void quickSortToAddSongsByLength(List<Map<String, String>> list, int start, int end) {
