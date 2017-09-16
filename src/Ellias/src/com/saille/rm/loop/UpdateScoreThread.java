@@ -37,9 +37,9 @@ public class UpdateScoreThread extends BaseThread {
     }
 
     public int execute() {
-        if(CommonUtils.hasSystemProcess("EXCEL")) {
-            return 5;
-        }
+//        if(CommonUtils.hasSystemProcess("EXCEL")) {
+//            return 5;
+//        }
         try {
             File f = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
 

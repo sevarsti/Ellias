@@ -34,9 +34,9 @@ public class SynchronizeExcel extends BaseThread {
     @Override
     protected int execute() {
         try {
-            if(CommonUtils.hasSystemProcess("EXCEL")) {
-                return 5;
-            }
+//            if(CommonUtils.hasSystemProcess("EXCEL")) {
+//                return 5;
+//            }
             File dir = new File(EXCELPATH);
             if(dir.exists() && dir.isDirectory()) {
                 File[] files = dir.listFiles();
