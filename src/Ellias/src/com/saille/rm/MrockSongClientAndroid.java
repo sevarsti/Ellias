@@ -1,5 +1,6 @@
 package com.saille.rm;
 
+import com.saille.sys.Setting;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -89,9 +90,9 @@ public class MrockSongClientAndroid {
             DownloadZipUtil.download();
             String[] files;
             if(includelevel) {
-                files = new String[]{RMConstant.RM_ROOT + "TableComBin\\mrock_song_client_android.bin", RMConstant.RM_ROOT + "TableComBin\\mrock_songlevel_client.bin"};
+                files = new String[]{Setting.getSettingString("RM_PATH") + "TableComBin\\mrock_song_client_android.bin", Setting.getSettingString("RM_PATH") + "TableComBin\\mrock_songlevel_client.bin"};
             } else {
-                files = new String[]{RMConstant.RM_ROOT + "TableComBin\\mrock_song_client_android.bin"};
+                files = new String[]{Setting.getSettingString("RM_PATH") + "TableComBin\\mrock_song_client_android.bin"};
             }
             for(String f : files) {
                 FileInputStream fis = new FileInputStream(f);

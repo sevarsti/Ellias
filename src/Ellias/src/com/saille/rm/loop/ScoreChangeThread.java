@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
+import com.saille.sys.Setting;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -37,7 +38,7 @@ public class ScoreChangeThread extends BaseThread {
     protected int execute() {
         try {
             DownloadZipUtil.download();
-            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock.scoreexchange_client.bin");
+            File f = new File(Setting.getSettingString("RM_PATH") + "TableComBin\\mrock.scoreexchange_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);

@@ -6,7 +6,11 @@ import com.aliyun.oss.model.ObjectListing;
 import com.saille.aliyun.OssUtils;
 import com.saille.rm.RMConstant;
 import com.saille.rm.form.RMForm;
+import com.saille.rm.util.ImdUtils;
 import com.saille.rm.util.RMUtils;
+import com.saille.sys.Setting;
+import com.saille.sys.util.SysUtils;
+import com.saille.util.FFMpegUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -22,10 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -49,6 +51,8 @@ public class RMAction extends AbstractDispatchAction{
         HSSFCell cell;
         HSSFCellStyle intStyle = workbook.createCellStyle();
         intStyle.setDataFormat(workbook.createDataFormat().getFormat("0"));
+        HSSFCellStyle numberStyle = workbook.createCellStyle();
+        numberStyle.setDataFormat(workbook.createDataFormat().getFormat("0.##"));
         int rownum = 0;
         row = sheet.createRow(rownum++);
         cell = row.createCell(0);
@@ -101,7 +105,7 @@ public class RMAction extends AbstractDispatchAction{
             cell.setCellValue(0);
             cell = row.createCell(4);
             cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            cell.setCellStyle(intStyle);
+            cell.setCellStyle(numberStyle);
             cell.setCellValue(1);
             cell = row.createCell(5);
             cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
@@ -178,6 +182,7 @@ public class RMAction extends AbstractDispatchAction{
                                 HttpServletResponse response) {
         try {
             RMForm form = (RMForm) _form;
+            DecimalFormat doubleFormat = new DecimalFormat("0.#");
             List<Map<String, String>> songs = new ArrayList<Map<String, String>>();
             FormFile uploadxls = form.getUploadXls();
             InputStream is = uploadxls.getInputStream();
@@ -188,14 +193,15 @@ public class RMAction extends AbstractDispatchAction{
                 if(sheet.getRow(i) == null || sheet.getRow(i).getCell(0) == null) {
                     continue;
                 }
+                int songId = (int)sheet.getRow(i).getCell(6).getNumericCellValue();
                 String type = sheet.getRow(i).getCell(0).getRichStringCellValue().getString();
-                String path = sheet.getRow(i).getCell(2).getRichStringCellValue().getString();
                 int order = (int)sheet.getRow(i).getCell(3).getNumericCellValue();
                 double ratio = sheet.getRow(i).getCell(4).getNumericCellValue();
                 double repeat = sheet.getRow(i).getCell(5).getNumericCellValue();
-                songxls.add(new String[]{type, path, order + "", ratio + "", repeat + ""});
+                songxls.add(new String[]{type, songId + "", order + "", doubleFormat.format(ratio), repeat + ""});
             }
             is.close();
+            /* 将excel的数据读到songs中 */
             for(int i = 0; i < songxls.size(); i++) {
                 String[] infos = songxls.get(i);
                 Map<String, String> map = new HashMap<String, String>();
@@ -203,9 +209,10 @@ public class RMAction extends AbstractDispatchAction{
                 String order = infos[2];
                 String ratio = infos[3];
                 if("官谱".equals(songtype)) { //官谱
-                    String path = infos[1];
-                    Map<String, Object> info = jt.queryForMap("select songid, songname, `length` from rm_song where path = ?", new Object[]{path});
-                    int songid = ((Number)info.get("songid")).intValue();
+//                    String path = infos[1];
+                    int songid = Integer.parseInt(infos[1]);
+                    Map<String, Object> info = jt.queryForMap("select path, songname, `length`, author from rm_song where songid = ?", new Object[]{songid});
+                    String path = info.get("path").toString();
                     String length = info.get("length").toString();
                     map.put("name", info.get("songname").toString());
                     map.put("type", "1");
@@ -213,22 +220,26 @@ public class RMAction extends AbstractDispatchAction{
                     map.put("order", order);
                     map.put("ratio", ratio);
                     map.put("path", path);
+                    map.put("author", info.get("author").toString());
                     map.put("length", length);
                     songs.add(map);
                 } else { //自制
-                    String path = infos[1];
-                    Map<String, Object> info = jt.queryForMap("select * from rm_customsong where path = ?", new Object[]{path});
+                    int songid = Integer.parseInt(infos[1]);
+                    Map<String, Object> info = jt.queryForMap("select * from rm_customsong where id = ?", new Object[]{songid});
                     String length = info.get("length").toString();
+                    String path = info.get("path").toString();
                     map.put("type", "2");
                     map.put("order", order);
                     map.put("ratio", ratio);
                     map.put("path", path);
                     map.put("length", length);
                     map.put("name", info.get("name").toString());
-                    map.put("objid", info.get("id").toString());
+                    map.put("author", info.get("author").toString());
+                    map.put("objid", songid + "");
                     songs.add(map);
                 }
             }
+            /* 列出可以打的歌曲 */
             List<Map<String, Object>> list = jt.queryForList("select songid, path, length from rm_song where has = 1 order by `length`");
             List<String> songIdList = new ArrayList<String>();
             List<String> usedSongids = new ArrayList<String>();
@@ -240,13 +251,16 @@ public class RMAction extends AbstractDispatchAction{
                 songIdList.add(songId);
 //                songIdMap.put(songId, m);
             }
+            /* 将不需要调整名字直接可以打的歌放在最前面 */
             int hasCount = 0;
             for(int i = 0; i < songs.size(); i++) {
                 if(songs.get(i).get("type").equals("1") && songIdList.contains(songs.get(i).get("songid"))) {
-                    Map<String, String> m = songs.remove(i);
-                    usedSongids.add(m.get("songid"));
-                    songs.add(0, m);
-                    hasCount++;
+                    if("1".equals(songs.get(i).get("ratio")) || "0".equals(songs.get(i).get("ratio"))) {
+                        Map<String, String> m = songs.remove(i);
+                        usedSongids.add(m.get("songid"));
+                        songs.add(0, m);
+                        hasCount++;
+                    }
                 }
             }
             for(int i = list.size() - 1; i >= 0; i--) {
@@ -254,7 +268,7 @@ public class RMAction extends AbstractDispatchAction{
                     list.remove(i);
                 }
             }
-            quickSortToAddSongsByLength(songs, hasCount, songs.size());
+            quickSortToAddSongsByLength(songs, hasCount, songs.size()); //将需要改名的歌根据长度排序
             for(int i = 0; i < hasCount; i++) { //官谱
                 songs.get(i).put("targetid", songs.get(i).get("songid"));
                 songs.get(i).put("targetpath", songs.get(i).get("path"));
@@ -263,6 +277,7 @@ public class RMAction extends AbstractDispatchAction{
                 songs.get(i).put("targetid", list.get(i - hasCount).get("songid").toString());
                 songs.get(i).put("targetpath", list.get(i - hasCount).get("path").toString());
             }
+            /* 生成xml */
             StringBuilder sb = new StringBuilder();
             sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n");
             sb.append("<SongConfig_Client_Tab>\r\n");
@@ -316,9 +331,9 @@ public class RMAction extends AbstractDispatchAction{
                 sb.append("<SongConfig_Client version=\"1\">\r\n");
                 sb.append("    <m_ushSongID>").append(m.get("targetid")).append("</m_ushSongID>\r\n");
                 sb.append("    <m_iVersion>0 </m_iVersion>\r\n");
-                sb.append("    <m_szSongName>").append(m.get("type").equals("1") ? "" : getKeyDesc(totalkeys)).append(" ").append(m.get("name")).append("</m_szSongName>\r\n");
+                sb.append("    <m_szSongName>").append(m.get("type").equals("1") ? "" : (getKeyDesc(totalkeys) + " ")).append(m.get("ratio").equals("1") ? "" : (m.get("ratio") + "x")).append(m.get("name")).append("</m_szSongName>\r\n");
                 sb.append("    <m_szPath>").append(m.get("targetpath")).append("</m_szPath>\r\n");
-                sb.append("    <m_szArtist></m_szArtist>\r\n");
+                sb.append("    <m_szArtist>").append(m.get("author")).append("</m_szArtist>\r\n");
                 sb.append("    <m_szComposer></m_szComposer>\r\n");
                 sb.append("    <m_szSongTime>0.104861</m_szSongTime>\r\n");
                 if(Double.parseDouble(m.get("ratio")) == 1d) {
@@ -375,47 +390,76 @@ public class RMAction extends AbstractDispatchAction{
                 sb.append("</SongConfig_Client>\r\n");
             }
             sb.append("</SongConfig_Client_Tab>\r\n");
-            File f = new File("F:\\temp\\a\\test.xml");
-            if(!f.exists()) {
-                f.createNewFile();
-            }
-            FileOutputStream fos = new FileOutputStream(f);
-            fos.write(sb.toString().getBytes("UTF-8"));
-            fos.close();
 
-            f = new File("F:\\temp\\a\\song.zip");
+            /* 生成最后打包的zip */
+            String savepath = this.getClass().getResource("/").getPath();
+            if(savepath.startsWith("/")) {
+                savepath = savepath.substring(1, savepath.length() - 1);
+            }
+            savepath = savepath.substring(0, savepath.lastIndexOf("/"));
+            savepath = savepath.substring(0, savepath.lastIndexOf("/"));
+            savepath = savepath + File.separator + "temp" + File.separator + new SimpleDateFormat("yyyyMMdd HHmmss").format(new Date()) + ".zip";
+            System.out.println("savepath=" + savepath);
+            File f = new File(savepath);
             if(!f.exists()) {
                 f.createNewFile();
             }
-            fos = new FileOutputStream(f);
+            SysUtils.addTempFile(savepath, null, 60 * 60 * 24 * 7);
+            FileOutputStream fos = new FileOutputStream(f);
             ZipOutputStream zos = new ZipOutputStream(fos);
+            zos.putNextEntry(new ZipEntry("mrock_song_client.xml"));
+            zos.write(sb.toString().getBytes("UTF-8"));
+            sb = null;
             FileInputStream fis;
             byte[] bytes = new byte[4096];
             int bytecount = 0;
+            /* 写歌曲目录 */
             for(int i = 0; i < songs.size(); i++) {
                 Map<String, String> m = songs.get(i);
                 System.out.println(i + "/" + songs.size() + ":" + m.get("type") + "_" + m.get("path") + "->" + m.get("targetpath"));
                 String targetpath = m.get("targetpath");
                 if(m.get("type").equals("1")) { //官谱
-                    File dir = new File(RMConstant.RM_ROOT + "song\\" + m.get("path"));
+                    File dir = new File(Setting.getSettingString("RM_PATH") + "song\\" + m.get("path"));
                     File[] files = dir.listFiles();
                     for(File file : files) {
                         String oldname = file.getName();
                         String newname;
-                        if(oldname.indexOf("_") >= 0) {
+                        if(oldname.contains("_")) {
                             newname = m.get("targetpath") + oldname.substring(oldname.indexOf("_"));
                         } else {
                             newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
                         }
-                        zos.putNextEntry(new ZipEntry("songs\\" + m.get("path") + "\\" + newname));
-                        fis = new FileInputStream(file);
-                        while ((bytecount = fis.read(bytes)) > 0) {
-                            zos.write(bytes, 0, bytecount);
+                        zos.putNextEntry(new ZipEntry("song\\" + m.get("targetpath") + "\\" + newname));
+                        boolean changebpm = !m.get("ratio").toString().equals("1");
+                        if(changebpm && (oldname.toLowerCase().endsWith(".mp3") || oldname.toLowerCase().endsWith(".imd"))) { //mp3和imd需要变速
+                            if(oldname.toLowerCase().endsWith(".mp3")) { //用ffmpeg变速
+                                String tempmp3file = System.getProperty("java.io.tmpdir") + File.separator + oldname;
+                                FFMpegUtils.changeSpeed(file.getCanonicalPath(), tempmp3file, Double.parseDouble(m.get("ratio")));
+                                SysUtils.addTempFile(tempmp3file, null, 60 * 5);
+                                File newfile = new File(tempmp3file);
+                                byte[] newbytes = new byte[(int)newfile.length()];
+                                FileInputStream newfis = new FileInputStream(newfile);
+                                newfis.read(newbytes);
+                                newfis.close();
+                                zos.write(newbytes);
+                            } else { //imd变速
+                                FileInputStream oldfis = new FileInputStream(file);
+                                byte[] oldbytes = new byte[(int)file.length()];
+                                oldfis.read(oldbytes);
+                                oldfis.close();
+                                byte[] newbytes = RMUtils.changeBpm(oldbytes, Double.parseDouble(m.get("ratio")));
+                                zos.write(newbytes);
+                            }
+                        } else {
+                            fis = new FileInputStream(file);
+                            while ((bytecount = fis.read(bytes)) > 0) {
+                                zos.write(bytes, 0, bytecount);
+                            }
+                            fis.close();
                         }
-                        fis.close();
                     }
                 } else { //自制
-                    File dir = new File(RMConstant.RM_ROOT + "song\\" + m.get("path"));
+                    File dir = new File(Setting.getSettingString("RM_PATH") + "zizhi\\" + m.get("path"));
                     if(dir.exists()) { //本地有文件，不需要读取OSS
                         File[] files = dir.listFiles();
                         for(File file : files) {
@@ -426,7 +470,7 @@ public class RMAction extends AbstractDispatchAction{
                             } else {
                                 newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
                             }
-                            zos.putNextEntry(new ZipEntry("songs\\" + m.get("targetpath") + "\\" + newname));
+                            zos.putNextEntry(new ZipEntry("song\\" + m.get("targetpath") + "\\" + newname));
                             fis = new FileInputStream(file);
                             while ((bytecount = fis.read(bytes)) > 0) {
                                 zos.write(bytes, 0, bytecount);
@@ -510,7 +554,7 @@ public class RMAction extends AbstractDispatchAction{
         int pos = start;
         for(int i = pos + 1; i < end; i++) {
             boolean needSwap = false;
-            if(Integer.parseInt(list.get(i).get("length")) < Integer.parseInt(list.get(pos).get("length"))) {
+            if((Double.parseDouble(list.get(i).get("length")) / Double.parseDouble(list.get(i).get("ratio"))) < (Double.parseDouble(list.get(pos).get("length")) / Double.parseDouble(list.get(pos).get("ratio")))) {
                 needSwap = true;
             }
 

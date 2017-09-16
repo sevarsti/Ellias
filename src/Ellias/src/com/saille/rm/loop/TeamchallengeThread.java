@@ -6,6 +6,7 @@ import com.saille.sys.BaseThread;
 import com.saille.rm.util.RMUtils;
 import com.saille.rm.DownloadZipUtil;
 import com.google.common.io.LittleEndianDataInputStream;
+import com.saille.sys.Setting;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -67,7 +68,7 @@ public class TeamchallengeThread extends BaseThread {
     protected int execute() {
         try {
             DownloadZipUtil.download();
-            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock_guild_song_client.bin");
+            File f = new File(Setting.getSettingString("RM_PATH") + "TableComBin\\mrock_guild_song_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);

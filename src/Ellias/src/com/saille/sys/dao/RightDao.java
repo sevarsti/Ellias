@@ -3,6 +3,7 @@ package com.saille.sys.dao;
 import com.saille.core.dao.BaseJdbcDao;
 import com.saille.core.rowMapper.ObjectRowMapper;
 import com.sinitek.dao.jdbc.helper.MapperUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.apache.log4j.Logger;
 import com.saille.sys.Right;
@@ -78,17 +79,20 @@ public class RightDao extends BaseJdbcDao {
     }
 
     public void updateAllRight() {
-        String sql = "SELECT DISTINCT(RESOURCEID) AS RESOURCEID FROM `SYS_RIGHT` WHERE REMOVETAG = 0";
+        String sql = "SELECT ID AS RESOURCEID FROM `SYS_RESOURCE` WHERE REMOVETAG = 0";
         JdbcTemplate jt = new JdbcTemplate(this.getDataSource());
         List<Map<String, Integer>> list = jt.queryForList(sql);
         for(Map<String, Integer> map : list) {
-            int resId = map.get("RESOURCEID").intValue();
+            int resId = map.get("ID").intValue();
             updateRight(resId);
         }
     }
 
     private void updateRight(int resId) {
         String path = this.getClass().getResource("/").getPath();
+        if(path.startsWith("/")) {
+            path = path.substring(1);
+        }
         path = path.substring(0, path.length() - 1);
         path = path.substring(0, path.lastIndexOf("/"));
         path = path.substring(0, path.lastIndexOf("/"));
@@ -104,12 +108,12 @@ public class RightDao extends BaseJdbcDao {
         EmployeeDao empDao = (EmployeeDao) GlobalContext.getContextBean(EmployeeDao.class);
 //        List<Employee> allEmployees = empDao.getAll();
         List<String> toAddEmployees = new ArrayList<String>();
-        if(rights.size() == 0) {
-            if(f.exists()) {
-                f.delete();
-            }
-            return;
-        }
+//        if(rights.size() == 0) {
+//            if(f.exists()) {
+//                f.delete();
+//            }
+//            return;
+//        }
         for(Right r : rights) {
             int orgType = r.getOrgType();
             int orgId = r.getOrgId();
@@ -199,9 +203,13 @@ public class RightDao extends BaseJdbcDao {
             FileReader fr = new FileReader(f);
             BufferedReader br = new BufferedReader(fr);
             String ids = br.readLine();
-            String[] empIds = ids.split(",");
-            List<String> list = Arrays.asList(empIds);
-            return list.indexOf(empId + "") >= 0;
+            if(!StringUtils.isEmpty(ids)) {
+                String[] empIds = ids.split(",");
+                List<String> list = Arrays.asList(empIds);
+                return list.indexOf(empId + "") >= 0;
+            } else {
+                return false;
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;

@@ -19,7 +19,13 @@
     <title>生成自制谱</title>
 </head>
 <body>
+<%
+    DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+    JdbcTemplate jt = new JdbcTemplate(ds);
+    int count = jt.queryForInt("select count(1) from rm_song where has = 1");
+%>
 <html:form action="/rm.do" enctype="multipart/form-data">
+    XML最大歌曲数量：<%=count%><br/>
     <input type="hidden" name="method"/>
     请选择上传excel文件：
     <html:file property="uploadXls"/>

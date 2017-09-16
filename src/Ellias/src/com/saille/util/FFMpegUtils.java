@@ -17,6 +17,38 @@ public class FFMpegUtils {
     public static void main(String[] args) {
         getAudioLength("F:\\rm\\song\\daybyday\\daybyday.mp3");
     }
+
+    public static boolean changeSpeed(String oldfilepath, String newfilepath, double ratio) {
+        try {
+            String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
+//            String ffmpegpath = "F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe";
+            ProcessBuilder pb = new ProcessBuilder();
+            pb = pb.command(ffmpegpath, "-i", oldfilepath.replaceAll("\\\\", "\\\\\\\\"), "-filter:a", "\"atempo=" + ratio + "\"", "-vcodec", "copy", "-vn", "\"" + newfilepath.replaceAll("\\\\", "\\\\\\\\") + "\"");
+    //        String cmd = GlobalConstant.DISKPATH + "software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i " + filepath + " -filter:a \"atempo=" + ratio + "\" -vcodec copy -vn \"" + outpath + "\"";
+            Process p = pb.start();
+            InputStream is = p.getInputStream();
+            InputStream errStream = p.getErrorStream();
+            BufferedReader out = new BufferedReader(new InputStreamReader(new BufferedInputStream(is), Charset.forName("GB2312")));
+            BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(errStream)));
+            String ostr;
+    //            while((ostr = out.readLine()) != null) {
+    //                System.out.println(ostr);
+    //            }
+            System.out.println("============================");
+            while((ostr = err.readLine()) != null) {
+                System.out.println(ostr);
+            }
+            out.close();
+            err.close();
+            is.close();
+            errStream.close();
+            p.destroy();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
     public static int getAudioLength(String filepath) {
         try {
             String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");

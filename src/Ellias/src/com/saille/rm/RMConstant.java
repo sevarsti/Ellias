@@ -11,6 +11,6 @@ import com.GlobalConstant;
  */
 public class RMConstant {
     public final static String RM_EXCEL = "½Ú×à´óÊ¦¸èÇú.xls";
-    public static String RM_ROOT = GlobalConstant.DISKPATH + "rm\\";
+//    public static String RM_ROOT = GlobalConstant.DISKPATH + "rm\\";
     public final static String storepath = GlobalConstant.DISKPATH + "apache-tomcat\\webapps\\ROOT\\musiccut";
 }

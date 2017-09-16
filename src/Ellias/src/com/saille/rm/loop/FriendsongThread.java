@@ -5,6 +5,7 @@ import com.saille.rm.RMConstant;
 import com.saille.rm.util.RMUtils;
 import com.saille.rm.DownloadZipUtil;
 import com.saille.sys.BaseThread;
+import com.saille.sys.Setting;
 import com.saille.util.SendSMSUtils;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,7 +51,7 @@ public class FriendsongThread extends BaseThread {
         try {
             DownloadZipUtil.download();
             Map<String, List<int[]>> newList = new HashMap<String, List<int[]>>();
-            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock_Map_client.bin");
+            File f = new File(Setting.getSettingString("RM_PATH") + "TableComBin\\mrock_Map_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);

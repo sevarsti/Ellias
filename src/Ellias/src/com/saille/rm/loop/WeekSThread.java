@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.io.File;
 import java.io.FileInputStream;
 
+import com.saille.sys.Setting;
 import servlet.GlobalContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -34,7 +35,7 @@ public class WeekSThread extends BaseThread {
             JdbcTemplate jt = new JdbcTemplate(ds);
 
             DownloadZipUtil.download();
-            File f = new File(RMConstant.RM_ROOT + "TableComBin\\mrock.mission_client.bin");
+            File f = new File(Setting.getSettingString("RM_PATH") + "TableComBin\\mrock.mission_client.bin");
             FileInputStream fis = new FileInputStream(f);
             LittleEndianDataInputStream dis = new LittleEndianDataInputStream(fis);
             dis.skip(8);
@@ -75,7 +76,7 @@ public class WeekSThread extends BaseThread {
                     continue;
                 } else {
                     for(int j = beginrow; j <= endrow; j++) {
-                        FileInputStream fis2 = new FileInputStream(RMConstant.RM_ROOT + "TableComBin\\mrock.floornode_client.bin");
+                        FileInputStream fis2 = new FileInputStream(Setting.getSettingString("RM_PATH") + "TableComBin\\mrock.floornode_client.bin");
                         fis2.skip(8);
                         fis2.skip(128);
                         byte[] bytes2 = new byte[16];

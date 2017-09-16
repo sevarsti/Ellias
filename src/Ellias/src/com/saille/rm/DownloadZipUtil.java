@@ -1,5 +1,6 @@
 package com.saille.rm;
 
+import com.saille.sys.Setting;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -39,9 +40,9 @@ public class DownloadZipUtil {
                     break;
                 }
                 String filename = entry.getName();
-                File f = new File(RMConstant.RM_ROOT + "TableComBin\\" + filename);
+                File f = new File(Setting.getSettingString("RM_PATH") + "TableComBin\\" + filename);
                 if(f.exists() && f.lastModified() < entry.getTime()) {
-                    String bakfilename = RMConstant.RM_ROOT + "TableComBin\\deprecated\\";
+                    String bakfilename = Setting.getSettingString("RM_PATH") + "TableComBin\\deprecated\\";
                     bakfilename += f.getName().substring(0, f.getName().lastIndexOf(".") + 1);
                     bakfilename += new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(f.lastModified()));
                     bakfilename += f.getName().substring(f.getName().lastIndexOf("."));
