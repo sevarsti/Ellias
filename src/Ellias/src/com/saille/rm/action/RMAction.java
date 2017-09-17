@@ -498,7 +498,7 @@ public class RMAction extends AbstractDispatchAction{
                             } else {
                                 newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
                             }
-                            zos.putNextEntry(new ZipEntry("songs\\" + m.get("targetpath") + "\\" + newname));
+                            zos.putNextEntry(new ZipEntry("song\\" + m.get("targetpath") + "\\" + newname));
                             while ((bytecount = ossIs.read(bytes)) > 0) {
                                 zos.write(bytes, 0, bytecount);
                             }
