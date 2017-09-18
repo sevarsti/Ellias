@@ -4,20 +4,18 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.ObjectListing;
 import com.saille.aliyun.OssUtils;
-import com.saille.rm.RMConstant;
 import com.saille.rm.form.RMForm;
-import com.saille.rm.util.ImdUtils;
 import com.saille.rm.util.RMUtils;
 import com.saille.sys.Setting;
 import com.saille.sys.util.SysUtils;
 import com.saille.util.FFMpegUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.util.FileCopyUtils;
 import servlet.AbstractDispatchAction;
 import servlet.GlobalContext;
 
@@ -35,6 +33,7 @@ import java.util.zip.ZipOutputStream;
  * Created by Ellias on 2017-09-11.
  */
 public class RMAction extends AbstractDispatchAction{
+    private final static Logger LOGGER = Logger.getLogger(RMAction.class);
     private JdbcTemplate jt;
     public RMAction() {
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
@@ -182,7 +181,7 @@ public class RMAction extends AbstractDispatchAction{
                                 HttpServletResponse response) {
         try {
             RMForm form = (RMForm) _form;
-            DecimalFormat doubleFormat = new DecimalFormat("0.#");
+            DecimalFormat doubleFormat = new DecimalFormat("0.####");
             List<Map<String, String>> songs = new ArrayList<Map<String, String>>();
             FormFile uploadxls = form.getUploadXls();
             InputStream is = uploadxls.getInputStream();
@@ -199,6 +198,7 @@ public class RMAction extends AbstractDispatchAction{
                 double ratio = sheet.getRow(i).getCell(4).getNumericCellValue();
                 double repeat = sheet.getRow(i).getCell(5).getNumericCellValue();
                 songxls.add(new String[]{type, songId + "", order + "", doubleFormat.format(ratio), repeat + ""});
+                LOGGER.info("songid=" + songId + ", type=" + type + ", order=" + order + ", ratio=" + ratio);
             }
             is.close();
             /* 将excel的数据读到songs中 */
@@ -399,7 +399,7 @@ public class RMAction extends AbstractDispatchAction{
             savepath = savepath.substring(0, savepath.lastIndexOf("/"));
             savepath = savepath.substring(0, savepath.lastIndexOf("/"));
             savepath = savepath + File.separator + "temp" + File.separator + new SimpleDateFormat("yyyyMMdd HHmmss").format(new Date()) + ".zip";
-            System.out.println("savepath=" + savepath);
+            LOGGER.info("savepath=" + savepath);
             File f = new File(savepath);
             if(!f.exists()) {
                 f.createNewFile();
@@ -416,7 +416,7 @@ public class RMAction extends AbstractDispatchAction{
             /* 写歌曲目录 */
             for(int i = 0; i < songs.size(); i++) {
                 Map<String, String> m = songs.get(i);
-                System.out.println(i + "/" + songs.size() + ":" + m.get("type") + "_" + m.get("path") + "->" + m.get("targetpath"));
+                LOGGER.info(i + "/" + songs.size() + ":" + (m.get("type").equals("1") ? "官谱" : "自制") + m.get("type") + "_" + m.get("path") + "->" + m.get("targetpath"));
                 String targetpath = m.get("targetpath");
                 if(m.get("type").equals("1")) { //官谱
                     File dir = new File(Setting.getSettingString("RM_PATH") + "song\\" + m.get("path"));
@@ -433,7 +433,8 @@ public class RMAction extends AbstractDispatchAction{
                         boolean changebpm = !m.get("ratio").equals("1");
                         if(changebpm && (oldname.toLowerCase().endsWith(".mp3") || oldname.toLowerCase().endsWith(".imd"))) { //mp3和imd需要变速
                             if(oldname.toLowerCase().endsWith(".mp3")) { //用ffmpeg变速
-                                String tempmp3file = System.getProperty("java.io.tmpdir") + File.separator + oldname;
+                                String tempmp3file = System.getProperty("java.io.tmpdir") + File.separator + oldname + m.get("ratio");
+                                LOGGER.info("mp3需要变速:" + m.get("ratio") + "x->" + tempmp3file);
                                 FFMpegUtils.changeSpeed(file.getCanonicalPath(), tempmp3file, Double.parseDouble(m.get("ratio")));
                                 SysUtils.addTempFile(tempmp3file, null, 60 * 5);
                                 File newfile = new File(tempmp3file);
@@ -441,6 +442,7 @@ public class RMAction extends AbstractDispatchAction{
                                 FileInputStream newfis = new FileInputStream(newfile);
                                 newfis.read(newbytes);
                                 newfis.close();
+                                LOGGER.info("mp3变速完成");
                                 zos.write(newbytes);
                             } else { //imd变速
                                 FileInputStream oldfis = new FileInputStream(file);
@@ -465,17 +467,43 @@ public class RMAction extends AbstractDispatchAction{
                         for(File file : files) {
                             String oldname = file.getName();
                             String newname;
-                            if(oldname.indexOf("_") >= 0) {
+                            if(oldname.contains("_")) {
                                 newname = m.get("targetpath") + oldname.substring(oldname.indexOf("_"));
                             } else {
                                 newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
                             }
                             zos.putNextEntry(new ZipEntry("song\\" + m.get("targetpath") + "\\" + newname));
-                            fis = new FileInputStream(file);
-                            while ((bytecount = fis.read(bytes)) > 0) {
-                                zos.write(bytes, 0, bytecount);
+                            boolean changebpm = !m.get("ratio").equals("1");
+                            if(changebpm && (oldname.toLowerCase().endsWith(".mp3") || oldname.toLowerCase().endsWith(".imd"))) { //mp3和imd需要变速
+                                if(oldname.toLowerCase().endsWith(".mp3")) { //用ffmpeg变速
+                                    String tempmp3file = System.getProperty("java.io.tmpdir") + File.separator + oldname;
+                                    File newfile = new File(tempmp3file);
+                                    tempmp3file = newfile.getParent() + File.separator + m.get("ratio") + newfile.getName();
+                                    LOGGER.info("mp3需要变速:" + m.get("ratio") + "x->" + tempmp3file);
+                                    FFMpegUtils.changeSpeed(file.getCanonicalPath(), tempmp3file, Double.parseDouble(m.get("ratio")));
+                                    SysUtils.addTempFile(tempmp3file, null, 60 * 5);
+                                    newfile = new File(tempmp3file);
+                                    byte[] newbytes = new byte[(int)newfile.length()];
+                                    FileInputStream newfis = new FileInputStream(newfile);
+                                    newfis.read(newbytes);
+                                    newfis.close();
+                                    LOGGER.info("mp3变速完成");
+                                    zos.write(newbytes);
+                                } else { //imd变速
+                                    FileInputStream oldfis = new FileInputStream(file);
+                                    byte[] oldbytes = new byte[(int)file.length()];
+                                    oldfis.read(oldbytes);
+                                    oldfis.close();
+                                    byte[] newbytes = RMUtils.changeBpm(oldbytes, Double.parseDouble(m.get("ratio")));
+                                    zos.write(newbytes);
+                                }
+                            } else {
+                                fis = new FileInputStream(file);
+                                while ((bytecount = fis.read(bytes)) > 0) {
+                                    zos.write(bytes, 0, bytecount);
+                                }
+                                fis.close();
                             }
-                            fis.close();
                         }
                     } else { //本地没有，需要从OSS下载
                         final String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
@@ -490,17 +518,55 @@ public class RMAction extends AbstractDispatchAction{
                         ObjectListing objectListing = ossClient.listObjects(req);
                         for(int j = 0; j < objectListing.getObjectSummaries().size(); j++) {
                             InputStream ossIs = ossClient.getObject("ellias-ia", objectListing.getObjectSummaries().get(j).getKey()).getObjectContent();
+                            boolean isMp3 = false, isImd = false;
                             String oldname = objectListing.getObjectSummaries().get(j).getKey();
+                            if(oldname.toLowerCase().endsWith(".imd")) {
+                                isImd = true;
+                            } else if(oldname.toLowerCase().endsWith(".mp3")) {
+                                isMp3 = true;
+                            }
                             oldname = oldname.substring(oldname.lastIndexOf("/") + 1);
                             String newname;
-                            if(oldname.indexOf("_") >= 0) {
+                            if(oldname.contains("_")) {
                                 newname = m.get("targetpath") + oldname.substring(oldname.indexOf("_"));
                             } else {
                                 newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
                             }
                             zos.putNextEntry(new ZipEntry("song\\" + m.get("targetpath") + "\\" + newname));
-                            while ((bytecount = ossIs.read(bytes)) > 0) {
-                                zos.write(bytes, 0, bytecount);
+                            boolean changebpm = !m.get("ratio").equals("1");
+                            if(changebpm && isImd) {
+                                byte[] imdbytes = new byte[(int)objectListing.getObjectSummaries().get(j).getSize()];
+                                ossIs.read(imdbytes);
+                                byte[] newbytes = RMUtils.changeBpm(imdbytes, Double.parseDouble(m.get("ratio")));
+                                zos.write(newbytes);
+                            } else if(changebpm && isMp3) {
+                                String originalname = System.getProperty("java.io.tmpdir") + File.separator + oldname;
+                                LOGGER.info("mp3需要变速:" + m.get("ratio") + "x->" + originalname);
+                                File tempfile = new File(originalname);
+                                if(!tempfile.exists()) {
+                                    tempfile.createNewFile();
+                                }
+                                SysUtils.addTempFile(originalname, null, 60 * 5);
+                                FileOutputStream mp3fos = new FileOutputStream(tempfile);
+                                while ((bytecount = ossIs.read(bytes)) > 0) {
+                                    mp3fos.write(bytes, 0, bytecount);
+                                }
+                                mp3fos.close();
+                                LOGGER.info("mp3下载完成，调用ffmpeg开始变速");
+                                tempfile = new File(originalname);
+                                String tempmp3filepath = tempfile.getParent() + File.separator + m.get("ratio") + tempfile.getName();
+                                FFMpegUtils.changeSpeed(originalname, tempmp3filepath, Double.parseDouble(m.get("ratio")));
+                                LOGGER.info("mp3变速完成");
+                                SysUtils.addTempFile(tempmp3filepath, null, 60 * 5);
+                                fis = new FileInputStream(tempmp3filepath);
+                                while ((bytecount = fis.read(bytes)) > 0) {
+                                    zos.write(bytes, 0, bytecount);
+                                }
+                                fis.close();
+                            } else {
+                                while ((bytecount = ossIs.read(bytes)) > 0) {
+                                    zos.write(bytes, 0, bytecount);
+                                }
                             }
                             ossIs.close();
                         }

@@ -2,10 +2,7 @@ package com.saille.util;
 
 import com.saille.sys.Setting;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +19,12 @@ public class FFMpegUtils {
         try {
             String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
 //            String ffmpegpath = "F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe";
+            System.out.println("src file=" + oldfilepath);
+            System.out.println("des file=" + newfilepath);
+            File newfile = new File(newfilepath);
+            if(newfile.exists()) {
+                newfile.delete();
+            }
             ProcessBuilder pb = new ProcessBuilder();
             pb = pb.command(ffmpegpath, "-i", oldfilepath.replaceAll("\\\\", "\\\\\\\\"), "-filter:a", "\"atempo=" + ratio + "\"", "-vcodec", "copy", "-vn", "\"" + newfilepath.replaceAll("\\\\", "\\\\\\\\") + "\"");
     //        String cmd = GlobalConstant.DISKPATH + "software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe -i " + filepath + " -filter:a \"atempo=" + ratio + "\" -vcodec copy -vn \"" + outpath + "\"";
@@ -31,9 +34,10 @@ public class FFMpegUtils {
             BufferedReader out = new BufferedReader(new InputStreamReader(new BufferedInputStream(is), Charset.forName("GB2312")));
             BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(errStream)));
             String ostr;
-    //            while((ostr = out.readLine()) != null) {
-    //                System.out.println(ostr);
-    //            }
+//                while((ostr = out.readLine()) != null) {
+//                    System.out.println(ostr);
+//                }
+//            p.waitFor();
             System.out.println("============================");
             while((ostr = err.readLine()) != null) {
                 System.out.println(ostr);
