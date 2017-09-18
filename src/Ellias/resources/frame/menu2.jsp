@@ -80,7 +80,6 @@
     boolean parentRight = true;
     for(Map<String, Object> map : list) {
         String menuname = map.get("title").toString();
-        System.out.println(menuname);
         String link = map.get("link") == null ? "" : map.get("link").toString();
         if(link.length() == 0) {
             for(int i = parentPath.size() - 1; i > 0; i--) {

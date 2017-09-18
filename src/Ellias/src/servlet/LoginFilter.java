@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -26,11 +28,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 import com.saille.util.UtilFunctions;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 public class LoginFilter implements Filter {
     private final static Logger LOGGER = LoggerFactory.getLogger(LoginFilter.class);
+    private final static Pattern pattern = Pattern.compile("[a-zA-Z]+://[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}.+");
     String login;
     String[] excludes;
 
@@ -46,11 +51,12 @@ public class LoginFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) sresponse;
         String url = request.getRequestURI();
         String method = request.getParameter("method");
-        Socket s = new Socket();
-        String username = String.valueOf(request.getSession().getAttribute("username"));
         Object empObj = request.getSession().getAttribute("employee");
-        if(username.equals("Ellias")) {
-            ;
+        String remoteAddr = request.getRemoteAddr();
+        String localAddr = request.getRequestURL().toString();
+        boolean needReject = checkBlacklist(remoteAddr, localAddr);
+        if(!needReject) {
+            return;
         }
         if(!"127.0.0.1".equals(request.getRemoteAddr())) {
             doLog(request);
@@ -61,6 +67,22 @@ public class LoginFilter implements Filter {
             return;
         }
         chain.doFilter(srequest, sresponse);
+    }
+
+    private boolean checkBlacklist(String remoteip, String requesturl) {
+        Matcher m = pattern.matcher(requesturl);
+        if(m.matches()) {
+            LOGGER.info(remoteip + "：禁止使用IP访问");
+            return false;
+        }
+        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
+        int count = jt.queryForInt("select count(1) from sys_blackip where ip = ?", new Object[]{remoteip});
+        if(count > 0) {
+            LOGGER.info(remoteip + "：黑名单禁止访问");
+            return false;
+        }
+        return true;
     }
 
     private boolean checkRight(String url, int empId) {

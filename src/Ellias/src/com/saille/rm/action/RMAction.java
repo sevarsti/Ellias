@@ -430,7 +430,7 @@ public class RMAction extends AbstractDispatchAction{
                             newname = m.get("targetpath") + oldname.substring(oldname.indexOf("."));
                         }
                         zos.putNextEntry(new ZipEntry("song\\" + m.get("targetpath") + "\\" + newname));
-                        boolean changebpm = !m.get("ratio").toString().equals("1");
+                        boolean changebpm = !m.get("ratio").equals("1");
                         if(changebpm && (oldname.toLowerCase().endsWith(".mp3") || oldname.toLowerCase().endsWith(".imd"))) { //mp3和imd需要变速
                             if(oldname.toLowerCase().endsWith(".mp3")) { //用ffmpeg变速
                                 String tempmp3file = System.getProperty("java.io.tmpdir") + File.separator + oldname;
