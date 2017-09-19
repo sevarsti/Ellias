@@ -30,10 +30,10 @@
     <title></title>
 </head>
 <%!
-    boolean checkPathValid(JdbcTemplate jt, String path, String md5) {
-        int count = jt.queryForInt("select count(*) from rm_customsong where path = ? and md5 <> ?", new Object[]{path, md5});
-        return count == 0;
-    }
+//    boolean checkPathValid(JdbcTemplate jt, String path, String md5) {
+//        int count = jt.queryForInt("select count(*) from rm_customsong where path = ? and md5 <> ?", new Object[]{path, md5});
+//        return count == 0;
+//    }
 
     List<String> sortKey(Map<String, double[]> map) {
         List<String> ret = new ArrayList<String>();
@@ -128,39 +128,41 @@
                     maxlength = Math.max(maxlength, FFMpegUtils.getAudioLength(filepath));
                     params.put("md5", UtilFunctions.md5(mp3Bytes));
                 } else if(item.getFieldName().endsWith("png")) {
-                    if(!item.getName().toLowerCase().endsWith(".png")) {
-                        out.println("png文件扩展名不正确");
-                        closeStream(fileItems);
-                        return;
-                    }
-                    System.out.println("读取png:" + item.getName());
-                    boolean hdPng = item.getFieldName().equals("hdpng"); //hdpng=小图
-                    if(hdPng) {
-                        pngBytes[0] = new byte[(int)item.getSize()];
-                        item.getInputStream().read(pngBytes[0]);
-                        ByteArrayInputStream bais = new ByteArrayInputStream(pngBytes[0]);
-                        BufferedImage bi = ImageIO.read(bais);
-                        bais.close();
-                        int width = bi.getWidth();
-                        int height = bi.getHeight();
-//                        if(width != 140 || height != 60) {
-//                            out.print("小图尺寸不是140x60");
-//                            closeStream(fileItems);
-//                            return;
-//                        }
-                    } else {
-                        pngBytes[1] = new byte[(int)item.getSize()];
-                        item.getInputStream().read(pngBytes[1]);
-                        ByteArrayInputStream bais = new ByteArrayInputStream(pngBytes[1]);
-                        BufferedImage bi = ImageIO.read(bais);
-                        bais.close();
-                        int width = bi.getWidth();
-                        int height = bi.getHeight();
-//                        if(width != 480 || height != 320) {
-//                            out.print("大图尺寸不是480x320");
-//                            closeStream(fileItems);
-//                            return;
-//                        }
+                    if(item.getName().length() > 0) {
+                        if(!item.getName().toLowerCase().endsWith(".png")) {
+                            out.println("png文件扩展名不正确");
+                            closeStream(fileItems);
+                            return;
+                        }
+                        System.out.println("读取png:" + item.getName());
+                        boolean hdPng = item.getFieldName().equals("hdpng"); //hdpng=小图
+                        if(hdPng) {
+                            pngBytes[0] = new byte[(int)item.getSize()];
+                            item.getInputStream().read(pngBytes[0]);
+                            ByteArrayInputStream bais = new ByteArrayInputStream(pngBytes[0]);
+                            BufferedImage bi = ImageIO.read(bais);
+                            bais.close();
+                            int width = bi.getWidth();
+                            int height = bi.getHeight();
+    //                        if(width != 140 || height != 60) {
+    //                            out.print("小图尺寸不是140x60");
+    //                            closeStream(fileItems);
+    //                            return;
+    //                        }
+                        } else {
+                            pngBytes[1] = new byte[(int)item.getSize()];
+                            item.getInputStream().read(pngBytes[1]);
+                            ByteArrayInputStream bais = new ByteArrayInputStream(pngBytes[1]);
+                            BufferedImage bi = ImageIO.read(bais);
+                            bais.close();
+                            int width = bi.getWidth();
+                            int height = bi.getHeight();
+    //                        if(width != 480 || height != 320) {
+    //                            out.print("大图尺寸不是480x320");
+    //                            closeStream(fileItems);
+    //                            return;
+    //                        }
+                        }
                     }
                 } else if(item.getFieldName().equals("imd")) {
                     if(StringUtils.isEmpty(item.getName())) {
@@ -204,67 +206,23 @@
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     JdbcTemplate jt = new JdbcTemplate(ds);
 
-    boolean valid = checkPathValid(jt, params.get("path"), params.get("md5"));
-    if(!valid) {
-        out.print("path重复");
-        return;
-    }
     /* 检查是否有mp3 MD5重复 */
     List<String[]> duplicatedMp3 = new ArrayList<String[]>();
-    List<Map<String, Object>> list = jt.queryForList("select name, path, author from rm_customsong where md5 = ?", new Object[]{params.get("md5")});
+    List<Map<String, Object>> list = jt.queryForList("select a.id, a.name, a.author, b.key, b.level, b.rank, b.difficulty, b.totalkey, b.imdmd5 from" +
+                                     " (select id, name, author from rm_customsong where md5 = ?) a join rm_customsongimd b on a.id = b.songid order by a.name, b.key, b.level", new Object[]{params.get("md5")});
+    List<String> existImdmd5 = new ArrayList<String>();
     for(Map<String, Object> m : list) {
+        String id = m.get("id").toString();
         String name = m.get("name").toString();
-        String path = m.get("path").toString();
         String author = m.get("author").toString();
-        duplicatedMp3.add(new String[]{name, path, author});
-    }
-
-    /* 检查是否有imd MD5重复 */
-    StringBuilder sql = new StringBuilder("select imdmd5 from rm_customsongimd where songid = (select id from rm_customsong where path=?) and imdmd5 in(");
-    List<String[]> duplicatedImd = new ArrayList<String[]>();
-    int count = 0;
-    for(String key : imdmd5.keySet()) {
-        if(count > 0) {
-            sql.append(",");
-        }
-        sql.append("'").append(imdmd5.get(key)).append("'");
-        count++;
-    }
-    sql.append(")");
-    list = jt.queryForList(sql.toString(), new Object[]{params.get("path")});
-    if(list.size() > 0) {
-        for(Map<String, Object> m : list) {
-            String md5 = m.get("imdmd5").toString();
-            List<String> keys = new ArrayList<String>();
-            for(String k : imdmd5.keySet()) {
-                keys.add(k);
-            }
-            for(String k : keys) {
-                if(imdmd5.get(k).equals(md5)) {
-                    duplicatedImd.add(new String[]{k, md5});
-                    files.remove(k);
-                    ranks.remove(k);
-                    imdmd5.remove(k);
-                }
-            }
-        }
-    }
-
-    /* 检查相同path下某个键数的谱面是否超过3个 */
-    int[] keycount = new int[3];
-    for(double[] dd : ranks.values()) {
-        keycount[(int)dd[2] - 4]++;
-    }
-    list = jt.queryForList("select `key`, count(1) as c from rm_customsongimd where songid = (select id from rm_customsong where path = ?) group by `key`", new Object[]{params.get("path")});
-    if(list.size() > 0) {
-        for(Map<String, Object> m : list) {
-            int key = ((Number)m.get("key")).intValue();
-            count = ((Number)m.get("c")).intValue();
-            if((keycount[key - 4] + count) > 3) {
-                out.println("mp3重复，" + key + "KEY谱面总和超过3个");
-                return;
-            }
-        }
+        String key = m.get("key").toString();
+        String level = m.get("level").toString();
+        String rank = df.format(((Number) m.get("rank")).doubleValue());
+        String difficulty = df.format(((Number)m.get("difficulty")).doubleValue());
+        String totalkey = m.get("totalkey").toString();
+        String md5 = m.get("imdmd5").toString();
+        existImdmd5.add(md5);
+        duplicatedMp3.add(new String[]{id, name, author, key, level, rank, difficulty, totalkey, md5});
     }
 
     request.getSession().setAttribute("rm_customsong_param", params);
@@ -280,12 +238,6 @@
         <td class="fieldname">名字</td>
         <td class="fieldvalue" colspan="5">
             <%=params.get("name")%>
-        </td>
-    </tr>
-    <tr>
-        <td class="fieldname">路径</td>
-        <td class="fieldvalue" colspan="5">
-            <%=params.get("path")%>
         </td>
     </tr>
     <tr>
@@ -331,12 +283,11 @@
         </td>
     </tr>
     <%
-        count = 0;
         sortedkey = sortKey(ranks);
         for(String key : sortedkey) {
 
     %>
-    <tr>
+    <tr <c:if test="<%=existImdmd5.contains(imdmd5.get(key))%>">style="color:red;" </c:if>>
         <td class="fieldvalue">
             <%=(int)ranks.get(key)[2]%>
         </td>
@@ -354,30 +305,52 @@
         </td>
     </tr>
     <%
-            count++;
         }
     %>
 </table>
+<form action="uploadcustomdone.jsp">
 <%
     if(duplicatedMp3.size() > 0) {
 %>
-以下MP3文件MD5值重复：<br/>
+以下MP3文件MD5值重复，请选择是否要合并：<br/>
+<table border="0" cellpadding="1" cellspacing="1" id="table">
+    <tr class="head">
+        <th>&nbsp;</th>
+        <th>名字</th>
+        <th>作者</th>
+        <th>键数</th>
+        <th>难度</th>
+        <th>rank</th>
+        <th>difficulty</th>
+        <th>总键数</th>
+        <th>md5</th>
+    </tr>
+    <tr class="row2">
+        <td>
+            <input name="songId" type="radio" value="0" checked/>
+        </td>
+        <td align="left" colspan="8">不合并</td>
+    </tr>
 <%
     for(int i = 0; i < duplicatedMp3.size(); i++) {
 %>
-<%=duplicatedMp3.get(i)[0]%>/<%=duplicatedMp3.get(i)[1]%>/<%=duplicatedMp3.get(i)[2]%><br/>
-<%
+<tr class="row<%=i % 2 + 1%>">
+    <td>
+        <input name="songId" type="radio" value="<%=-Integer.parseInt(duplicatedMp3.get(i)[0])%>"/>
+    </td>
+    <%
+        for(int j = 1; j < 9; j++) {
+    %>
+    <td><%=duplicatedMp3.get(i)[j]%></td>
+    <%
         }
+    %>
+</tr>
+<%
     }
-    if(duplicatedImd.size() > 0) {
 %>
-以下IMD文件MD5值重复，将会过滤：<br/>
+</table>
 <%
-    for(int i = 0; i < duplicatedImd.size(); i++) {
-%>
-<%=duplicatedImd.get(i)[0]%>/<%=duplicatedImd.get(i)[1]%><br/>
-<%
-        }
     }
     if(bpm <= 0) {
 %>
@@ -385,8 +358,73 @@
 <%
     }
 %>
-<form action="uploadcustomdone.jsp">
     <input type="submit" value="确认">
 </form>
+<script type="text/javascript">
+    function merge()
+    {
+        var table = document.getElementById("table");
+        var startRow = 2, rowLength = 1;
+        var rowclass = 1;
+
+        startRow = 2;
+        rowLength = 1;
+        for(var i = 3; i < table.rows.length; i++)
+        {
+            if(table.rows[i].cells[0].innerHTML == table.rows[i - 1].cells[0].innerHTML && i != (table.rows.length - 1))
+            {
+                rowLength += 1;
+            }
+            else if(table.rows[i].cells[0].innerHTML == table.rows[i - 1].cells[0].innerHTML && i == (table.rows.length - 1))
+            {
+                table.rows[startRow].className = 'row' + rowclass;
+                rowLength += 1;
+                for(var j = startRow + 1; j < startRow + rowLength; j++)
+                {
+                    table.rows[j].className = 'row' + rowclass;
+                }
+                for(var cols = 2; cols >= 0; cols--)
+                {
+                    table.rows[startRow].cells[cols].rowSpan = rowLength;
+                    for(var j = startRow + 1; j < startRow + rowLength; j++)
+                    {
+                        table.rows[j].deleteCell(cols);
+                    }
+                }
+                rowLength = 1;
+                startRow = i;
+                rowclass = 3 - rowclass;
+            }
+            else
+            {
+                table.rows[startRow].className = 'row' + rowclass;
+                for(var j = startRow + 1; j < startRow + rowLength; j++)
+                {
+                    table.rows[j].className = 'row' + rowclass;
+                }
+                for(var cols = 2; cols >= 0; cols--)
+                {
+                    table.rows[startRow].cells[cols].rowSpan = rowLength;
+                    for(var j = startRow + 1; j < startRow + rowLength; j++)
+                    {
+                        table.rows[j].deleteCell(cols);
+                    }
+                }
+                rowLength = 1;
+                startRow = i;
+                rowclass = 3 - rowclass;
+            }
+        }
+        if(rowLength > 1)
+        {
+            table.rows[startRow].cells[cols].rowSpan = rowLength;
+            for(var j = startRow + 1; j < startRow + rowLength; j++)
+            {
+                table.rows[j].deleteCell(cols);
+            }
+        }
+    }
+    merge();
+</script>
 </body>
 </html>

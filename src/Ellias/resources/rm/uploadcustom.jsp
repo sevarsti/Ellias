@@ -19,12 +19,12 @@
             <input type="text" name="name"/>
         </td>
     </tr>
-    <tr>
-        <td class="fieldname">路径</td>
-        <td class="fieldvalue">
-            <input type="text" name="path"/>
-        </td>
-    </tr>
+    <%--<tr>--%>
+        <%--<td class="fieldname">路径</td>--%>
+        <%--<td class="fieldvalue">--%>
+            <%--<input type="text" name="path"/>--%>
+        <%--</td>--%>
+    <%--</tr>--%>
     <tr>
         <td class="fieldname">作者</td>
         <td class="fieldvalue">

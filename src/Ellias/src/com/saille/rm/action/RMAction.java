@@ -245,7 +245,7 @@ public class RMAction extends AbstractDispatchAction{
             List<String> usedSongids = new ArrayList<String>();
             for(Map<String, Object> m : list) {
                 String songId = m.get("songid").toString();
-                if(songId.compareTo("251") >= 0 && songId.compareTo("262") <= 0) { //过滤等级歌
+                if(Integer.parseInt(songId) >= 251 && Integer.parseInt(songId) <= 262) { //过滤等级歌
                     continue;
                 }
                 songIdList.add(songId);
@@ -416,7 +416,7 @@ public class RMAction extends AbstractDispatchAction{
             /* 写歌曲目录 */
             for(int i = 0; i < songs.size(); i++) {
                 Map<String, String> m = songs.get(i);
-                LOGGER.info(i + "/" + songs.size() + ":" + (m.get("type").equals("1") ? "官谱" : "自制") + m.get("type") + "_" + m.get("path") + "->" + m.get("targetpath"));
+                LOGGER.info(i + "/" + songs.size() + ":" + (m.get("type").equals("1") ? "官谱" : "自制") + "_" + m.get("path") + "->" + m.get("targetpath"));
                 String targetpath = m.get("targetpath");
                 if(m.get("type").equals("1")) { //官谱
                     File dir = new File(Setting.getSettingString("RM_PATH") + "song\\" + m.get("path"));

@@ -64,9 +64,14 @@
 <%
     Map<String, String> params = (Map<String, String>)request.getSession().getAttribute("rm_customsong_param");
     String name = params.get("name");
-    String path = params.get("path");
+//    String path = params.get("path");
     String author = params.get("author");
     String memo = params.get("memo");
+    String songidstr = request.getParameter("songId");
+    int songid = 0;
+    try {
+        songid = Integer.parseInt(songidstr);
+    } catch(Exception ex) {}
     double bpm = Double.parseDouble(params.get("bpm"));
     String mp3md5 = params.get("md5");
     byte[] mp3Bytes = (byte[]) request.getSession().getAttribute("rm_customsong_mp3bytes");
@@ -81,18 +86,42 @@
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     JdbcTemplate jt = new JdbcTemplate(ds);
     BaseJdbcDao dao = (BaseJdbcDao) GlobalContext.getContextBean(EmployeeDao.class);
-    int songid;
 
-    /* 检查mp3的md5是否存在 */
-    boolean mp3exist = false;
-    List<Map<String, Object>> list = jt.queryForList("select * from rm_customsong where md5 = ? and path = ?", new Object[]{mp3md5, path});
+//    /* 检查mp3的md5是否存在 */
+//    boolean mp3exist = false;
+//    List<Map<String, Object>> list = jt.queryForList("select * from rm_customsong where md5 = ? and path = ?", new Object[]{mp3md5, path});
     int[] existcount = new int[3]; //新增谱面需要记录当前谱面数量
-    if(list.size() > 0) {
-        songid = ((Number)list.get(0).get("id")).intValue();
-        mp3exist = true;
-        list = jt.queryForList("select `key`, count(1) as c from rm_customsongimd where songid = ? group by `key`", new Object[]{songid});
+//    if(list.size() > 0) {
+//        songid = ((Number)list.get(0).get("id")).intValue();
+//        mp3exist = true;
+//        list = jt.queryForList("select `key`, count(1) as c from rm_customsongimd where songid = ? group by `key`", new Object[]{songid});
+//        for(Map<String, Object> m : list) {
+//            existcount[((Number)m.get("key")).intValue() - 4] = ((Number)m.get("c")).intValue();
+//        }
+//    } else {
+//        songid = dao.getId("RM_CUSTOMSONG");
+//    }
+    if(songid < 0) {
+        List<Map<String, Object>> list = jt.queryForList("select `key`, count(1) as c from rm_customsongimd where songid = ? group by `key`", new Object[]{-songid});
         for(Map<String, Object> m : list) {
             existcount[((Number)m.get("key")).intValue() - 4] = ((Number)m.get("c")).intValue();
+        }
+        list = jt.queryForList("select imdmd5 as c from rm_customsongimd where songid = ?", new Object[]{-songid});
+        List<String> existMd5s = new ArrayList<String>();
+        for(Map<String, Object> m : list) {
+            String existMd5 = m.get("imdmd5").toString();
+            existMd5s.add(existMd5);
+        }
+        List<String> newImdKeys = new ArrayList<String>();
+        for(String s : files.keySet()) {
+            newImdKeys.add(s);
+        }
+        for(String s : newImdKeys) {
+            if(existMd5s.contains(imdmd5.get(s))) {
+                files.remove(s);
+                ranks.remove(s);
+                imdmd5.remove(s);
+            }
         }
     } else {
         songid = dao.getId("RM_CUSTOMSONG");
@@ -107,7 +136,7 @@
     for(int i = 0; i < sortedkey.size(); i++) {
         String key = sortedkey.get(i);
         objs = new Object[7];
-        objs[0] = songid;
+        objs[0] = Math.abs(songid);
         int newkey = (int)ranks.get(key)[2];
         objs[1] = newkey;
         if(newkey == prvkey) {
@@ -131,10 +160,10 @@
         jt.update("insert into rm_customsongimd(songid, `key`, `level`, rank, difficulty, imdmd5, totalkey) values(?,?,?,?,?,?,?)", obj);
     }
 
-    if(!mp3exist) {
+    if(songid > 0) {
         objs = new Object[8];
         objs[0] = name;
-        objs[1] = path;
+        objs[1] = songid + "";
         objs[2] = author;
         objs[3] = mp3md5;
         objs[4] = length;
@@ -142,33 +171,36 @@
         objs[6] = memo;
         objs[7] = bpm;
         jt.update("insert into rm_customsong(name, path, author, md5, length, id, memo, bpm) values(?,?,?,?,?,?,?,?)", objs);
-
     }
     /* 保存文件 */
     System.out.println("保存文件");
     Map<String, byte[]> imdnames = new HashMap<String, byte[]>();
-    String dir = Setting.getSettingString("RM_PATH") + "zizhi" + File.separator + path;
+    String dir = Setting.getSettingString("RM_PATH") + "zizhi" + File.separator + Math.abs(songid);
 
-    if(!mp3exist) {
+    if(songid > 0) {
         File directory = new File(dir);
         directory.mkdirs();
-        File mp3file = new File(dir + File.separator + path + ".mp3");
+        File mp3file = new File(dir + File.separator + songid + ".mp3");
         mp3file.createNewFile();
         FileOutputStream fos = new FileOutputStream(mp3file);
         fos.write(mp3Bytes);
         fos.close();
 
-        File pngfile = new File(dir + File.separator + path + ".png");
-        pngfile.createNewFile();
-        fos = new FileOutputStream(pngfile);
-        fos.write(pngBytes[1]);
-        fos.close();
+        if(pngBytes[1] != null) {
+            File pngfile = new File(dir + File.separator + songid + ".png");
+            pngfile.createNewFile();
+            fos = new FileOutputStream(pngfile);
+            fos.write(pngBytes[1]);
+            fos.close();
+        }
 
-        File pnghdfile = new File(dir + File.separator + path + "_title_ipad.png");
-        pnghdfile.createNewFile();
-        fos = new FileOutputStream(pnghdfile);
-        fos.write(pngBytes[0]);
-        fos.close();
+        if(pngBytes[0] != null) {
+            File pnghdfile = new File(dir + File.separator + songid + "_title_ipad.png");
+            pnghdfile.createNewFile();
+            fos = new FileOutputStream(pnghdfile);
+            fos.write(pngBytes[0]);
+            fos.close();
+        }
     }
 
     prvkey = 4;
@@ -190,7 +222,7 @@
         } else {
             level = "ez";
         }
-        String filename = path + "_" + newkey + "k_" + level + ".imd";
+        String filename = Math.abs(songid) + "_" + newkey + "k_" + level + ".imd";
         File imdfile = new File(dir + File.separator + filename);
         imdfile.createNewFile();
         FileOutputStream fos = new FileOutputStream(imdfile);
@@ -202,12 +234,16 @@
     /* 保存OSS */
     System.out.println("上传OSS");
     for(String key : imdnames.keySet()) {
-        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + key, imdnames.get(key));
+        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + Math.abs(songid) + "/" + key, imdnames.get(key));
     }
-    if(!mp3exist) {
-        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".mp3", mp3Bytes);
-        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + ".png", pngBytes[1]);
-        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + path + "/" + path + "_title_ipad.png", pngBytes[0]);
+    if(songid > 0) {
+        OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + songid + "/" + songid + ".mp3", mp3Bytes);
+        if(pngBytes[1] != null) {
+            OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + songid + "/" + songid + ".png", pngBytes[1]);
+        }
+        if(pngBytes[0] != null) {
+            OssUtils.uploadFile("ellias-ia", "rm/zizhi/" + songid + "/" + songid + "_title_ipad.png", pngBytes[0]);
+        }
     }
 
     /* 清理session */
@@ -218,7 +254,7 @@
     request.getSession().removeAttribute("rm_customsong_imdmd5s");
     request.getSession().removeAttribute("rm_customsong_imgs");
 
-    out.print("文件保存完成，路径：" + path);
+    out.print("文件保存完成，路径：" + Math.abs(songid));
 %>
 <body>
 
