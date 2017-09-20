@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.Date;
@@ -209,5 +210,144 @@ public class UpdateScoreThread extends BaseThread {
             ex.printStackTrace();
         }
         return 0;
+    }
+
+    private void updateStatus(JdbcTemplate jt) {
+//        +----------+---------+------+-----+---------+-------+
+//        | Field    | Type    | Null | Key | Default | Extra |
+//        +----------+---------+------+-----+---------+-------+
+//        | pubdate  | int(11) | YES  |     | NULL    |       |
+//        | keytype  | int(11) | YES  |     | NULL    |       |0=4e,1=5e,2=6e,3=4n,4=5n,5=6n,6=4h,7=5h,8=6h
+//        | playtype | int(11) | YES  |     | NULL    |       |0=三有全部,1=三无全部,2=三有拥有,3=三无拥有
+//        | total    | int(11) | YES  |     | NULL    |       |
+//        | done     | int(11) | YES  |     | NULL    |       |
+//        | undone   | int(11) | YES  |     | NULL    |       |
+//        | full     | int(11) | YES  |     | NULL    |       |
+//        | sss      | int(11) | YES  |     | NULL    |       |
+//        | ss       | int(11) | YES  |     | NULL    |       |
+//        | other    | int(11) | YES  |     | NULL    |       |
+//        +----------+---------+------+-----+---------+-------+
+        int pubdate = Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+
+        List<String> querySqls = new ArrayList<String>();
+        querySqls.add(null);
+        querySqls.add("select `key`, `level`, count(1) as c from rm_songkey group by `key`, `level`"); //歌曲总数
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 " + "and a.hasrole = 1 and score > 0 group by a.key, a.level"); //已打总数
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songkey a where exists(select 1 from rm_songscore where score = 0 and songid = a.songid and `key` = a.key and `level` = a.level and hasrole = 1 and removetag = 0) group by a.key, a.level");//未打
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and a.score = b.fullscore group by a.key, a.level"); //满分
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and a.score >= b.fullscore * 0.995 and a.score <> b.fullscore group by a.key, a.level"); //SSS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and a.score >= b.fullscore * 0.975 and a.score < b.fullscore * 0.995 group by a.key, a.level"); //SS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and a.score > 0 and a.score < b.fullscore * 0.975 group by a.key, a.level"); //OTHER
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and score > 0 group by a.key, a.level"); //已打总数
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songkey a where exists(select 1 from rm_songscore where score = 0 and songid = a.songid and `key` = a.key and `level` = a.level and hasrole = 0 and removetag = 0) group by a.key, a.level");//未打
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and a.score = b.fullscore group by a.key, a.level"); //满分
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and a.score >= b.fullscore * 0.995 and a.score <> b.fullscore group by a.key, a.level"); //SSS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and a.score >= b.fullscore * 0.975 and a.score < b.fullscore * 0.995 group by a.key, a.level"); //SS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and a.score > 0 and a.score < b.fullscore * 0.975 group by a.key, a.level"); //OTHER
+
+        querySqls.add("select `key`, `level`, count(1) as c from rm_songkey a where exists(select 1 from rm_song where has = 1 and songid = a.songid) group by `key`, `level`"); //歌曲总数
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and score > 0 and exists(select 1 from rm_song where has = 1 and songid = a.songid) group by a.key, a.level"); //已打总数
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songkey a where exists(select 1 from rm_songscore where score = 0 and songid = a.songid and `key` = a.key and `level` = a.level and hasrole = 1 and removetag = 0) and exists(select 1 from rm_song where songid = a.songid and has = 1)" + "group by a.key, a.level");//未打
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score = b.fullscore group by a.key, a.level"); //满分
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score >= b.fullscore * 0.995 and a.score <> b.fullscore group by a.key, a.level"); //SSS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score >= b.fullscore * 0.975 and a.score < b.fullscore * 0.995 group by a.key, a.level"); //SS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 1 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score > 0 and a.score < b.fullscore * 0.975 group by a.key, a.level"); //OTHER
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and score > 0 and exists(select 1 from rm_song where has = 1 and songid = a.songid) group by a.key, a.level"); //已打总数
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songkey a where exists(select 1 from rm_songscore where score = 0 and songid = a.songid and `key` = a.key and `level` = a.level and hasrole = 0 and removetag = 0) and exists(select 1 from rm_song where songid = a.songid and has = 1)" + "group by a.key, a.level");//未打
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score = b.fullscore group by a.key, a.level"); //满分
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score >= b.fullscore * 0.995 and a.score <> b.fullscore group by a.key, a.level"); //SSS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score >= b.fullscore * 0.975 and a.score < b.fullscore * 0.995 group by a.key, a.level"); //SS
+        querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score > 0 and a.score < b.fullscore * 0.975 group by a.key, a.level"); //OTHER
+
+        List<int[]> results = new ArrayList<int[]>();
+        for(int i = 0; i < 15; i++) {
+            int[] s = new int[27];
+            results.add(s);
+        }
+        for(int i = 0; i < querySqls.size(); i++) {
+            System.out.println(i + "/" + querySqls.size());
+            String sql = querySqls.get(i);
+            if(sql == null) {
+                continue;
+            }
+            List<Map<String, Object>> list = jt.queryForList(sql);
+            for(Map<String, Object> map : list) {
+                int key = ((Integer) map.get("key")).intValue();
+                int level = ((Integer) map.get("level")).intValue();
+                int count = ((Long) map.get("c")).intValue();
+                results.get((level - 1) * 3 + key - 4)[i] = count;
+            }
+        }
+        for(int i = 1; i < 27; i++) {
+            results.get(9)[i] = results.get(0)[i] + results.get(1)[i] + results.get(2)[i];
+            results.get(10)[i] = results.get(3)[i] + results.get(4)[i] + results.get(5)[i];
+            results.get(11)[i] = results.get(6)[i] + results.get(7)[i] + results.get(8)[i];
+            results.get(12)[i] = results.get(0)[i] + results.get(3)[i] + results.get(6)[i];
+            results.get(13)[i] = results.get(1)[i] + results.get(4)[i] + results.get(7)[i];
+            results.get(14)[i] = results.get(2)[i] + results.get(5)[i] + results.get(8)[i];
+            results.get(15)[i] = results.get(0)[i] + results.get(1)[i] + results.get(2)[i] +
+                    results.get(3)[i] + results.get(4)[i] + results.get(5)[i] +
+                    results.get(6)[i] + results.get(7)[i] + results.get(8)[i];
+        }
+        for(int i = 0; i < results.size(); i++) {
+            Object[] params = new Object[10];
+            params[0] = pubdate;
+            params[1] = i;
+            params[2] = 0;
+            params[3] = results.get(i)[1];
+            for(int j = 4; j < 10; j++) {
+                params[j] = results.get(i)[j - 2];
+            }
+            jt.update("insert into rm_songstatus(pubdate, keytype, playtype, total, done, undone, full, sss, ss, other) values(?,?,?,?,?,?,?,?,?,?)", params);
+            params[2] = 1;
+            for(int j = 4; j < 10; j++) {
+                params[j] = results.get(i)[j + 4];
+            }
+            jt.update("insert into rm_songstatus(pubdate, keytype, playtype, total, done, undone, full, sss, ss, other) values(?,?,?,?,?,?,?,?,?,?)", params);
+            params[2] = 2;
+            params[3] = results.get(i)[14];
+            for(int j = 4; j < 10; j++) {
+                params[j] = results.get(i)[j + 11];
+            }
+            jt.update("insert into rm_songstatus(pubdate, keytype, playtype, total, done, undone, full, sss, ss, other) values(?,?,?,?,?,?,?,?,?,?)", params);
+            params[2] = 3;
+            for(int j = 4; j < 10; j++) {
+                params[j] = results.get(i)[j + 17];
+            }
+            jt.update("insert into rm_songstatus(pubdate, keytype, playtype, total, done, undone, full, sss, ss, other) values(?,?,?,?,?,?,?,?,?,?)", params);
+
+            double[][] scores = new double[10][3];
+            scores[0][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
+            scores[0][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
+            scores[0][0] = scores[0][1] + scores[0][2];
+            scores[1][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and hasrole = 1 and removetag = 0");
+            scores[1][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and hasrole = 0 and removetag = 0");
+            scores[1][0] = scores[1][1] + scores[1][2];
+            scores[2][0] = scores[1][0] / scores[0][0];
+            scores[2][1] = Double.parseDouble(scores[1][1]) / Double.parseDouble(scores[0][1]));
+            scores[2][2] = Double.parseDouble(scores[1][2]) / Double.parseDouble(scores[0][2]));
+            scores[3][0] = "99.70%";
+            scores[3][1] = "99.90%";
+            scores[3][2] = "99.50%";
+            scores[4][0] = (long)Math.ceil(Double.parseDouble(scores[0][0]) * df.parse(scores[3][0]).doubleValue()) - Long.parseLong(scores[1][0]) + "";
+            scores[4][1] = (long)Math.ceil(Double.parseDouble(scores[0][1]) * df.parse(scores[3][1]).doubleValue()) - Long.parseLong(scores[1][1]) + "";//Long.parseLong(scores[0][1]) - Long.parseLong(scores[1][1]) + "";
+            scores[4][2] = (long)Math.ceil(Double.parseDouble(scores[0][2]) * df.parse(scores[3][2]).doubleValue()) - Long.parseLong(scores[1][2]) + "";
+
+            scores[5][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
+            scores[5][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
+            scores[5][0] = Long.parseLong(scores[5][1]) + Long.parseLong(scores[5][2]) + "";
+            scores[6][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 1 and removetag = 0") + "";
+            scores[6][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 0 and removetag = 0") + "";
+            scores[6][0] = Long.parseLong(scores[6][1]) + Long.parseLong(scores[6][2]) + "";
+            scores[7][0] = df.format(Double.parseDouble(scores[6][0]) / Double.parseDouble(scores[5][0]));
+            scores[7][1] = df.format(Double.parseDouble(scores[6][1]) / Double.parseDouble(scores[5][1]));
+            scores[7][2] = df.format(Double.parseDouble(scores[6][2]) / Double.parseDouble(scores[5][2]));
+            scores[8][0] = "99.75%";
+            scores[8][1] = "99.95%";
+            scores[8][2] = "99.50%";
+            scores[9][0] = (long)Math.ceil(Double.parseDouble(scores[5][0]) * df.parse(scores[8][0]).doubleValue()) - Long.parseLong(scores[6][0]) + "";
+            scores[9][1] = (long)Math.ceil(Double.parseDouble(scores[5][1]) * df.parse(scores[8][1]).doubleValue()) - Long.parseLong(scores[6][1]) + "";//Long.parseLong(scores[4][1]) - Long.parseLong(scores[5][1]) + "";
+            scores[9][2] = (long)Math.ceil(Double.parseDouble(scores[5][2]) * df.parse(scores[8][2]).doubleValue()) - Long.parseLong(scores[6][2]) + "";
+        }
     }
 }

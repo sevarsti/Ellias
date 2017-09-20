@@ -11,7 +11,11 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import servlet.GlobalContext;
 
+import javax.sql.DataSource;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,13 +35,17 @@ public class LoadCardThread extends BaseThread {
     private final static Logger LOGGER = Logger.getLogger(LoadCardThread.class);
 
     public static void main(String[] args) {
-        new LoadCardThread().execute();
+        try {
+            new LoadCardThread().parseCard("D:\\apache-tomcat\\temp\\llcard.txt");
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
     protected int execute() {
         try {
-            String filepath = "F:" + "\\temp\\llcard.txt";
+            String filepath = System.getProperty("java.io.tmpdir") + File.separator + "llcard.txt";
             File tempfile = new File(filepath);
             if(!tempfile.exists()) {
                 tempfile.createNewFile();
@@ -51,15 +59,13 @@ public class LoadCardThread extends BaseThread {
     }
 
     private void parseCard(String filepath) throws Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/ellias", "root", "sjtuagent");
+        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
 
         PreparedStatement ps;
         String[] tables = new String[]{"ll_card","ll_functionvoice","ll_periodvoice","ll_randomvoice","ll_series","ll_skill","ll_subscenario","ll_timevoice","ll_touchvoice", "ll_specialvoice"};
         for(String t : tables) {
-            ps = connection.prepareStatement("truncate table " + t);
-            ps.executeUpdate();
-            ps.close();
+            jt.update("truncate table " + t);
         }
         FileInputStream fis = new FileInputStream(filepath);
         int i;
@@ -67,25 +73,30 @@ public class LoadCardThread extends BaseThread {
         StringBuffer sb = new StringBuffer();
         int count = 0;
         boolean checkQuote = false;
+        int co = 0;
         while((i = fis.read()) != -1) {
             if(bracecount > 0) {
                 char c = (char) i;
+                co++;
                 sb.append(c);
                 if(c == '\"') {
                     char prvChar = sb.charAt(sb.length() - 2);
-                    if(prvChar != ' ' && prvChar != '[' && prvChar != '{') {
-                        checkQuote = true;
-                    } else {
-                        checkQuote = false;
+                    if(prvChar == '\\') {
+                        sb.insert(sb.length() - 2, "\\");
                     }
-                } else {
-                    if(checkQuote) {
-                        if(c == ':' || c == ' ' || c == ',' || c == ']' || c == '}') {
-                        } else {
-                            sb.insert(sb.length() - 2, "\\");
-                        }
-                    }
-                    checkQuote = false;
+//                    if(prvChar != ' ' && prvChar != '[' && prvChar != '{') {
+//                        checkQuote = true;
+//                    } else {
+//                        checkQuote = false;
+//                    }
+//                } else {
+//                    if(checkQuote) {
+//                        if(c == ':' || c == ' ' || c == ',' || c == ']' || c == '}') {
+//                        } else {
+//                            sb.insert(sb.length() - 2, "\\");
+//                        }
+//                    }
+//                    checkQuote = false;
                 }
             }
             if(((char) i) == '{') {
@@ -97,9 +108,11 @@ public class LoadCardThread extends BaseThread {
                 bracecount--;
                 if(bracecount == 0) {
                     String s = StringEscapeUtils.unescapeJava(sb.toString());
-                    System.out.println(count++ + s);
-                    JSONObject json = new JSONObject(s);
-                    saveJSONObject(connection, json);
+                    System.out.println(count++ + ":" + s);
+                        JSONObject json = new JSONObject(s);
+                        Connection conn = DataSourceUtils.getConnection(ds);
+                        saveJSONObject(conn, json);
+                        DataSourceUtils.releaseConnection(conn, ds);
                     sb = new StringBuffer();
                 }
             }

@@ -46,7 +46,7 @@ public abstract class BaseThread extends Thread{
                 instance.interval = interval;
                 threads.put(instance.getClass().getName(), instance);
                 instance.start();
-                LOGGER.info("★★★启动线程 ：" + classname);
+                LOGGER.info("★★★" + (start == 1 ? "启动" : "暂停") + "线程 ：" + classname);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
