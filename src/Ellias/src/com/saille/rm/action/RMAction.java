@@ -536,7 +536,12 @@ public class RMAction extends AbstractDispatchAction{
                             boolean changebpm = !m.get("ratio").equals("1");
                             if(changebpm && isImd) {
                                 byte[] imdbytes = new byte[(int)objectListing.getObjectSummaries().get(j).getSize()];
-                                ossIs.read(imdbytes);
+                                int offset = 0;
+                                int count = 0;
+                                while ((count = ossIs.read(imdbytes, offset, imdbytes.length - offset)) > 0) {
+                                    offset += count;
+                                }
+                                System.out.println("size="+count);
                                 byte[] newbytes = RMUtils.changeBpm(imdbytes, Double.parseDouble(m.get("ratio")));
                                 zos.write(newbytes);
                             } else if(changebpm && isMp3) {
