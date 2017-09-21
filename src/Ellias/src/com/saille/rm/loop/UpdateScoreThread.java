@@ -204,7 +204,7 @@ public class UpdateScoreThread extends BaseThread {
                 }
             }
             LOGGER.info("一共更新了" + count + "条分数记录");
-
+            updateStatus(jt);
             jt.update("update setting set strvalue = ? where `group` = 'RM' and setting = 'RM_SCORE_LASTTIME'", new Object[]{new SimpleDateFormat(pattern).format(f.lastModified())});
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -228,6 +228,8 @@ public class UpdateScoreThread extends BaseThread {
 //        | other    | int(11) | YES  |     | NULL    |       |
 //        +----------+---------+------+-----+---------+-------+
         int pubdate = Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        jt.update("delete from rm_songstatus where pubdate = ?", new Object[]{pubdate});
+        jt.update("delete from rm_songstatussum where pubdate = ?", new Object[]{pubdate});
 
         List<String> querySqls = new ArrayList<String>();
         querySqls.add(null);
@@ -260,7 +262,7 @@ public class UpdateScoreThread extends BaseThread {
         querySqls.add("select a.key, a.level, count(1) as c from rm_songscore a join rm_songkey b on a.songid = b.songid and a.key = b.key and a.level = b.level and a.removetag = 0 and a.hasrole = 0 and exists(select 1 from rm_song where has = 1 and songid = a.songid) and a.score > 0 and a.score < b.fullscore * 0.975 group by a.key, a.level"); //OTHER
 
         List<int[]> results = new ArrayList<int[]>();
-        for(int i = 0; i < 15; i++) {
+        for(int i = 0; i < 16; i++) {
             int[] s = new int[27];
             results.add(s);
         }
@@ -315,39 +317,56 @@ public class UpdateScoreThread extends BaseThread {
                 params[j] = results.get(i)[j + 17];
             }
             jt.update("insert into rm_songstatus(pubdate, keytype, playtype, total, done, undone, full, sss, ss, other) values(?,?,?,?,?,?,?,?,?,?)", params);
-
-            double[][] scores = new double[10][3];
-            scores[0][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
-            scores[0][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
-            scores[0][0] = scores[0][1] + scores[0][2];
-            scores[1][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and hasrole = 1 and removetag = 0");
-            scores[1][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and hasrole = 0 and removetag = 0");
-            scores[1][0] = scores[1][1] + scores[1][2];
-            scores[2][0] = scores[1][0] / scores[0][0];
-            scores[2][1] = Double.parseDouble(scores[1][1]) / Double.parseDouble(scores[0][1]));
-            scores[2][2] = Double.parseDouble(scores[1][2]) / Double.parseDouble(scores[0][2]));
-            scores[3][0] = "99.70%";
-            scores[3][1] = "99.90%";
-            scores[3][2] = "99.50%";
-            scores[4][0] = (long)Math.ceil(Double.parseDouble(scores[0][0]) * df.parse(scores[3][0]).doubleValue()) - Long.parseLong(scores[1][0]) + "";
-            scores[4][1] = (long)Math.ceil(Double.parseDouble(scores[0][1]) * df.parse(scores[3][1]).doubleValue()) - Long.parseLong(scores[1][1]) + "";//Long.parseLong(scores[0][1]) - Long.parseLong(scores[1][1]) + "";
-            scores[4][2] = (long)Math.ceil(Double.parseDouble(scores[0][2]) * df.parse(scores[3][2]).doubleValue()) - Long.parseLong(scores[1][2]) + "";
-
-            scores[5][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
-            scores[5][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)") + "";
-            scores[5][0] = Long.parseLong(scores[5][1]) + Long.parseLong(scores[5][2]) + "";
-            scores[6][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 1 and removetag = 0") + "";
-            scores[6][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 0 and removetag = 0") + "";
-            scores[6][0] = Long.parseLong(scores[6][1]) + Long.parseLong(scores[6][2]) + "";
-            scores[7][0] = df.format(Double.parseDouble(scores[6][0]) / Double.parseDouble(scores[5][0]));
-            scores[7][1] = df.format(Double.parseDouble(scores[6][1]) / Double.parseDouble(scores[5][1]));
-            scores[7][2] = df.format(Double.parseDouble(scores[6][2]) / Double.parseDouble(scores[5][2]));
-            scores[8][0] = "99.75%";
-            scores[8][1] = "99.95%";
-            scores[8][2] = "99.50%";
-            scores[9][0] = (long)Math.ceil(Double.parseDouble(scores[5][0]) * df.parse(scores[8][0]).doubleValue()) - Long.parseLong(scores[6][0]) + "";
-            scores[9][1] = (long)Math.ceil(Double.parseDouble(scores[5][1]) * df.parse(scores[8][1]).doubleValue()) - Long.parseLong(scores[6][1]) + "";//Long.parseLong(scores[4][1]) - Long.parseLong(scores[5][1]) + "";
-            scores[9][2] = (long)Math.ceil(Double.parseDouble(scores[5][2]) * df.parse(scores[8][2]).doubleValue()) - Long.parseLong(scores[6][2]) + "";
         }
+
+        double[][] scores = new double[10][3];
+        scores[0][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
+        scores[0][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
+        scores[0][0] = scores[0][1] + scores[0][2];
+        scores[1][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and hasrole = 1 and removetag = 0");
+        scores[1][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and hasrole = 0 and removetag = 0");
+        scores[1][0] = scores[1][1] + scores[1][2];
+        scores[2][0] = scores[1][0] / scores[0][0];
+        scores[2][1] = scores[1][1] / scores[0][1];
+        scores[2][2] = scores[1][2] / scores[0][2];
+        scores[3][0] = 0.997;
+        scores[3][1] = 0.999;
+        scores[3][2] = 0.995;
+        scores[4][0] = Math.ceil(scores[0][0]) * scores[3][0] - scores[1][0];
+        scores[4][1] = Math.ceil(scores[0][1]) * scores[3][1] - scores[1][1];
+        scores[4][2] = Math.ceil(scores[0][2]) * scores[3][2] - scores[1][2];
+
+        scores[5][1] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 1 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
+        scores[5][2] = jt.queryForLong("select sum(fullscore) from rm_songkey a where songid not in(329, 289, 280) and exists (select 1 from rm_songscore where score > 0 and hasrole = 0 and songid = a.songid and `key` = a.key and `level` = a.level and removetag = 0)");
+        scores[5][0] = scores[5][1] + scores[5][2];
+        scores[6][1] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 1 and removetag = 0");
+        scores[6][2] = jt.queryForLong("select sum(score) from rm_songscore a where score > 0 and songid not in(329, 289, 280) and hasrole = 0 and removetag = 0");
+        scores[6][0] = scores[6][1] + scores[6][2];
+        scores[7][0] = scores[6][0] / scores[5][0];
+        scores[7][1] = scores[6][1] / scores[5][1];
+        scores[7][2] = scores[6][2] / scores[5][2];
+        scores[8][0] = 0.9975;
+        scores[8][1] = 0.9995;
+        scores[8][2] = 0.9950;
+        scores[9][0] = Math.ceil(scores[5][0] * scores[8][0]) - scores[6][0];
+        scores[9][1] = Math.ceil(scores[5][1] * scores[8][1]) - scores[6][1];
+        scores[9][2] = Math.ceil(scores[5][2] * scores[8][2]) - scores[6][2];
+        StringBuilder sb = new StringBuilder().append("insert into rm_songstatussum(pubdate,full,hasfull,nofull,my,hasmy,nomy,ratio,hasratio,noratio,target,hastarget,notarget,diff,hasdiff,nodiff,fullex,hasfullex,nofullex,myex,hasmyex,nomyex,ratioex,hasratioex,noratioex,targetex,hastargetex,notargetex,diffex,hasdiffex,nodiffex) values(");
+        for(int i = 0; i < 31; i++) {
+            if(i > 0) {
+                sb.append(",");
+            }
+            sb.append("?");
+        }
+        sb.append(")");
+        Object[] params = new Object[31];
+        params[0] = pubdate;
+        int index = 1;
+        for(int i = 0; i < 10; i++) {
+            for(int j = 0; j < 3; j++) {
+                params[index++] = scores[i][j];
+            }
+        }
+        jt.update(sb.toString(), params);
     }
 }
