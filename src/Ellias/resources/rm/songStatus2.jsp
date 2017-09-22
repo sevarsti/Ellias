@@ -171,7 +171,7 @@
                             needRight = true;
                         }
                 %>
-                    <td onclick="showdetail(<%=i%>, <%=j%>);" style="cursor:pointer;<%=(i % 3 == 2 || i == 15) ? "border-bottom-style:solid;border-bottom-color:black;" : ""%><%=needRight ? "border-right-style:solid;border-right-color:black;" : ""%>" align="right">
+                    <td onclick="showdetail(<%=i%>, <%=j+1%>);" style="cursor:pointer;<%=(i % 3 == 2 || i == 15) ? "border-bottom-style:solid;border-bottom-color:black;" : ""%><%=needRight ? "border-right-style:solid;border-right-color:black;" : ""%>" align="right">
                         <%if(diffs[j] > 0){%>
                         (<span style="color: red;">+<%=diffs[j]%></span>)
                         <%}%>

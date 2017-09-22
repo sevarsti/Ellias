@@ -3,9 +3,11 @@ package com.saille.sys.loop;
 import com.GlobalConstant;
 import com.saille.sys.BaseThread;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import servlet.GlobalContext;
 
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -46,7 +48,7 @@ public class DatabaseBackupThread extends BaseThread {
             }
             backupfile.createNewFile();
             ProcessBuilder pb = new ProcessBuilder();
-            pb = pb.command("mysqldump", "--default-character-set=gbk", "-uroot", "-phuaan", "ellias", "--ignore-table", "ellias.setting");
+            pb = pb.command("mysqldump", "--default-character-set=gbk", "-uroot", "-p" + ((BasicDataSource) new InitialContext().lookup("java:comp/env/SinitekOtterapp")).getPassword(), "ellias", "--ignore-table", "ellias.setting");
             Process p = pb.start();
             InputStream errorStream = p.getErrorStream();
             BufferedReader err = new BufferedReader(new InputStreamReader(new BufferedInputStream(errorStream)));
@@ -69,7 +71,7 @@ public class DatabaseBackupThread extends BaseThread {
             errorStream.close();
             /* ±¸·Ýsetting */
             Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ellias", "root", "huaan");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ellias", "root", ((BasicDataSource) new InitialContext().lookup("java:comp/env/SinitekOtterapp")).getPassword());
 //            DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
 //            Connection conn = ds.getConnection();
             PreparedStatement ps = conn.prepareStatement("select * from setting");
