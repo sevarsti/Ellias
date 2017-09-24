@@ -1,0 +1,168 @@
+package com.saille.vos;
+
+import com.saille.rm.util.RMUtils;
+import org.apache.commons.lang.StringUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Ellias on 2017-09-24.
+ */
+public class VosLoad {
+    public static void main(String[] args) {
+        try {
+//            File f = new File("F:\\game\\VOS\\Album\\LV8\\Emerald Sword.VOS");
+            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+            byte[] bytes = new byte[(int)f.length()];
+            FileInputStream fis = new FileInputStream(f);
+            fis.read(bytes);
+            fis.close();
+            int offset = 0;
+            int header = RMUtils.getInt(bytes, offset, 4);
+            offset += 4;
+            int segmentinfoaddress = RMUtils.getInt(bytes, offset, 4); //info
+            offset += 4;
+            offset += 16;
+            int segmentmidaddress = RMUtils.getInt(bytes, offset, 4); //mid
+            offset += 4;
+            offset += 16;
+            int segmenteofaddress = RMUtils.getInt(bytes, offset, 4); //EOF
+            offset += 4;
+            offset += 16;
+
+            int titlelength = RMUtils.getInt(bytes, offset, 1);
+            offset += 1;
+            String title = RMUtils.getString(bytes, offset, titlelength);
+            offset += titlelength;
+            int artistlength = RMUtils.getInt(bytes, offset, 1);
+            offset += 1;
+            String artist = RMUtils.getString(bytes, offset, artistlength);
+            offset += artistlength;
+            int commentlength = RMUtils.getInt(bytes, offset, 1);
+            offset += 1;
+            String comment = RMUtils.getString(bytes, offset, commentlength);
+            offset += commentlength;
+            int authorlength = RMUtils.getInt(bytes, offset, 1);
+            offset += 1;
+            String author = RMUtils.getString(bytes, offset, authorlength);
+            offset += authorlength;
+            /*
+            00:Pop
+            01:New Age
+            02:Techno
+            03:Rock
+            04:SoundTrack
+            05:Game & Anime
+            06:Jazz
+            07:CenturyEnd
+            08:Classical
+            09:Other
+             */
+            int musictype = RMUtils.getInt(bytes, offset, 1);
+            offset += 1;
+            int extendedMusicType = RMUtils.getInt(bytes, offset, 1);
+            offset += 1;
+            int songLength = RMUtils.getInt(bytes, offset, 4);
+            offset += 4;
+            int level = RMUtils.getInt(bytes, offset, 1); //0=1¼¶,9=10¼¶
+            offset += 1;
+
+            offset += 1023; //space: 00 * 1023
+            List<String> instruments = new ArrayList<String>();
+            List<int[]> keys = new ArrayList<int[]>();
+            List<int[]> bpms = new ArrayList<int[]>();
+            while (offset < segmentmidaddress) {
+                int instrument = RMUtils.getInt(bytes, offset, 4);
+                offset += 4;
+                int beatCount = RMUtils.getInt(bytes, offset, 4);
+                offset += 4;
+
+                offset += 14;
+                for(int i = 0; i < beatCount; i++) {
+                    int sequence = RMUtils.getInt(bytes, offset, 4);
+                    offset += 4;
+                    int duration = RMUtils.getInt(bytes, offset, 4);
+                    offset += 4;
+                    int channel = RMUtils.getInt(bytes, offset, 1);
+                    offset += 1;
+                    int pitch = RMUtils.getInt(bytes, offset, 1); //Òô¸ß
+                    offset += 1;
+                    int volume = RMUtils.getInt(bytes, offset, 1);
+                    offset += 1;
+                    int playkey = RMUtils.getInt(bytes, offset, 1);
+                    offset += 1;
+                    int notetype = RMUtils.getInt(bytes, offset, 1);
+//                    System.out.println(Integer.toBinaryString(notetype));
+//                    int color = (playkey & 0xE0) >> 5;
+                    int foruser = (playkey & 0x80) >> 7;
+                    int key = (playkey & 0x70) >> 4;
+//                    int longnote = playkey & 1;
+                    offset += 1;
+//                    if(foruser == 1) {
+                    insert(bpms, sequence, duration);
+                    if(instrument != 0 && foruser == 1) {
+                        insert(keys, new int[]{sequence, key, notetype == 0x80 ? duration : 1});
+                        System.out.println(i + "\tsequence=" + sequence + "\tduration=" + duration + "\toffset=" + offset + "\tforuser=" + foruser + "\t"+key);
+//                        System.out.println(i + "\tsequence=" + sequence + "\tduration=" + duration + "\toffset=" + offset + "\tnotebyte=" + notetype +"\tforuser="+foruser);
+                    }
+                }
+                System.out.println("============instrument=" + instrument + "end============");
+                instruments.add(instrument + "");
+            }
+            System.out.println("=====================");
+//            for(int i = 0; i < bpms.size(); i++) {
+//                System.out.println(bpms.get(i)[0] + "\t" + bpms.get(i)[1]);
+//            }
+            for(int i = 0; i < keys.size(); i++) {
+                System.out.println(keys.get(i)[0] + "\t" + keys.get(i)[1]);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    private static void insert(List<int[]> bpms, int sequence, int duration) {
+        for(int i = 0; i < bpms.size(); i++) {
+            if(sequence < bpms.get(i)[0]) {
+                bpms.add(i, new int[]{sequence, duration});
+                return;
+            }
+            if(sequence == bpms.get(i)[0]) {
+                if(duration < bpms.get(i)[1]) {
+                    bpms.add(i, new int[]{sequence, duration});
+                    return;
+                } else if(duration == bpms.get(i)[1]) {
+                    return;
+                }
+            }
+        }
+        bpms.add(new int[]{sequence, duration});
+    }
+    private static void insert(List<int[]> keys, int[] newkey) {
+        for(int i = 0; i < keys.size(); i++) {
+            if(newkey[0] < keys.get(i)[0]) {
+                keys.add(i, newkey);
+                return;
+            } else if(newkey[0] == keys.get(i)[0]) {
+                if(newkey[1] < keys.get(i)[1]) {
+                    keys.add(i, newkey);
+                    return;
+                } else if(newkey[1] == keys.get(i)[1]) {
+                    keys.get(i)[2] = Math.max(newkey[2], keys.get(i)[2]);
+                    return;
+                }
+            }
+        }
+        keys.add(newkey);
+    }
+    private static String convert(String in) {
+        String ret = in;
+        while (ret.length() < 8) {
+            ret = "0"+ret;
+        }
+        return ret;
+    }
+}
