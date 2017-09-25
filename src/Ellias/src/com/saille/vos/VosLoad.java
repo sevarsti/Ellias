@@ -1,6 +1,7 @@
 package com.saille.vos;
 
 import com.saille.rm.util.RMUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -15,7 +16,8 @@ public class VosLoad {
     public static void main(String[] args) {
         try {
 //            File f = new File("F:\\game\\VOS\\Album\\LV8\\Emerald Sword.VOS");
-            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+            File f = new File("D:\\Ellias\\VPT\\B\\kks6428's MID .VOS");
             byte[] bytes = new byte[(int)f.length()];
             FileInputStream fis = new FileInputStream(f);
             fis.read(bytes);
@@ -103,13 +105,13 @@ public class VosLoad {
                     offset += 1;
 //                    if(foruser == 1) {
                     insert(bpms, sequence, duration);
-                    if(instrument != 0 && foruser == 1) {
+                    if(foruser == 1) {
                         insert(keys, new int[]{sequence, key, notetype == 0x80 ? duration : 1});
-                        System.out.println(i + "\tsequence=" + sequence + "\tduration=" + duration + "\toffset=" + offset + "\tforuser=" + foruser + "\t"+key);
+//                        System.out.println(i + "\tsequence=" + sequence + "\tduration=" + duration + "\toffset=" + offset + "\tforuser=" + foruser + "\t"+key);
 //                        System.out.println(i + "\tsequence=" + sequence + "\tduration=" + duration + "\toffset=" + offset + "\tnotebyte=" + notetype +"\tforuser="+foruser);
                     }
                 }
-                System.out.println("============instrument=" + instrument + "end============");
+//                System.out.println("============instrument=" + instrument + "end============");
                 instruments.add(instrument + "");
             }
             System.out.println("=====================");
@@ -117,9 +119,26 @@ public class VosLoad {
 //                System.out.println(bpms.get(i)[0] + "\t" + bpms.get(i)[1]);
 //            }
             for(int i = 0; i < keys.size(); i++) {
-                System.out.println(keys.get(i)[0] + "\t" + keys.get(i)[1]);
+                System.out.println(keys.get(i)[0] + "\t" + keys.get(i)[1] + "\t" + keys.get(i)[2]);
             }
-
+            //检查tempo
+            int tempo = 0;
+            for(int i = segmentmidaddress; i < bytes.length - 2; i++) {
+                if(bytes[i] == -1 && bytes[i + 1] == 0x51 && bytes[i + 2] == 0x03) {
+                    if(tempo > 0) {
+                        System.out.println("出现不同tempo");
+                        break;
+                    } else {
+                        byte[] tempobyte = ArrayUtils.subarray(bytes, i + 3, i + 6);
+                        ArrayUtils.reverse(tempobyte);
+                        tempo = RMUtils.getInt(tempobyte, 0, tempobyte.length);
+                        tempo = (int)Math.round(60000000.0 / (double)tempo);
+                        i += 3;
+                    }
+                }
+            }
+            System.out.println("tempo=" + tempo);
+            System.out.println("songLength=" + songLength);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
