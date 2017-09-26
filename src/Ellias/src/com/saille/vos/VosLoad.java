@@ -17,7 +17,9 @@ public class VosLoad {
         try {
 //            File f = new File("F:\\game\\VOS\\Album\\LV8\\Emerald Sword.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
-            File f = new File("D:\\Ellias\\VPT\\B\\kks6428's MID .VOS");
+            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
+//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\kks6428's mid .VOS");
+//            File f = new File("F:\\game\\VOS\\Album\\VPT\\A\\rich17.VOS");
             byte[] bytes = new byte[(int)f.length()];
             FileInputStream fis = new FileInputStream(f);
             fis.read(bytes);
@@ -34,7 +36,13 @@ public class VosLoad {
             int segmenteofaddress = RMUtils.getInt(bytes, offset, 4); //EOF
             offset += 4;
             offset += 16;
-
+            if(bytes[offset] == 0x56 && bytes[offset + 1] == 0x4f && bytes[offset + 2] == 0x53) { //Rank曲，title从134开始，需要额外+70
+                offset += 70;
+                int unknownlength = RMUtils.getInt(bytes, offset, 1);
+                offset += 1;
+                String unknown = RMUtils.getString(bytes, offset, unknownlength);
+                offset += unknownlength;
+            }
             int titlelength = RMUtils.getInt(bytes, offset, 1);
             offset += 1;
             String title = RMUtils.getString(bytes, offset, titlelength);
@@ -76,16 +84,22 @@ public class VosLoad {
             List<String> instruments = new ArrayList<String>();
             List<int[]> keys = new ArrayList<int[]>();
             List<int[]> bpms = new ArrayList<int[]>();
+            int maxSequence = 0;
             while (offset < segmentmidaddress) {
                 int instrument = RMUtils.getInt(bytes, offset, 4);
                 offset += 4;
                 int beatCount = RMUtils.getInt(bytes, offset, 4);
                 offset += 4;
-
+                System.out.print("beat count=" + beatCount);
                 offset += 14;
                 for(int i = 0; i < beatCount; i++) {
                     int sequence = RMUtils.getInt(bytes, offset, 4);
                     offset += 4;
+                    if(i == 0) {
+                        System.out.print("\tfirst = " + sequence);
+                    } else if(i == beatCount - 1) {
+                        System.out.println("\tlast = " + sequence);
+                    }
                     int duration = RMUtils.getInt(bytes, offset, 4);
                     offset += 4;
                     int channel = RMUtils.getInt(bytes, offset, 1);
@@ -110,6 +124,7 @@ public class VosLoad {
 //                        System.out.println(i + "\tsequence=" + sequence + "\tduration=" + duration + "\toffset=" + offset + "\tforuser=" + foruser + "\t"+key);
 //                        System.out.println(i + "\tsequence=" + sequence + "\tduration=" + duration + "\toffset=" + offset + "\tnotebyte=" + notetype +"\tforuser="+foruser);
                     }
+                    maxSequence = Math.max(maxSequence, sequence);
                 }
 //                System.out.println("============instrument=" + instrument + "end============");
                 instruments.add(instrument + "");
@@ -122,23 +137,24 @@ public class VosLoad {
                 System.out.println(keys.get(i)[0] + "\t" + keys.get(i)[1] + "\t" + keys.get(i)[2]);
             }
             //检查tempo
-            int tempo = 0;
+            List<int[]> tempos = new ArrayList<int[]>(); //int[]{tempo, size};
+            int currenttempo = 0;
+            int currenttemposizeoffset = 0;
             for(int i = segmentmidaddress; i < bytes.length - 2; i++) {
                 if(bytes[i] == -1 && bytes[i + 1] == 0x51 && bytes[i + 2] == 0x03) {
-                    if(tempo > 0) {
-                        System.out.println("出现不同tempo");
-                        break;
-                    } else {
-                        byte[] tempobyte = ArrayUtils.subarray(bytes, i + 3, i + 6);
-                        ArrayUtils.reverse(tempobyte);
-                        tempo = RMUtils.getInt(tempobyte, 0, tempobyte.length);
-                        tempo = (int)Math.round(60000000.0 / (double)tempo);
-                        i += 3;
-                    }
+                    byte[] tempobyte = ArrayUtils.subarray(bytes, i + 3, i + 6);
+                    ArrayUtils.reverse(tempobyte);
+//                    currenttempo = RMUtils.getInt(tempobyte, 0, tempobyte.length);
+//                    currenttempo = (int)Math.round(60000000.0 / (double)tempo);
+                    i += 6;
+                    currenttemposizeoffset = i;
+                } else if(bytes[i] == -1 && bytes[i + 1] == 0x2f) {
+                    break;
                 }
             }
-            System.out.println("tempo=" + tempo);
+//            System.out.println("tempo=" + tempo);
             System.out.println("songLength=" + songLength);
+            System.out.println("maxSequence="+maxSequence);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
