@@ -129,7 +129,7 @@ public class RMUtils {
      *            长整数
      * @return 代表长整数的字节数组
      */
-    private static byte[] longToBytes(long l) {
+    public static byte[] longToBytes(long l) {
         byte[] b = new byte[8];
         b[7] = (byte) (l >>> 56);
         b[6] = (byte) (l >>> 48);
@@ -155,7 +155,7 @@ public class RMUtils {
         return (int)ret;
     }
 
-    private static byte[] int2byte(int i) {
+    public static byte[] int2byte(int i) {
         List<Byte> list = new ArrayList<Byte>();
         while(i > 0) {
             int r = i % 256;
