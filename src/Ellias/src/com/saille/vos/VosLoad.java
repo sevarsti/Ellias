@@ -16,8 +16,11 @@ public class VosLoad {
     public static void main(String[] args) {
         try {
 //            File f = new File("F:\\game\\VOS\\Album\\LV8\\Emerald Sword.VOS");
-//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
-            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
+//            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+            File f = new File("D:\\Ellias\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
+//            File f = new File("D:\\Ellias\\VOS\\Album\\LV8\\10-L-gaim.VOS");
+//            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
+            System.out.println(f.getName());
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\kks6428's mid .VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\A\\rich17.VOS");
             byte[] bytes = new byte[(int)f.length()];
@@ -138,27 +141,56 @@ public class VosLoad {
             }
             //¼ì²étempo
             List<int[]> tempos = new ArrayList<int[]>(); //int[]{tempo, size};
+            List<String> others = new ArrayList<String>();
             int currenttempo = 0;
             int currenttemposizeoffset = 0;
             for(int i = segmentmidaddress; i < bytes.length - 2; i++) {
                 if(bytes[i] == -1 && bytes[i + 1] == 0x51 && bytes[i + 2] == 0x03) {
                     byte[] tempobyte = ArrayUtils.subarray(bytes, i + 3, i + 6);
                     ArrayUtils.reverse(tempobyte);
-//                    currenttempo = RMUtils.getInt(tempobyte, 0, tempobyte.length);
-//                    currenttempo = (int)Math.round(60000000.0 / (double)tempo);
+                    currenttempo = RMUtils.getInt(tempobyte, 0, tempobyte.length);
+                    currenttempo = (int)Math.round(60000000.0 / (double)currenttempo);
+                    tempos.add(new int[]{currenttempo});
+                    if(currenttemposizeoffset != 0) {
+                        byte[] otherbytes = ArrayUtils.subarray(bytes, currenttemposizeoffset, i);
+                        String s = getByteStr(otherbytes);
+                        others.add(s);
+                    }
                     i += 6;
                     currenttemposizeoffset = i;
                 } else if(bytes[i] == -1 && bytes[i + 1] == 0x2f) {
+                    byte[] otherbytes = ArrayUtils.subarray(bytes, currenttemposizeoffset, i);
+                    String s = getByteStr(otherbytes);
+                    others.add(s);
                     break;
                 }
             }
 //            System.out.println("tempo=" + tempo);
+            for(int i = 0; i < tempos.size(); i++) {
+                System.out.println(tempos.get(i)[0] + "\t" + others.get(i));
+            }
             System.out.println("songLength=" + songLength);
             System.out.println("maxSequence="+maxSequence);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+    private static String getByteStr(byte[] otherbytes) {
+        String ret = "";
+        for(byte b : otherbytes) {
+            int i = (int) b;
+            if(i < 0) {
+                i += 256;
+            }
+            String s = Integer.toHexString(i);
+            if(s.length() < 2) {
+                s = "0" + s;
+            }
+            ret += s;
+        }
+        return ret;
+    }
+
     private static void insert(List<int[]> bpms, int sequence, int duration) {
         for(int i = 0; i < bpms.size(); i++) {
             if(sequence < bpms.get(i)[0]) {
