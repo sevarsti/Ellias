@@ -18,12 +18,13 @@ public class VosLoad {
         try {
 //            File f = new File("F:\\game\\VOS\\Album\\LV8\\Emerald Sword.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
-            File f = new File("F:\\game\\vos\\album\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
+//            File f = new File("F:\\game\\vos\\album\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
+            File f = new File("D:\\Ellias\\vos\\albumbackup\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\LV8\\10-L-gaim.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\A\\rich17.VOS");
+//            File f = new File("D:\\Ellias\\VOS\\Album\\dx617\\ez\\Rusty Nail.vos");
             System.out.println(f.getName());
-//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\kks6428's mid .VOS");
             byte[] bytes = new byte[(int)f.length()];
             FileInputStream fis = new FileInputStream(f);
             fis.read(bytes);
@@ -167,10 +168,10 @@ public class VosLoad {
             for(int i = 0; i < tempos.size(); i++) {
                 if(i == 0) {
                     tempos.get(i)[3] = 0;
-                    tempos.get(i)[4] = (int)(tempos.get(i)[2] * tempos.get(i)[0] * 12.8 / 1000);// sec*bpm*12.8/1000
+                    tempos.get(i)[4] = (int)((double)tempos.get(i)[2] * (double)tempos.get(i)[0] / 78.125);// sequence/bpm*78.125sec*bpm*12.8/1000
                 } else {
                     tempos.get(i)[3] = tempos.get(i - 1)[4] + 1;
-                    tempos.get(i)[4] = tempos.get(i)[3] + (int)(tempos.get(i)[1] * tempos.get(i)[0] * 12.8 / 1000);
+                    tempos.get(i)[4] = tempos.get(i)[3] + (int)((double)tempos.get(i)[2] * (double)tempos.get(i)[0] / 78.125);
                 }
                 System.out.println(tempos.get(i)[0] + "\t" + tempos.get(i)[1] + "\t" + tempos.get(i)[2] + "\t" + tempos.get(i)[3] + "\t" + tempos.get(i)[4]);
             }
@@ -196,6 +197,7 @@ public class VosLoad {
             System.out.println("totalcount=" + count);
             System.out.println("songLength=" + songLength);
             System.out.println("maxSequence="+maxSequence);
+            System.exit(0);
             File outfile = new File("F:\\temp\\a\\new.imd");
             if(!outfile.exists()) {
                 outfile.createNewFile();
