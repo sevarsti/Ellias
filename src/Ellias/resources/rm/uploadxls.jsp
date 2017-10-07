@@ -1,20 +1,21 @@
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="java.util.List" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItem" %>
-<%@ page import="java.util.zip.ZipInputStream" %>
-<%@ page import="java.util.zip.ZipEntry" %>
-<%@ page import="java.nio.charset.Charset" %>
-<%@ page import="java.io.File" %>
 <%@ page import="com.GlobalConstant" %>
 <%@ page import="com.saille.rm.RMConstant" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Date" %>
+<%@ page import="com.saille.sys.BaseThread" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItem" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
 <%@ page import="org.apache.commons.io.FileUtils" %>
 <%@ page import="org.springframework.util.FileCopyUtils" %>
+<%@ page import="java.io.File" %>
 <%@ page import="java.io.FileOutputStream" %>
-<%@ page import="com.saille.sys.BaseThread" %>
-<%@ page import="com.saille.baidu.bos.SynchronizeExcel" %>
+<%@ page import="java.nio.charset.Charset" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.zip.ZipEntry" %>
+<%@ page import="java.util.zip.ZipInputStream" %>
+<%@ page import="java.util.zip.ZipOutputStream" %>
+<%@ page import="java.io.FileInputStream" %>
 <%--
   Created by IntelliJ IDEA.
   User: H00672
@@ -28,7 +29,21 @@
     <title>节奏大师歌曲.xls上传</title>
 </head>
 <%
-    if(request.getContentType() != null && request.getContentType().indexOf("multipart/form-data") >= 0) {
+    if(request.getParameter("download") != null) {
+        String encoded = new String("节奏大师歌曲.zip".getBytes(), "ISO-8859-1");
+        response.addHeader("Content-Disposition", "attachment; filename=" + encoded);
+        response.setHeader("Content-Type", " application/zip");
+
+        FileInputStream is = new FileInputStream(GlobalConstant.DISKPATH + "\\excel\\" + RMConstant.RM_EXCEL);
+        ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+        zos.putNextEntry(new ZipEntry(RMConstant.RM_EXCEL));
+        FileCopyUtils.copy(is, zos);
+        is.close();
+        out.clear();
+        out = pageContext.pushBody();
+        return;
+    }
+    if(request.getContentType() != null && request.getContentType().contains("multipart/form-data")) {
         DiskFileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         List fileItems = upload.parseRequest(request);
@@ -99,8 +114,9 @@
 <body>
 <form action="" enctype="multipart/form-data" method="post">
     <input type="file" name="xls" class="inputbox"/><br/>
-    <input type="checkbox" name="sychronize" value="1"/>立刻同步</br>
+    <input type="checkbox" name="sychronize" value="1" checked/>立刻同步</br>
     <input type="submit" value="上传"/>
+    <a href="uploadxls.jsp?download">下载xls</a>
 </form>
 </body>
 </html>
