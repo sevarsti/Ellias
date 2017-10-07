@@ -16,12 +16,14 @@ import java.util.List;
 public class VosLoad {
     public static void main(String[] args) {
         try {
-//            File f = new File("F:\\game\\VOS\\Album\\LV8\\Emerald Sword.VOS");
-//            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
-//            File f = new File("F:\\game\\vos\\album\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
-            File f = new File("D:\\Ellias\\vos\\albumbackup\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
+//            File f = new File("F:\\game\\VOS\\Albumbackup\\LV8\\Emerald Sword.VOS");
+//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+//            File f = new File("F:\\game\\VOS\\Album\\Death Practice\\Major Demon-2185.vos");
+//            File f = new File("F:\\game\\VOS\\Album\\Death Practice\\First_Song.vos");
+            File f = new File("F:\\game\\vos\\album\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
+//            File f = new File("F:\\game\\vos\\album\\VPT\\B\\Laputa Theme.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\LV8\\10-L-gaim.VOS");
-//            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
+//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\A\\rich17.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\dx617\\ez\\Rusty Nail.vos");
             System.out.println(f.getName());
@@ -120,8 +122,9 @@ public class VosLoad {
                     int key = (playkey & 0x70) >> 4;
                     offset += 1;
                     insert(bpms, sequence, duration);
-                    if(foruser == 1) {
-                        insert(keys, new int[]{sequence, key, notetype == 0x80 ? duration : 1});
+                    if(foruser == 1 && key < 6) {
+//                        insert(keys, new int[]{sequence, key, notetype == 0x80 ? duration : 1});
+                        insert(keys, new int[]{sequence, key, 1});
                     }
                     maxSequence = Math.max(maxSequence, sequence);
                 }
@@ -132,6 +135,9 @@ public class VosLoad {
                 System.out.println(keys.get(i)[0] + "\t" + keys.get(i)[1] + "\t" + keys.get(i)[2]);
             }
             //检查tempo
+            byte[] ticks = ArrayUtils.subarray(bytes, segmentmidaddress + 12, segmentmidaddress + 14);
+            ArrayUtils.reverse(ticks);
+            int tickinnote = RMUtils.getInt(ticks, 0, 2);
             List<int[]> tempos = new ArrayList<int[]>(); //int[]{tempo, size};
             List<String> others = new ArrayList<String>();
             int currenttempo = 0;
@@ -142,7 +148,7 @@ public class VosLoad {
                     ArrayUtils.reverse(tempobyte);
                     currenttempo = RMUtils.getInt(tempobyte, 0, tempobyte.length);
                     currenttempo = (int)Math.round(60000000.0 / (double)currenttempo);
-                    tempos.add(new int[]{currenttempo, 0, 0, 0, 0});
+                    tempos.add(new int[]{currenttempo, 0, 0, 0, 0, 0, 0});
                     if(currenttemposizeoffset != 0) {
                         byte[] otherbytes = ArrayUtils.subarray(bytes, currenttemposizeoffset, i);
                         int s = getNumber(otherbytes);
@@ -158,36 +164,62 @@ public class VosLoad {
                 }
             }
             tempos.get(0)[2] = tempos.get(0)[1];
-            for(int i = 1; i < tempos.size(); i++) {
-                tempos.get(i)[2] = tempos.get(i)[1] + tempos.get(i - 1)[2];
-                if(i == tempos.size() - 1) {
-                    tempos.get(i)[1] = songLength - tempos.get(i - 1)[2];
-                    tempos.get(i)[2] = songLength;
+            if(tempos.size() == 1) {
+                tempos.get(0)[1] = (int)((double)songLength * tickinnote * tempos.get(0)[0] / 60000); //延续ticket
+                tempos.get(0)[2] = tempos.get(0)[1]; //结束ticket
+                tempos.get(0)[3] = 0; //起始毫秒数
+                tempos.get(0)[4] = songLength; //结束毫秒数
+            } else {
+                tempos.get(0)[3] = 0; //起始毫秒数
+                tempos.get(0)[4] = tempos.get(0)[3] + (int)((double)tempos.get(0)[1] / tempos.get(0)[0] * 60000 / tickinnote); //结束毫秒数
+                tempos.get(0)[5] = 0; //起始seq
+                tempos.get(0)[6] = (int)((double)tempos.get(0)[4] * tempos.get(0)[0] * 384 / 30 / 1000); //结束seq
+                for(int i = 1; i < tempos.size(); i++) {
+                    tempos.get(i)[2] = tempos.get(i)[1] + tempos.get(i - 1)[2]; //结束ticket
+                    tempos.get(i)[3] = tempos.get(i - 1)[4]; //起始毫秒数
+                    tempos.get(i)[4] = tempos.get(i)[3] + (int)((double)tempos.get(i)[1] / tempos.get(i)[0] * 60000 / tickinnote); //结束毫秒数
+                    tempos.get(i)[5] = tempos.get(i - 1)[6]; //起始seq
+                    tempos.get(i)[6] = tempos.get(i)[5] + (int)((tempos.get(i)[4] - tempos.get(i)[3]) * (double)tempos.get(i)[0] * 384 / 30 / 1000); //Q3+(P3-O3)*L3*384/30/1000
+                    if(i == tempos.size() - 1) {
+                        tempos.get(i)[1] = (songLength - tempos.get(i)[3]) * tickinnote * tempos.get(i)[0] / 60000; //延续ticket
+                        tempos.get(i)[2] = tempos.get(i)[1] + tempos.get(i - 1)[2];  //结束ticket
+                        tempos.get(i)[4] = songLength; //结束毫秒数
+                    }
                 }
             }
+            System.out.println("bpm\tlength\ttotallength\tbeginsec\tendsec");
             for(int i = 0; i < tempos.size(); i++) {
-                if(i == 0) {
-                    tempos.get(i)[3] = 0;
-                    tempos.get(i)[4] = (int)((double)tempos.get(i)[2] * (double)tempos.get(i)[0] / 78.125);// sequence/bpm*78.125sec*bpm*12.8/1000
-                } else {
-                    tempos.get(i)[3] = tempos.get(i - 1)[4] + 1;
-                    tempos.get(i)[4] = tempos.get(i)[3] + (int)((double)tempos.get(i)[2] * (double)tempos.get(i)[0] / 78.125);
+                System.out.print(tempos.get(i)[0] + "\t" + tempos.get(i)[1] + "\t" + tempos.get(i)[2] + "\t" + tempos.get(i)[3] + "\t" + tempos.get(i)[4]);
+                if(tempos.size() > 1) {
+                    System.out.print("\t" + tempos.get(i)[5] + "\t" + tempos.get(i)[6]);
                 }
-                System.out.println(tempos.get(i)[0] + "\t" + tempos.get(i)[1] + "\t" + tempos.get(i)[2] + "\t" + tempos.get(i)[3] + "\t" + tempos.get(i)[4]);
+                System.out.println("");
             }
             List<byte[]> bpmsImd = new ArrayList<byte[]>();
             int currentTimeMillSec = 0;
-            for(int i = 0; i < tempos.size(); i++) {
-                double bpm = tempos.get(i)[0];
-                int duration = tempos.get(i)[1];
-                int end = tempos.get(i)[2];
-                double timechip = 60000 / bpm;
+            if(tempos.size() == 1) {
+                double bpm = tempos.get(0)[0];
                 int count = 0;
-                while (currentTimeMillSec < end) {
-                    bpmsImd.add(RMUtils.int2byte(end - duration + (int) (count * timechip)));
+                while (currentTimeMillSec < songLength) {
+                    bpmsImd.add(RMUtils.int2byte(currentTimeMillSec));
                     bpmsImd.add(RMUtils.longToBytes(Double.doubleToLongBits(bpm)));
                     count++;
-                    currentTimeMillSec += timechip;
+                    currentTimeMillSec = (int)(60000d / bpm * count);
+                }
+            } else {
+                for(int i = 0; i < tempos.size(); i++) {
+                    double bpm = tempos.get(i)[0];
+                    int duration = tempos.get(i)[1];
+                    int end = tempos.get(i)[4];
+                    int begin = tempos.get(i)[3];
+                    double timechip = 60000 / bpm;
+                    int count = 0;
+                    while (currentTimeMillSec < end) {
+                        bpmsImd.add(RMUtils.int2byte(begin + (int) (count * timechip)));
+                        bpmsImd.add(RMUtils.longToBytes(Double.doubleToLongBits(bpm)));
+                        count++;
+                        currentTimeMillSec = begin + (int) (count * timechip);
+                    }
                 }
             }
             int count = 0;
@@ -197,8 +229,8 @@ public class VosLoad {
             System.out.println("totalcount=" + count);
             System.out.println("songLength=" + songLength);
             System.out.println("maxSequence="+maxSequence);
-            System.exit(0);
-            File outfile = new File("F:\\temp\\a\\new.imd");
+//            System.exit(0);
+            File outfile = new File("F:\\temp\\a\\new_7k_ez.imd");
             if(!outfile.exists()) {
                 outfile.createNewFile();
             }
@@ -224,7 +256,8 @@ public class VosLoad {
                     fos.write(0x00);
                 }
                 fos.write(0x00);
-                fos.write(RMUtils.int2byte(o));
+//                fos.write(RMUtils.int2byte(o));
+                fos.write(RMUtils.int2byte(getOffsetSec(o, tempos)));
                 fos.write(k);
                 if(d > 1) {
                     fos.write(RMUtils.int2byte(d));
@@ -237,6 +270,21 @@ public class VosLoad {
             ex.printStackTrace();
         }
     }
+    private static int getOffsetSec(int sequence, List<int[]> tempos) {
+        if(tempos.size() == 1) {
+            return (int)(sequence * 1000d * 30d / 384d / tempos.get(0)[0]);
+        }
+        for(int i = 0; i < tempos.size(); i++) {
+            int[] tempo = tempos.get(i);
+            if(sequence < tempo[6] || i == tempos.size() - 1) {
+//                (A10-E10)/C10/384*30*1000+F10
+                return (int)((double)(sequence - tempo[5]) / tempo[0] * 30 * 1000 / 384 + tempo[3]);
+//                return (int)((sequence - (tempo[2] - tempo[1])) * 30d * 1000 / 384 / tempo[0] + tempo[3]);
+            }
+        }
+        throw new RuntimeException("未找到tempo");
+    }
+
     private static int getNumber(byte[] bytes) {
         int ret = 0;
         for(int i = 0; i < bytes.length; i++) {
