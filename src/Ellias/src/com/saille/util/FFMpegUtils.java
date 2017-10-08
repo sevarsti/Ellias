@@ -4,6 +4,8 @@ import com.saille.sys.Setting;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,13 +13,43 @@ import java.util.regex.Pattern;
  * Created by Ellias on 2017-09-07.
  */
 public class FFMpegUtils {
+    private final static String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
     public static void main(String[] args) {
         getAudioLength("F:\\rm\\song\\daybyday\\daybyday.mp3");
     }
 
+    public static boolean insertBlank(String oldfilepath, String newfilepath, int length) {
+        double d = length / 1000d;
+        int count = (int)Math.ceil(d); //需要插入几条
+        d = d - count;
+        //ffmpeg.exe -i blank.mp3 -i blank.mp3 -i blank.mp3 -i new.mp3 -filter_complex "concat=n=4:v=0:a=1" out.mp3
+        ProcessBuilder pb = new ProcessBuilder();
+        List<String> params = new ArrayList<String>();
+        params.add(ffmpegpath);
+        for(int i = 0; i < count; i++) {
+            params.add("-i");
+            params.add("blank.mp3");
+        }
+        params.add("-i");
+        params.add(oldfilepath.replaceAll("\\\\", "\\\\\\\\"));
+        params.add("-filter_complex");
+        params.add("concat=n=" + (count + 1) + ":v=0:a=1");
+        if(d == 0) {
+            params.add(newfilepath.replaceAll("\\\\", "\\\\\\\\"));
+        } else {
+            params.add("tempfile");
+        }
+        pb = pb.command(params);
+    }
+
+    public static boolean cut(String oldfilepath, String newfilepath, double begin, double length) {
+        ProcessBuilder pb = new ProcessBuilder();
+        pb = pb.command(ffmpegpath, "-i", oldfilepath.replaceAll("\\\\", "\\\\\\\\"), "-ss", begin + "", "-t", length + "", newfilepath.replaceAll("\\\\", "\\\\\\\\"));
+        //ffmpeg.exe -i out.mp3 -ss 0.333333333 -t 5000 out2.mp3
+    }
+
     public static boolean changeSpeed(String oldfilepath, String newfilepath, double ratio) {
         try {
-            String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
 //            String ffmpegpath = "F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe";
             System.out.println("src file=" + oldfilepath);
             System.out.println("des file=" + newfilepath);
@@ -55,7 +87,6 @@ public class FFMpegUtils {
     }
     public static int getAudioLength(String filepath) {
         try {
-            String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
 //            String ffmpegpath = "F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe";
             ProcessBuilder pb = new ProcessBuilder();
             pb = pb.command(ffmpegpath, "-i", filepath);
