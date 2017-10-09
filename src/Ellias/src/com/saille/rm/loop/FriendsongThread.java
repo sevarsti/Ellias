@@ -181,6 +181,7 @@ public class FriendsongThread extends BaseThread {
                 int[] o = oldWeek.get(i);
                 int[] n = newWeek.get(i);
                 if(o[4] != n[4]) { //songid不一致
+                    LOGGER.info(key + "的第" + i + "首歌曲不一致:old=" + o[4] + ",new=" + n[4]);
                     sameWeek = false;
                     break;
                 }
@@ -192,6 +193,7 @@ public class FriendsongThread extends BaseThread {
                     boolean exact = true;
                     for(int j = 0; j < o.length; j++) {
                         if(o[j] != n[j]) {
+                            LOGGER.info(key + "的第" + i + "首歌曲的参数" + j + "不一致:old=" + o[j] + ",new=" + n[j]);
                             exact = false;
                             break;
                         }
