@@ -16,8 +16,8 @@ import java.util.List;
 public class VosLoad {
     public static void main(String[] args) {
         try {
-            File f = new File("D:\\ellias\\VOS\\Album\\Emerald Sword .VOS");
-//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+//            File f = new File("D:\\ellias\\VOS\\Album\\Emerald Sword .VOS");
+            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\Death Practice\\Major Demon-2185.vos");
 //            File f = new File("D:\\ellias\\VOS\\Album\\Death Practice\\First_Song.vos");
 //            File f = new File("D:\\Ellias\\vos\\albumbackup\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
@@ -43,6 +43,23 @@ public class VosLoad {
         }
         return null;
     }
+
+    public static byte[] convertVos032Midi(byte[] bytes) {
+        List<byte[]> list = new ArrayList<byte[]>();
+        int segmentmidaddress = RMUtils.getInt(bytes, 24, 4);
+        list.add(ArrayUtils.subarray(bytes, segmentmidaddress, bytes.length));
+        /* 检查midi信息中MTrk次数，并更新对应字段(第11个字节) */
+        int mtrkCount = 0;
+        for(int i = segmentmidaddress; i < bytes.length - 3; i++) {
+            if(bytes[i] == 0x4d && bytes[i + 1] == 0x54 && bytes[i + 2] == 0x72 && bytes[i + 3] == 0x6b) {
+                mtrkCount++;
+            }
+        }
+        list.get(0)[11] = (byte)(list.get(0)[11] + mtrkCount - 1);
+        //seq->节拍:节拍=seq/1.6
+        return null;
+    }
+
     public static void loadVos03(byte[] bytes) {
         try {
             int offset = 0;
