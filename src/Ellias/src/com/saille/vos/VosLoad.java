@@ -16,11 +16,11 @@ import java.util.List;
 public class VosLoad {
     public static void main(String[] args) {
         try {
-//            File f = new File("F:\\game\\VOS\\Albumbackup\\LV8\\Emerald Sword.VOS");
+            File f = new File("D:\\ellias\\VOS\\Album\\Emerald Sword .VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\Death Practice\\Major Demon-2185.vos");
-//            File f = new File("F:\\game\\VOS\\Album\\Death Practice\\First_Song.vos");
-            File f = new File("F:\\game\\vos\\album\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
+//            File f = new File("D:\\ellias\\VOS\\Album\\Death Practice\\First_Song.vos");
+//            File f = new File("D:\\Ellias\\vos\\albumbackup\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
 //            File f = new File("F:\\game\\vos\\album\\VPT\\B\\Laputa Theme.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\LV8\\10-L-gaim.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
@@ -31,6 +31,20 @@ public class VosLoad {
             FileInputStream fis = new FileInputStream(f);
             fis.read(bytes);
             fis.close();
+            convert(bytes);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static String[] convert(byte[] bytes) {
+        if(bytes[0] == 0x03) {
+            loadVos03(bytes);
+        }
+        return null;
+    }
+    public static void loadVos03(byte[] bytes) {
+        try {
             int offset = 0;
             int header = RMUtils.getInt(bytes, offset, 4);
             offset += 4;
@@ -123,8 +137,8 @@ public class VosLoad {
                     offset += 1;
                     insert(bpms, sequence, duration);
                     if(foruser == 1 && key < 6) {
-//                        insert(keys, new int[]{sequence, key, notetype == 0x80 ? duration : 1});
-                        insert(keys, new int[]{sequence, key, 1});
+                        insert(keys, new int[]{sequence, key, notetype == 0x80 ? duration : 1});
+//                        insert(keys, new int[]{sequence, key, 1});
                     }
                     maxSequence = Math.max(maxSequence, sequence);
                 }
@@ -230,7 +244,7 @@ public class VosLoad {
             System.out.println("songLength=" + songLength);
             System.out.println("maxSequence="+maxSequence);
 //            System.exit(0);
-            File outfile = new File("F:\\temp\\a\\new_7k_ez.imd");
+            File outfile = new File("D:\\temp\\a\\new_7k_ez.imd");
             if(!outfile.exists()) {
                 outfile.createNewFile();
             }
@@ -260,7 +274,8 @@ public class VosLoad {
                 fos.write(RMUtils.int2byte(getOffsetSec(o, tempos)));
                 fos.write(k);
                 if(d > 1) {
-                    fos.write(RMUtils.int2byte(d));
+//                    fos.write(RMUtils.int2byte(d));
+                    fos.write(RMUtils.int2byte(getDurationSec(o, d, tempos)));
                 } else {
                     fos.write(RMUtils.int2byte(0));
                 }
@@ -270,6 +285,19 @@ public class VosLoad {
             ex.printStackTrace();
         }
     }
+    private static int getDurationSec(int sequence, int duration, List<int[]> tempos) {
+        if(tempos.size() == 1) {
+            return (int)(duration * 1000d * 30d / 384d / tempos.get(0)[0]);
+        }
+        for(int i = 0; i < tempos.size(); i++) {
+            int[] tempo = tempos.get(i);
+            if(sequence < tempo[6] || i == tempos.size() - 1) {
+                return (int)((double)duration / tempo[0] * 30 * 1000 / 384);
+            }
+        }
+        throw new RuntimeException("Î´ÕÒµ½tempo");
+    }
+
     private static int getOffsetSec(int sequence, List<int[]> tempos) {
         if(tempos.size() == 1) {
             return (int)(sequence * 1000d * 30d / 384d / tempos.get(0)[0]);
