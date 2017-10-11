@@ -17,7 +17,7 @@ public class VosLoad {
     public static void main(String[] args) {
         try {
 //            File f = new File("D:\\ellias\\VOS\\Album\\Emerald Sword .VOS");
-            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\Death Practice\\Major Demon-2185.vos");
 //            File f = new File("D:\\ellias\\VOS\\Album\\Death Practice\\First_Song.vos");
 //            File f = new File("D:\\Ellias\\vos\\albumbackup\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
@@ -31,12 +31,19 @@ public class VosLoad {
             FileInputStream fis = new FileInputStream(f);
             fis.read(bytes);
             fis.close();
-            convert(bytes);
+            byte[] midiBytes = convertVos032Midi(bytes);
+            FileOutputStream fos = new FileOutputStream("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel_new.mid");
+            fos.write(midiBytes);
+            fos.close();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * @param bytes vos文件内容
+     * @return imd文件路径, mp3文件路径
+     */
     public static String[] convert(byte[] bytes) {
         if(bytes[0] == 0x03) {
             loadVos03(bytes);
@@ -55,9 +62,160 @@ public class VosLoad {
                 mtrkCount++;
             }
         }
-        list.get(0)[11] = (byte)(list.get(0)[11] + mtrkCount - 1);
+//        list.get(0)[11] = (byte)(list.get(0)[11] + mtrkCount - 1);
+
+        /* 检查音轨开始字节 */
+        int offset = 0;
+        int header = RMUtils.getInt(bytes, offset, 4);
+        offset += 4;
+        int segmentinfoaddress = RMUtils.getInt(bytes, offset, 4); //info
+        offset += 4;
+        offset += 16;
+//        int segmentmidaddress = RMUtils.getInt(bytes, offset, 4); //mid
+        offset += 4;
+        offset += 16;
+        int segmenteofaddress = RMUtils.getInt(bytes, offset, 4); //EOF
+        offset += 4;
+        offset += 16;
+        if(bytes[offset] == 0x56 && bytes[offset + 1] == 0x4f && bytes[offset + 2] == 0x53) { //Rank曲，title从134开始，需要额外+70
+            offset += 70;
+            int unknownlength = RMUtils.getInt(bytes, offset, 1);
+            offset += 1;
+            String unknown = RMUtils.getString(bytes, offset, unknownlength);
+            offset += unknownlength;
+        }
+        int titlelength = RMUtils.getInt(bytes, offset, 1);
+        offset += 1;
+//        String title = RMUtils.getString(bytes, offset, titlelength);
+        offset += titlelength;
+        int artistlength = RMUtils.getInt(bytes, offset, 1);
+        offset += 1;
+//        String artist = RMUtils.getString(bytes, offset, artistlength);
+        offset += artistlength;
+        int commentlength = RMUtils.getInt(bytes, offset, 1);
+        offset += 1;
+//        String comment = RMUtils.getString(bytes, offset, commentlength);
+        offset += commentlength;
+        int authorlength = RMUtils.getInt(bytes, offset, 1);
+        offset += 1;
+//        String author = RMUtils.getString(bytes, offset, authorlength);
+        offset += authorlength;
+//        int musictype = RMUtils.getInt(bytes, offset, 1);
+        offset += 1;
+//        int extendedMusicType = RMUtils.getInt(bytes, offset, 1);
+        offset += 1;
+//        int songLength = RMUtils.getInt(bytes, offset, 4);
+        offset += 4;
+//        int level = RMUtils.getInt(bytes, offset, 1); //0=1级,9=10级
+        offset += 1;
+
+        offset += 1023; //space: 00 * 1023
+        int maxSequence = 0;
+        int trackCount = 0;
+//        for(int i = 0; i < list.get(0)[11] - 1; i++) { //循环每个音轨
+        while(true){ //循环每个音轨
+            int instrument = RMUtils.getInt(bytes, offset, 4);
+            trackCount++;
+            offset += 4;
+            int beatCount = RMUtils.getInt(bytes, offset, 4);
+            offset += 4;
+            System.out.println("beat count=" + beatCount);
+            offset += 14;
+            int endOffset = beatCount * 13 + offset;
+            List<int[]> trackDetails = new ArrayList<int[]>(); //sequence, duration, channel, pitch, volume
+            for(int j = 0; j < beatCount; j++) {
+                int sequence = RMUtils.getInt(bytes, offset, 4);
+                int duration = RMUtils.getInt(bytes, offset + 4, 4);
+                int channel = RMUtils.getInt(bytes, offset + 8, 1); //轨道
+                int pitch = RMUtils.getInt(bytes, offset + 9, 1); //音高
+                int volume = RMUtils.getInt(bytes, offset + 10, 1); //力度
+                trackDetails.add(new int[]{sequence, channel, pitch, volume}); //按键
+                trackDetails.add(new int[]{sequence + duration, channel, pitch, 0}); //松键
+                offset += 13;
+            }
+            sortTrackDetails(trackDetails, 0, trackDetails.size());
+            List<byte[]> trackBytes = new ArrayList<byte[]>(); //时间差,音轨,音高,力度
+            int prvSequence = 0;
+            int trackLength = 0;
+            for(int j = 0; j < trackDetails.size(); j++) {
+                byte[] trackByte = getDeltatime(trackDetails.get(j)[0], prvSequence);
+                prvSequence = trackDetails.get(j)[0];
+                trackByte[trackByte.length - 3] = (byte)trackDetails.get(j)[1];
+                trackByte[trackByte.length - 2] = (byte)trackDetails.get(j)[2];
+                trackByte[trackByte.length - 1] = (byte)trackDetails.get(j)[3];
+                trackBytes.add(trackByte);
+                trackLength += trackByte.length;
+            }
+            trackBytes.add(new byte[]{0x00, (byte)0xff, 0x2f, 0x00});
+            trackLength += 4;
+            list.add(new byte[]{0x4d, 0x54, 0x72, 0x6b});
+            byte[] lengthByte = RMUtils.int2byte(trackLength + 3); //00,音轨,乐器，共3位
+            ArrayUtils.reverse(lengthByte);
+            list.add(lengthByte);
+            list.add(new byte[]{0, (byte)(192 + (trackCount - 1)), (byte)instrument});
+            list.addAll(trackBytes);
+            if(segmentmidaddress <= endOffset) {
+                break;
+            }
+        }
+        //        for(int i = 0; i < list.get(0)[11] - 1; i++) { //循环每个音轨
+        list.get(0)[11] = (byte)(list.get(0)[11] + trackCount);
+        int totalCount = 0;
+        for(byte[] b : list) {
+            totalCount += b.length;
+        }
+        byte[] ret = new byte[totalCount];
+        int i = 0;
+        for(byte[] b : list) {
+            for(byte bb : b) {
+                ret[i] = bb;
+                i++;
+            }
+        }
         //seq->节拍:节拍=seq/1.6
-        return null;
+        return ret;
+    }
+
+    private static byte[] getDeltatime(int sequence, int prvSequence) {
+        List<Byte> bytes = new ArrayList<Byte>();
+        sequence = (int)(sequence / 1.6);
+        prvSequence = (int)(prvSequence / 1.6);
+        String str = Integer.toBinaryString(sequence - prvSequence);
+        while(str.length() > 7) {
+            String substr = str.substring(str.length() - 7, str.length());
+            str = str.substring(0, str.length() - 7);
+            byte b = (byte)Integer.parseInt(substr, 2);
+            bytes.add(b);
+        }
+        if(str.length() > 0) {
+            byte b = (byte)Integer.parseInt(str, 2);
+            bytes.add(b);
+        }
+        byte[] ret = new byte[bytes.size() + 3]; //预留音轨,音高,力度
+        for(int i = bytes.size() - 1; i >= 0; i--) {
+            if(i == 0) {
+                ret[bytes.size() - 1 - i] = bytes.get(i);
+            } else {
+                ret[bytes.size() - 1 - i] = (byte)(bytes.get(i) + 128);
+            }
+        }
+        return ret;
+    }
+
+    private static List<int[]> sortTrackDetails(List<int[]> list, int start, int end) {
+        if (list == null || list.size() == 0) {
+            return list;
+        }
+        for(int i = 0; i < list.size(); i++) {
+            for(int j = i + 1; j < list.size(); j++) {
+                if(list.get(i)[0] > list.get(j)[0]) {
+                    int[] tmp = list.get(i);
+                    list.set(i, list.get(j));
+                    list.set(j, tmp);
+                }
+            }
+        }
+        return list;
     }
 
     public static void loadVos03(byte[] bytes) {

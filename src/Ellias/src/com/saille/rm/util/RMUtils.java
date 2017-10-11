@@ -88,9 +88,14 @@ public class RMUtils {
         return ret;
     }
 
-    public static String getString(byte[] bytes, int start, int length) throws Exception {
-        String ret = new String(bytes, start, length, "UTF-8").trim();
-        return ret;
+    public static String getString(byte[] bytes, int start, int length) {
+        try {
+            String ret = new String(bytes, start, length, "UTF-8").trim();
+            return ret;
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     public static double getDouble(byte[] bytes, int start, int length) {
