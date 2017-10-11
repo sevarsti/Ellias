@@ -1,6 +1,7 @@
 package com.saille.util;
 
 import com.saille.sys.Setting;
+import com.saille.sys.util.SysUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -14,8 +15,35 @@ import java.util.regex.Pattern;
  */
 public class FFMpegUtils {
     private final static String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
+    private final static String timiditypath = Setting.getSettingString("TIMIDITY_PATH");
+    private final static String lamepath = Setting.getSettingString("LAME_PATH");
     public static void main(String[] args) {
         getAudioLength("F:\\rm\\song\\daybyday\\daybyday.mp3");
+    }
+
+    public static boolean convertMid2Mp3(String midifilepath, String mp3filepath) {
+        String wavfile = midifilepath.substring(0, midifilepath.lastIndexOf(".")) + ".wav";
+        ProcessBuilder pb = new ProcessBuilder();
+        List<String> params = new ArrayList<String>();
+        //1、midi->wav
+        params.add(timiditypath);
+        params.add(midifilepath);
+        params.add("-Ow");
+        params.add("-o");
+        params.add("-o");
+        params.add(wavfile);
+        SysUtils.addTempFile(wavfile, null, 60 * 5); //5分钟
+        //todo
+        //2、wav->mp3
+        pb = new ProcessBuilder();
+        params.clear();
+        params.add(lamepath);
+        params.add(wavfile);
+        params.add(mp3filepath);
+        //todo
+        //3、mp3头增加空白
+        //4、mp3头删除多余空白
+        return true;
     }
 
     public static boolean insertBlank(String oldfilepath, String newfilepath, int length) {
@@ -40,12 +68,14 @@ public class FFMpegUtils {
             params.add("tempfile");
         }
         pb = pb.command(params);
+        return true;
     }
 
     public static boolean cut(String oldfilepath, String newfilepath, double begin, double length) {
         ProcessBuilder pb = new ProcessBuilder();
         pb = pb.command(ffmpegpath, "-i", oldfilepath.replaceAll("\\\\", "\\\\\\\\"), "-ss", begin + "", "-t", length + "", newfilepath.replaceAll("\\\\", "\\\\\\\\"));
         //ffmpeg.exe -i out.mp3 -ss 0.333333333 -t 5000 out2.mp3
+        return true;
     }
 
     public static boolean changeSpeed(String oldfilepath, String newfilepath, double ratio) {

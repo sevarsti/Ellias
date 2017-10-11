@@ -1,13 +1,17 @@
 package com.saille.vos;
 
 import com.saille.rm.util.RMUtils;
+import com.saille.sys.util.SysUtils;
+import com.saille.util.FFMpegUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,8 +49,23 @@ public class VosLoad {
      * @return imd文件路径, mp3文件路径
      */
     public static String[] convert(byte[] bytes) {
-        if(bytes[0] == 0x03) {
-            loadVos03(bytes);
+        String now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        try {
+            if(bytes[0] == 0x03) {
+                //1、保存imd文件
+                byte[] imdBytes = loadVos03(bytes);
+                String tmpimdfile = System.getProperty("java.io.tmpdir") + File.separator + now + ".imd";
+                SysUtils.addTempFile(tmpimdfile, imdBytes, 60 * 60 * 24 * 7); //保存一周
+                //2、保存midi文件
+                byte[] midiBytes = convertVos032Midi(bytes);
+                String tmpmidifile = System.getProperty("java.io.tmpdir") + File.separator + now + ".mid";
+                SysUtils.addTempFile(tmpmidifile, midiBytes, 60 * 60 * 24 * 7); //保存一周
+                //3、转换为mp3文件
+                String tmpmp3file = System.getProperty("java.io.tmpdir") + File.separator + now + ".mp3";
+                FFMpegUtils.convertMid2Mp3(tmpmidifile, tmpmp3file);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -218,7 +237,7 @@ public class VosLoad {
         return list;
     }
 
-    public static void loadVos03(byte[] bytes) {
+    public static byte[] loadVos03(byte[] bytes) {
         try {
             int offset = 0;
             int header = RMUtils.getInt(bytes, offset, 4);
@@ -419,45 +438,54 @@ public class VosLoad {
             System.out.println("songLength=" + songLength);
             System.out.println("maxSequence="+maxSequence);
 //            System.exit(0);
-            File outfile = new File("D:\\temp\\a\\new_7k_ez.imd");
-            if(!outfile.exists()) {
-                outfile.createNewFile();
-            }
-            FileOutputStream fos = new FileOutputStream(outfile);
-            fos.write(RMUtils.int2byte(songLength));
-            fos.write(RMUtils.int2byte(count / 12));
-            for(int i = 0; i < bpmsImd.size(); i++) {
-                for(int j = 0; j < bpmsImd.get(i).length; j++) {
-                    fos.write(bpmsImd.get(i)[j]);
-                }
-            }
-            fos.write(0x03);
-            fos.write(0x03);
+//            File outfile = new File("D:\\temp\\a\\new_7k_ez.imd");
+//            if(!outfile.exists()) {
+//                outfile.createNewFile();
+//            }
+//            FileOutputStream fos = new FileOutputStream(outfile);
+            List<byte[]> retBytes = new ArrayList<byte[]>();
+            retBytes.add(RMUtils.int2byte(songLength));
+            retBytes.add(RMUtils.int2byte(count / 12));
+            retBytes.addAll(bpmsImd);
+            retBytes.add(new byte[]{0x03, 0x03});
             quicksort(keys, 0, keys.size());
-            fos.write(RMUtils.int2byte(keys.size()));
+            retBytes.add(RMUtils.int2byte(keys.size()));
             for(int i = 0; i < keys.size(); i++) {
                 int o = keys.get(i)[0]; //offset
                 int k = keys.get(i)[1]; //key
                 int d = keys.get(i)[2]; //duration
                 if(d > 1) {
-                    fos.write(0x02);
+                    retBytes.add(new byte[]{0x02});
                 } else {
-                    fos.write(0x00);
+                    retBytes.add(new byte[]{0x00});
                 }
-                fos.write(0x00);
+                retBytes.add(new byte[]{0x00});
 //                fos.write(RMUtils.int2byte(o));
-                fos.write(RMUtils.int2byte(getOffsetSec(o, tempos)));
-                fos.write(k);
+                retBytes.add(RMUtils.int2byte(getOffsetSec(o, tempos)));
+                retBytes.add(new byte[]{(byte) k});
                 if(d > 1) {
 //                    fos.write(RMUtils.int2byte(d));
-                    fos.write(RMUtils.int2byte(getDurationSec(o, d, tempos)));
+                    retBytes.add(RMUtils.int2byte(getDurationSec(o, d, tempos)));
                 } else {
-                    fos.write(RMUtils.int2byte(0));
+                    retBytes.add(RMUtils.int2byte(0));
                 }
             }
-            fos.close();
+            count = 0;
+            for(byte[] b : retBytes) {
+                count += b.length;
+            }
+            byte[] ret = new byte[count];
+            count = 0;
+            for(byte[] bb : retBytes) {
+                for(byte b : bb) {
+                    ret[count] = b;
+                    count++;
+                }
+            }
+            return ret;
         } catch (Exception ex) {
             ex.printStackTrace();
+            return null;
         }
     }
     private static int getDurationSec(int sequence, int duration, List<int[]> tempos) {
