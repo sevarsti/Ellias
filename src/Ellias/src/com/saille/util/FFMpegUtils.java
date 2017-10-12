@@ -14,14 +14,18 @@ import java.util.regex.Pattern;
  * Created by Ellias on 2017-09-07.
  */
 public class FFMpegUtils {
-    private final static String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
-    private final static String timiditypath = Setting.getSettingString("TIMIDITY_PATH");
-    private final static String lamepath = Setting.getSettingString("LAME_PATH");
+    private final static String ffmpegpath = "F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin\\ffmpeg.exe";
+    private final static String timiditypath = "F:\\software\\MidiConverter\\timidity.exe\\";
+    private final static String lamepath = "F:\\software\\MidiConverter\\lame.exe";
+
+//    private final static String ffmpegpath = Setting.getSettingString("FFMPEG_PATH");
+//    private final static String timiditypath = Setting.getSettingString("TIMIDITY_PATH");
+//    private final static String lamepath = Setting.getSettingString("LAME_PATH");
     public static void main(String[] args) {
-        getAudioLength("F:\\rm\\song\\daybyday\\daybyday.mp3");
+        insertBlank("F:\\game\\VOS\\Album\\VPT\\B\\Laputa Theme.mp3", "F:\\game\\VOS\\Album\\VPT\\B\\Laputa2.mp3", 4800);
     }
 
-    public static boolean convertMid2Mp3(String midifilepath, String mp3filepath) {
+    public static boolean convertMid2Mp3(String midifilepath, String mp3filepath, int startBlankMillSec) {
         String wavfile = midifilepath.substring(0, midifilepath.lastIndexOf(".")) + ".wav";
         ProcessBuilder pb = new ProcessBuilder();
         List<String> params = new ArrayList<String>();
@@ -35,13 +39,22 @@ public class FFMpegUtils {
         SysUtils.addTempFile(wavfile, null, 60 * 5); //5分钟
         //todo
         //2、wav->mp3
+        String tempMp3File1 = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + ".mp3";
+        if(startBlankMillSec == 0) {
+            tempMp3File1 = mp3filepath;
+        }
         pb = new ProcessBuilder();
         params.clear();
         params.add(lamepath);
         params.add(wavfile);
         params.add(mp3filepath);
+        if(startBlankMillSec == 0) {
+            return true;
+        }
+        SysUtils.addTempFile(tempMp3File1, null, 60 * 5); //5分钟
         //todo
         //3、mp3头增加空白
+//        insertBlank(mp3filepath)
         //4、mp3头删除多余空白
         return true;
     }
@@ -54,6 +67,7 @@ public class FFMpegUtils {
         ProcessBuilder pb = new ProcessBuilder();
         List<String> params = new ArrayList<String>();
         params.add(ffmpegpath);
+        String tempfile = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + ".mp3";
         for(int i = 0; i < count; i++) {
             params.add("-i");
             params.add("blank.mp3");
@@ -65,15 +79,24 @@ public class FFMpegUtils {
         if(d == 0) {
             params.add(newfilepath.replaceAll("\\\\", "\\\\\\\\"));
         } else {
-            params.add("tempfile");
+            params.add(tempfile);
         }
+        pb = pb.directory(new File("F:\\software\\ffmpeg-20150414-git-013498b-win32-static\\bin"));
         pb = pb.command(params);
+        SysUtils.callExternProgram(pb);
+        if(d == 0) {
+            return true;
+        } else {
+            cut(tempfile, newfilepath, 1d + d, 1000000);
+            SysUtils.addTempFile(tempfile, null, 60 * 5); //5分钟
+        }
         return true;
     }
 
     public static boolean cut(String oldfilepath, String newfilepath, double begin, double length) {
         ProcessBuilder pb = new ProcessBuilder();
         pb = pb.command(ffmpegpath, "-i", oldfilepath.replaceAll("\\\\", "\\\\\\\\"), "-ss", begin + "", "-t", length + "", newfilepath.replaceAll("\\\\", "\\\\\\\\"));
+        SysUtils.callExternProgram(pb);
         //ffmpeg.exe -i out.mp3 -ss 0.333333333 -t 5000 out2.mp3
         return true;
     }
@@ -151,5 +174,9 @@ public class FFMpegUtils {
             ex.printStackTrace();
             return 0;
         }
+    }
+
+    private static int getMidStartBlank(byte[] bytes) {
+
     }
 }

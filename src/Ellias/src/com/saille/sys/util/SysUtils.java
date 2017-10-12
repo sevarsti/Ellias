@@ -11,8 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import servlet.GlobalContext;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -115,6 +115,54 @@ public class SysUtils {
             ex.printStackTrace();
             LOGGER.error("ÎÄ¼þ±£´æÊ§°Ü");
             return false;
+        }
+    }
+
+    public static String[] callExternProgram(ProcessBuilder pb) {
+        try {
+            Process p = pb.start();
+            String[] ret = new String[2];
+            final InputStream is = p.getErrorStream();
+            final StringBuilder sb = new StringBuilder();
+            new Thread() {
+                public void  run() {
+                    try {
+                        InputStreamReader isr = new InputStreamReader(is, Charset.forName("GBK"));
+                        BufferedReader out = new BufferedReader(isr);
+            //            BufferedReader out = new BufferedReader(new InputStreamReader(new BufferedInputStream(is), Charset.forName("GB2312")));
+                        String temp;
+                        System.out.println("====input stream====");
+                        while((temp = out.readLine()) != null) {
+                            System.out.println(temp);
+                            sb.append(temp).append("\r\n");
+                        }
+                        out.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }.start();
+            ret[1] = sb.toString();
+            p.waitFor();
+            InputStream is2 = p.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is2, Charset.forName("GBK"));
+            BufferedReader out = new BufferedReader(isr);
+            sb.delete(0, sb.length());
+            System.out.println("====error stream====");
+            String temp;
+            while((temp = out.readLine()) != null) {
+                System.out.println(temp);
+                sb.append(temp).append("\r\n");
+            }
+            ret[0] = sb.toString();
+            out.close();
+            return ret;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return new String[2];
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            return new String[2];
         }
     }
 }

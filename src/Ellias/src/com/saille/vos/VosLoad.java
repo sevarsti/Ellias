@@ -62,7 +62,7 @@ public class VosLoad {
                 SysUtils.addTempFile(tmpmidifile, midiBytes, 60 * 60 * 24 * 7); //保存一周
                 //3、转换为mp3文件
                 String tmpmp3file = System.getProperty("java.io.tmpdir") + File.separator + now + ".mp3";
-                FFMpegUtils.convertMid2Mp3(tmpmidifile, tmpmp3file);
+//                FFMpegUtils.convertMid2Mp3(tmpmidifile, tmpmp3file);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
