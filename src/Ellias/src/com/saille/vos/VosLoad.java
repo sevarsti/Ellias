@@ -21,13 +21,13 @@ public class VosLoad {
     public static void main(String[] args) {
         try {
 //            File f = new File("D:\\ellias\\VOS\\Album\\Emerald Sword .VOS");
-            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
+//            File f = new File("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel.VOS");
 //            File f = new File("F:\\game\\VOS\\Album\\Death Practice\\Major Demon-2185.vos");
 //            File f = new File("D:\\ellias\\VOS\\Album\\Death Practice\\First_Song.vos");
 //            File f = new File("D:\\Ellias\\vos\\albumbackup\\VST\\Hungarian dance No.5_2loopers_Classical_7.VOS");
-//            File f = new File("F:\\game\\vos\\album\\VPT\\B\\Laputa Theme.VOS");
+//            File f = new File("D:\\ellias\\vos\\album\\VPT\\B\\Laputa Theme.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\LV8\\10-L-gaim.VOS");
-//            File f = new File("F:\\game\\VOS\\Album\\VPT\\B\\In the mirror.VOS");
+            File f = new File("D:\\Ellias\\VOS\\Album\\Speed Domination_5148.vos");
 //            File f = new File("F:\\game\\VOS\\Album\\VPT\\A\\rich17.VOS");
 //            File f = new File("D:\\Ellias\\VOS\\Album\\dx617\\ez\\Rusty Nail.vos");
             System.out.println(f.getName());
@@ -35,8 +35,9 @@ public class VosLoad {
             FileInputStream fis = new FileInputStream(f);
             fis.read(bytes);
             fis.close();
+//            loadVos03(bytes);
             byte[] midiBytes = convertVos032Midi(bytes);
-            FileOutputStream fos = new FileOutputStream("D:\\Ellias\\VOS\\Album\\VPT\\B\\Canon_in_D_mikkel_new.mid");
+            FileOutputStream fos = new FileOutputStream("D:\\Ellias\\VOS\\Album\\Speed Domination_5148.mid");
             fos.write(midiBytes);
             fos.close();
         } catch(Exception ex) {
@@ -62,7 +63,8 @@ public class VosLoad {
                 SysUtils.addTempFile(tmpmidifile, midiBytes, 60 * 60 * 24 * 7); //保存一周
                 //3、转换为mp3文件
                 String tmpmp3file = System.getProperty("java.io.tmpdir") + File.separator + now + ".mp3";
-//                FFMpegUtils.convertMid2Mp3(tmpmidifile, tmpmp3file);
+                FFMpegUtils.convertMid2Mp3(tmpmidifile, tmpmp3file);
+                return new String[]{tmpimdfile, tmpmp3file};
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -73,6 +75,7 @@ public class VosLoad {
     public static byte[] convertVos032Midi(byte[] bytes) {
         List<byte[]> list = new ArrayList<byte[]>();
         int segmentmidaddress = RMUtils.getInt(bytes, 24, 4);
+        int tickinnote = (bytes[segmentmidaddress + 12] & 0xff) * 256 + (bytes[segmentmidaddress + 13] & 0xff);
         list.add(ArrayUtils.subarray(bytes, segmentmidaddress, bytes.length));
         /* 检查midi信息中MTrk次数，并更新对应字段(第11个字节) */
         int mtrkCount = 0;
@@ -157,7 +160,7 @@ public class VosLoad {
             int prvSequence = 0;
             int trackLength = 0;
             for(int j = 0; j < trackDetails.size(); j++) {
-                byte[] trackByte = getDeltatime(trackDetails.get(j)[0], prvSequence);
+                byte[] trackByte = getDeltatime(trackDetails.get(j)[0], prvSequence, tickinnote);
                 prvSequence = trackDetails.get(j)[0];
                 trackByte[trackByte.length - 3] = (byte)trackDetails.get(j)[1];
                 trackByte[trackByte.length - 2] = (byte)trackDetails.get(j)[2];
@@ -195,10 +198,10 @@ public class VosLoad {
         return ret;
     }
 
-    private static byte[] getDeltatime(int sequence, int prvSequence) {
+    private static byte[] getDeltatime(int sequence, int prvSequence, int tickinsec) {
         List<Byte> bytes = new ArrayList<Byte>();
-        sequence = (int)(sequence / 1.6);
-        prvSequence = (int)(prvSequence / 1.6);
+        sequence = (int)(sequence * tickinsec / 480 / 1.6);
+        prvSequence = (int)(prvSequence * tickinsec / 480 / 1.6);
         String str = Integer.toBinaryString(sequence - prvSequence);
         while(str.length() > 7) {
             String substr = str.substring(str.length() - 7, str.length());
@@ -330,7 +333,7 @@ public class VosLoad {
                     int key = (playkey & 0x70) >> 4;
                     offset += 1;
                     insert(bpms, sequence, duration);
-                    if(foruser == 1 && key < 6) {
+                    if(foruser == 1) {
                         insert(keys, new int[]{sequence, key, notetype == 0x80 ? duration : 1});
 //                        insert(keys, new int[]{sequence, key, 1});
                     }

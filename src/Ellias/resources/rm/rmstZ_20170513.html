@@ -848,7 +848,7 @@ Uint8Array.prototype.getInt16 = function () {
     if((s < 0) || (s > this.length - 1)) {
         return;
     }
-    return new DataView(this.buffer, s, 2).getInt16(0, e);
+    return new DataView(this.buffer, s, 2).getUint16(0, e);
 };
 Uint8Array.prototype.getInt32 = function () {
     var s = (arguments.length > 0 ? arguments[0] : 0);
