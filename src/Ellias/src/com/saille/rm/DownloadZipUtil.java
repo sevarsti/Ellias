@@ -42,11 +42,11 @@ public class DownloadZipUtil {
                 String filename = entry.getName();
                 String rmpath = Setting.getSettingString("RM_PATH");
                 if(rmpath == null) {
-                    rmpath = "D:\\rm\\";
+                    rmpath = DownloadZipUtil.class.getResource("").getPath().substring(1, 2) + ":\\rm\\";
                 }
                 File f = new File(rmpath + "TableComBin\\" + filename);
                 if(f.exists() && f.lastModified() < entry.getTime()) {
-                    String bakfilename = "D:\\rm\\" + "TableComBin\\deprecated\\";
+                    String bakfilename = DownloadZipUtil.class.getResource("").getPath().substring(1, 2) + ":\\rm\\" + "TableComBin\\deprecated\\";
                     bakfilename += f.getName().substring(0, f.getName().lastIndexOf(".") + 1);
                     bakfilename += new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(f.lastModified()));
                     bakfilename += f.getName().substring(f.getName().lastIndexOf("."));
@@ -66,7 +66,7 @@ public class DownloadZipUtil {
                     f.delete();
                     f.createNewFile();
                 } else if(f.exists() && f.lastModified() >= entry.getTime()) {
-                    continue;
+                    break;
                 } else {
                 }
                 FileOutputStream fos = new FileOutputStream(f);

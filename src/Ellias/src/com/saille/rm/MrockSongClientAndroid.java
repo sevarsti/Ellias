@@ -91,7 +91,7 @@ public class MrockSongClientAndroid {
             String[] files;
             String rmpath = Setting.getSettingString("RM_PATH");
             if(rmpath == null) {
-                rmpath = "D:\\rm\\";
+                rmpath = MrockSongClientAndroid.class.getResource("").getPath().substring(1, 2) + ":\\rm\\";
             }
             if(includelevel) {
                 files = new String[]{rmpath + "TableComBin\\mrock_song_client_android.bin", Setting.getSettingString("RM_PATH") + "TableComBin\\mrock_songlevel_client.bin"};

@@ -71,7 +71,8 @@ public class KeyLoad extends Thread {
     }
 
     private static void loadSongs() throws Exception {
-        File excel = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
+//        File excel = new File(GlobalConstant.DISKPATH + "excel\\" + RMConstant.RM_EXCEL);
+        File excel = new File("F:\\excel\\" + RMConstant.RM_EXCEL);
         FileInputStream excelis = new FileInputStream(excel);
         workbook = Workbook.getWorkbook(excelis);
         statisticsheet = workbook.getSheet("KEYÍ³¼Æ");

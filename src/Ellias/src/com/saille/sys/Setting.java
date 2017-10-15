@@ -36,22 +36,27 @@ public class Setting implements Serializable {
     private String pattern;
 
     public static String getSettingString(String key) {
-        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
-        JdbcTemplate jt = new JdbcTemplate(ds);
-        String sql = "select strvalue from setting where setting = ?";
-        List<Map<String, Object>> list = jt.queryForList(sql, new Object[]{key});
-        if(list.size() != 1) {
-            LOGGER.warn("配置项" + key + "的记录条数不正确：" + list.size());
+        try {
+            DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+            JdbcTemplate jt = new JdbcTemplate(ds);
+            String sql = "select strvalue from setting where setting = ?";
+            List<Map<String, Object>> list = jt.queryForList(sql, new Object[]{key});
+            if(list.size() != 1) {
+                LOGGER.warn("配置项" + key + "的记录条数不正确：" + list.size());
+                return null;
+            }
+            Map<String, Object> map = list.get(0);
+            Object obj = map.get("strvalue");
+            if(obj == null) {
+                LOGGER.warn("配置项" + key + "的值为空");
+                return null;
+            }
+            String value = obj.toString();
+            return value;
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return null;
         }
-        Map<String, Object> map = list.get(0);
-        Object obj = map.get("strvalue");
-        if(obj == null) {
-            LOGGER.warn("配置项" + key + "的值为空");
-            return null;
-        }
-        String value = obj.toString();
-        return value;
     }
 
     public static int getSettingInteger(String key) {

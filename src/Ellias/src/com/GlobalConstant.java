@@ -17,7 +17,7 @@ public class GlobalConstant {
     static {
         String path = System.getProperty("ellias.root");
         if(path == null) {
-            path = "D:\\";
+            path = GlobalConstant.class.getResource("/").getPath().substring(1, 2) + ":\\";
         }
         DISKPATH = path.substring(0, path.indexOf(File.separator) + File.separator.length());
     }
