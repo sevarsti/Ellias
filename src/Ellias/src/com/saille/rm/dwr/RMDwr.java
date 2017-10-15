@@ -185,7 +185,7 @@ public class RMDwr {
             JdbcTemplate jt = new JdbcTemplate(ds);
             List<Map<String, Object>> list = jt.queryForList(sql, params.toArray());
             List<String[]> tables = new ArrayList<String[]>();
-            tables.add(new String[]{"ID", "名称", "键数", "难度", "角色", "满分", "得分", "评价"});
+            tables.add(new String[]{"ID", "名称", "键数", "难度", "角色", "满分", "得分", "评价", "差距", "百分比"});
             for(Map<String, Object> m : list) {
                 int songid = ((Integer) m.get("songid")).intValue();
                 String songname = m.get("songname").toString();
@@ -200,7 +200,7 @@ public class RMDwr {
                 if(m.get("score") != null) {
                     score = ((Integer) m.get("score")).intValue();
                 }
-                String[] obj = new String[8];
+                String[] obj = new String[10];
                 obj[0] = songid + "";
                 obj[1] = songname;
                 obj[2] = key + "";
@@ -227,9 +227,11 @@ public class RMDwr {
                 } else {
                     obj[7] = "D";
                 }
+                obj[8] = fullscore - score + "";
+                obj[9] = new DecimalFormat("00.00%").format((score + 0d) / fullscore);
                 tables.add(obj);
             }
-            return UtilFunctions.convertList2Table(tables, new boolean[]{true, false, true, false, false, true, true, false});
+            return UtilFunctions.convertList2Table(tables, new boolean[]{true, false, true, false, false, true, true, false, true, false});
         } catch(Exception ex) {
             ex.printStackTrace();
             return "";
