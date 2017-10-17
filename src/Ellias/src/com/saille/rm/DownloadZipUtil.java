@@ -29,6 +29,10 @@ public class DownloadZipUtil {
                     return;
                 }
             }
+            String rmpath = Setting.getSettingString("RM_PATH");
+            if(rmpath == null) {
+                rmpath = DownloadZipUtil.class.getResource("").getPath().substring(1, 2) + ":\\rm\\";
+            }
             String url = "http://game.ds.qq.com/Com_TableCom_Android_Bin/TableComBin.zip";
             DefaultHttpClient client = new DefaultHttpClient();
             HttpGet gm = new HttpGet(url);
@@ -40,10 +44,6 @@ public class DownloadZipUtil {
                     break;
                 }
                 String filename = entry.getName();
-                String rmpath = Setting.getSettingString("RM_PATH");
-                if(rmpath == null) {
-                    rmpath = DownloadZipUtil.class.getResource("").getPath().substring(1, 2) + ":\\rm\\";
-                }
                 File f = new File(rmpath + "TableComBin\\" + filename);
                 if(f.exists() && f.lastModified() < entry.getTime()) {
                     String bakfilename = DownloadZipUtil.class.getResource("").getPath().substring(1, 2) + ":\\rm\\" + "TableComBin\\deprecated\\";
@@ -57,16 +57,16 @@ public class DownloadZipUtil {
                     bakfile.createNewFile();
                     FileOutputStream fos = new FileOutputStream(bakfile);
                     FileInputStream fis = new FileInputStream(f);
+                    byte[] bytes = new byte[1024];
                     int i;
-                    while((i = fis.read()) >= 0) {
-                        fos.write(i);
+                    while((i = fis.read(bytes)) >= 0) {
+                        fos.write(bytes, 0, i);
                     }
                     fos.close();
                     fis.close();
                     f.delete();
                     f.createNewFile();
                 } else if(f.exists() && f.lastModified() >= entry.getTime()) {
-                    break;
                 } else {
                 }
                 FileOutputStream fos = new FileOutputStream(f);
