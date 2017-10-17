@@ -125,16 +125,24 @@ public class ImdUtils {
     }
 
     /* 获取imd的最大连击数 */
-    public static int getTotalKeys(byte[] imds) {
+    public static int getTotalKeys(byte[] imds, Map<Integer, Integer> map) {
         int ret = 0;
         int skip = RMUtils.getInt(imds, 4, 4);
         double bpm = getBpm(imds);
         int length = RMUtils.getInt(imds, 8 + skip * 12 + 2, 4);
+        if(map == null) {
+            map = new HashMap<Integer, Integer>();
+        }
+        map.clear();
         for(int i = 0; i < length; i++) {
-            int t = imds[8 + skip * 12 + 2 + 4 + i * 11];
+            int t = imds[8 + skip * 12 + 2 + 4 + i * 11] & 0xff;
+            if(!map.containsKey(t)) {
+                map.put(t, 0);
+            }
+            map.put(t, map.get(t) + 1);
             switch (t) {
                 case 0: //单键
-                case -95: //面条结尾划键
+                case 0xa1: //面条结尾划键
                 case 0x21: //面条中间划键
                 case 0x61: //面条开始划键
                 case 0x03: //卧槽这是什么鬼？首尾重合的面条？
@@ -143,7 +151,7 @@ public class ImdUtils {
                 case 1: //划键
                     ret += 1;
                     break;
-                case -94: //面条结尾长键
+                case 0xa2: //面条结尾长键
                 case 0x22: //面条中间长键
                     ret += ((RMUtils.getInt(imds, 8 + skip * 12 + 2 + 4 + i * 11 + 7, 4) / ((int) (60000d / bpm / 4d))));
                     break;
@@ -151,8 +159,12 @@ public class ImdUtils {
                 case 0x62: //面条开始长键
                     ret += ((RMUtils.getInt(imds, 8 + skip * 12 + 2 + 4 + i * 11 + 7, 4) / ((int) (60000d / bpm / 4d)))) + 1;
                     break;
-                case -96: //a0
+                case 0xa0: //a0
                     ret--;
+                    break;
+                case 0xa3:
+                    ret += 1;
+                    break;
             }
         }
         return ret;

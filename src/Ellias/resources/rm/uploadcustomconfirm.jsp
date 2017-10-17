@@ -178,7 +178,8 @@
                     item.getInputStream().read(filebytes);
                     String tmpname = files.size() + "_" + item.getName() + now;
                     files.put(tmpname, filebytes);
-                    ranks.put(tmpname, new double[]{ImdUtils.calcRank(filebytes), ImdUtils.calcDifficult(filebytes), ImdUtils.getKey(filebytes), ImdUtils.getTotalKeys(filebytes)});
+                    Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+                    ranks.put(tmpname, new double[]{ImdUtils.calcRank(filebytes), ImdUtils.calcDifficult(filebytes), ImdUtils.getKey(filebytes), ImdUtils.getTotalKeys(filebytes, map)});
                     imdmd5.put(tmpname, UtilFunctions.md5(filebytes));
                     maxlength = Math.max(maxlength, ImdUtils.getLength(filebytes) / 1000);
                     double newbpm = ImdUtils.getBpm(filebytes);

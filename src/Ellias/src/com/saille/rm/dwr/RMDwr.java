@@ -1,11 +1,16 @@
 package com.saille.rm.dwr;
 
+import com.saille.rm.util.ImdUtils;
+import com.saille.sys.Setting;
+import org.apache.log4j.Logger;
 import servlet.GlobalContext;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -20,6 +25,78 @@ import com.saille.util.UtilFunctions;
  * To change this template use File | Settings | File Templates.
  */
 public class RMDwr {
+    private final static Logger LOGGER = Logger.getLogger(RMDwr.class);
+    public void fullKeyDetail() {
+        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
+        String dir = Setting.getSettingString("RM_PATH") + "zizhi" + File.separator;
+        List<Map<String, Object>> list = jt.queryForList("select id, songid, `key`, `level` from rm_customsongimd where" +
+                                                                 " k0 is null or" +
+                                                                 " k1 is null or" +
+                                                                 " k2 is null or" +
+                                                                 " k21 is null or" +
+                                                                 " k22 is null or" +
+                                                                 " k61 is null or" +
+                                                                 " k62 is null or" +
+                                                                 " ka1 is null or" +
+                                                                 " ka2 is null or" +
+                                                                 " k3 is null or" +
+                                                                 " ka0 is null or" +
+                                                                 " ka3 is null");
+        for(int i = 0; i < list.size(); i++) {
+            Map<String, Object> m = list.get(i);
+            int id = ((Number)m.get("id")).intValue();
+            int songId = ((Number)m.get("songid")).intValue();
+            int key = ((Number)m.get("key")).intValue();
+            int level = ((Number)m.get("level")).intValue();
+            String lv = "";
+            switch(level) {
+                case 1:lv = "ez";break;
+                case 2:lv = "nm";break;
+                case 3:lv = "hd";break;
+                default:throw new RuntimeException("未知难度：" + level);
+            }
+            String filename = songId + "_" + key + "k_" + lv + ".imd";
+            File f = new File(dir + songId + File.separator + filename);
+            LOGGER.info(i + "/" + list.size() + ":" + filename);
+            if(!f.exists()) {
+                LOGGER.warn(f.getPath() + "不存在");
+                continue;
+            }
+            byte[] bytes = new byte[(int)f.length()];
+            try {
+                FileInputStream fis = new FileInputStream(f);
+                fis.read(bytes);
+                fis.close();
+                Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+                ImdUtils.getTotalKeys(bytes, map);
+                Object[] params = new Object[13];
+                params[0] = map.get(0);
+                params[1] = map.get(1);
+                params[2] = map.get(2);
+                params[3] = map.get(33);
+                params[4] = map.get(4);
+                params[5] = map.get(97);
+                params[6] = map.get(98);
+                params[7] = map.get(161);
+                params[8] = map.get(162);
+                params[9] = map.get(3);
+                params[10] = map.get(160);
+                params[11] = map.get(163);
+                params[12] = id;
+                for(int j = 0; j < params.length; j++) {
+                    if(params[j] == null) {
+                        params[j] = 0;
+                    }
+                }
+                jt.update("update rm_customsongimd set k0 = ?, k1 = ?, k2 = ?, k21 = ?, k22 = ?, k61 = ?, k62 = ?," +
+                                  "ka1 = ?, ka2 = ?, k3 = ?, ka0 = ?, ka3 = ? where id = ?", params);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+                break;
+            }
+        }
+    }
     public Object[] getSongdetailById(int songId) {
         try {
             DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
