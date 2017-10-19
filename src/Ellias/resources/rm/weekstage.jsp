@@ -87,7 +87,7 @@
         Map<String, String> allSongs = loadSongs();
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
         JdbcTemplate jt = new JdbcTemplate(ds);
-        List<Map<String, Object>> list = jt.queryForList("select a.*, b.key41, b.key42, b.key43, b.key51, b.key52, b.key53, b.key61, b.key62, b.key63, c.score from rm_teamchallenge a join rm_song b on a.songid = b.songid left join rm_songscore c on a.songid = c.songid and (a.key + 3 = c.key) and a.level = c.level and c.hasrole = 1 and c.removetag = 0 where enddate is null or enddate >= date_format(now(), '%Y%m%d') order by startdate desc");
+        List<Map<String, Object>> list = jt.queryForList("select a.*, b.key41, b.key42, b.key43, b.key51, b.key52, b.key53, b.key61, b.key62, b.key63, b.has, c.score from rm_teamchallenge a join rm_song b on a.songid = b.songid left join rm_songscore c on a.songid = c.songid and (a.key + 3 = c.key) and a.level = c.level and c.hasrole = 1 and c.removetag = 0 where enddate is null or enddate >= date_format(now(), '%Y%m%d') order by startdate desc");
         List<String[]> teamchallenges = new ArrayList<String[]>();
         for(Map<String, Object> obj : list) {
             String songId = ((Integer) obj.get("songid")).intValue() + "";
@@ -95,6 +95,7 @@
             String songName = allSongs.get(songId);
             String start = String.valueOf(obj.get("startdate"));
             String end = obj.get("enddate") == null ? "" : (obj.get("enddate").toString());
+            int has = ((Integer) obj.get("has")).intValue();
             int lv = ((Integer) obj.get("level")).intValue();
             String level = lv == 1 ? "EASY" : (lv == 2 ? "NORMAL" : "HARD");
             int k = ((Integer) obj.get("key")).intValue();
@@ -105,9 +106,9 @@
             int score = ((Integer) obj.get("score")).intValue();
             if(loadMyScore) {
                 int full = Integer.parseInt(obj.get("key" + (k + 3) + lv).toString()) * 600 - 22740;
-                teamchallenges.add(new String[]{start, end, totalIndex, songId, songName, level, key, target, score + "/" + (full - score)});
+                teamchallenges.add(new String[]{start, end, totalIndex, songId, songName, level, key, target, score + "/" + (full - score), has + ""});
             } else {
-                teamchallenges.add(new String[]{start, end, totalIndex, songId, songName, level, key, target});
+                teamchallenges.add(new String[]{start, end, totalIndex, songId, songName, level, key, target, ""});
             }
         }
 
@@ -291,9 +292,9 @@
                         for(int i = 0; i < teamchallenges.size(); i++) {
                             String[] obj = teamchallenges.get(i);
                     %>
-            <tr class="row<%=i % 2 + 1%>" <%=(obj[0].compareTo(now) <= 0 && (StringUtils.isBlank(obj[1]) || obj[1].compareTo(now) >= 0)) ? " style=\"color:red;\"" : ""%>>
+            <tr class="row<%=i % 2 + 1%>" style="<%=(obj[0].compareTo(now) <= 0 && (StringUtils.isBlank(obj[1]) || obj[1].compareTo(now) >= 0)) ? "color:red;" : ""%><%=(obj.length > 9 && obj[9].equals("1")) ? "font-weight:bold;" : ""%>">
                     <%
-                            for(int j = 0; j < obj.length; j++) {
+                            for(int j = 0; j < obj.length - 1; j++) {
                     %>
                     <td><%=obj[j]%></td>
                     <%
