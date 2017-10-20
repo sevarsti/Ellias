@@ -162,8 +162,18 @@ function resort(obj, sortby, number,type)
     }
     var classidx = 2;
     for(var j = beginrow; j < length; j++) {
-        if(table.rows[j].cells[sortby].innerHTML != table.rows[j-1].cells[sortby].innerHTML)
+        var needchange = false;
+        if(j == beginrow) {
+            needchange = true;
+        } else if(table.rows[j].cells.length > table.rows[j - 1].cells.length) {
+            needchange = true;
+        } else if(table.rows[j].cells.length < table.rows[j - 1].cells.length) {
+            needchange = false;
+        } else if(table.rows[j].cells[sortby].innerHTML != table.rows[j-1].cells[sortby].innerHTML)
         {
+            needchange = true;
+        }
+        if(needchange) {
             classidx = 3 - classidx;
         }
         table.rows[j].className = 'row' + classidx;
