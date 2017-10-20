@@ -33,6 +33,11 @@
 %>
 <body>
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black" id="table">
+    <%--<tr class="head">--%>
+        <%--<th colspan="12">--%>
+            <%--<--%>
+        <%--</th>--%>
+    <%--</tr>--%>
     <tr class="head">
         <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 0, false,0);merge();">歌曲</td>
         <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 1, false,0);merge();">路径</td>
@@ -46,12 +51,18 @@
         <td>Difficulty</td>
         <td>最大连击</td>
         <td>md5</td>
+        <td>单键</td>
+        <td>划键</td>
+        <td>长键</td>
+        <td>面条</td>
+        <td>钩子</td>
     </tr>
 <%
     DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
     DecimalFormat df = new DecimalFormat("0.#");
     JdbcTemplate jt = new JdbcTemplate(ds);
-    List<Map<String, Object>> songs = jt.queryForList("select a.*, b.key, b.level, b.rank, b.difficulty, b.imdmd5, b.totalkey from rm_customsong a left join rm_customsongimd b on a.id = b.songid order by a.name, a.author, b.key, b.level");
+    List<Map<String, Object>> songs = jt.queryForList("select a.*, b.key, b.level, b.rank, b.difficulty, b.imdmd5, b.totalkey," +
+     "b.k0,b.k1,b.k2,b.k21,b.k22,b.k61,b.k62,b.kA1,b.kA2,b.k3,b.ka0,b.ka3 from rm_customsong a left join rm_customsongimd b on a.id = b.songid order by a.name, a.author, b.key, b.level");
     for(int i = 0; i < songs.size(); i++) {
         Map<String, Object> m = songs.get(i);
 %>
@@ -68,6 +79,11 @@
         <td><%=m.get("difficulty")%></td>
         <td><%=m.get("totalkey")%></td>
         <td><%=m.get("imdmd5")%></td>
+        <td><%=m.get("k0") == null ? "" : m.get("k0")%></td>
+        <td><%=m.get("k1") == null ? "" : m.get("k1")%></td>
+        <td><%=m.get("k2") == null ? "" : m.get("k2")%></td>
+        <td><%=m.get("k61") == null ? "" : (((Number) m.get("k61")).intValue() + ((Number) m.get("k62")).intValue())%></td>
+        <td><%=m.get("ka1") == null ? "" : m.get("ka1")%></td>
     </tr>
 <%
     }
