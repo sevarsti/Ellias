@@ -39,17 +39,17 @@
         <%--</th>--%>
     <%--</tr>--%>
     <tr class="head">
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 0, false,0);merge();">歌曲</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 1, false,0);merge();">路径</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 2, false,0);merge();">作者</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 3, true,0);merge();">长度</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 4, true,0);merge();">BPM</td>
-        <td style="cursor:pointer;text-decoration:underline;" onclick="resort(this, 5, false,0);merge();">md5</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 0, false, 0);">歌曲</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 1, false,0);">路径</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 2, false,0);">作者</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 3, true,0);">长度</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 4, true,0);">BPM</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 5, false,0);">md5</td>
         <td>键数</td>
         <td>难度</td>
         <td>Rank</td>
-        <td>Difficulty</td>
-        <td>最大连击</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 9, true,0);">Difficulty</td>
+        <td style="cursor:pointer;text-decoration:underline;" onclick="dosort(this, 10, true,0);">最大连击</td>
         <td>md5</td>
         <td>单键</td>
         <td>划键</td>
@@ -89,11 +89,10 @@
     }
 %>
 <script type="text/javascript">
-    function merge()
+    function split()
     {
+        var startRow = 1;
         var table = document.getElementById("table");
-        var startRow = 1, rowLength = 1;
-        var rowclass = 1;
 
         for(var i = 2; i < table.rows.length; i++)
         {
@@ -115,7 +114,13 @@
                 startRow = i;
             }
         }
-        startRow = 1, rowLength = 1;
+    }
+    function merge()
+    {
+        var table = document.getElementById("table");
+        var startRow = 1, rowLength = 1;
+        var rowclass = 1;
+
         for(var i = 2; i < table.rows.length; i++)
         {
             if(table.rows[i].cells[1].innerHTML == table.rows[i - 1].cells[1].innerHTML && i != (table.rows.length - 1))
@@ -172,6 +177,13 @@
         }
     }
     merge();
+
+    function dosort(obj, index, number, bottom)
+    {
+        split();
+        resort(obj, index, number, bottom);
+        merge();
+    }
 </script>
 </body>
 </html>
