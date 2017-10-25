@@ -314,4 +314,22 @@ public class RMDwr {
             return "";
         }
     }
+
+    public String getSongByMd5(String md5, int rowindex) {
+        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
+        List<Map<String, Object>> list = jt.queryForList("select name from rm_customsong where md5 = ?", new Object[]{md5});
+        StringBuilder sb = new StringBuilder();
+        sb.append(rowindex);
+        sb.append("-");
+        for(int i = 0; i < list.size(); i++) {
+            Map<String, Object> m = list.get(i);
+            String name = m.get("name").toString();
+            if(i > 0) {
+                sb.append("/");
+            }
+            sb.append(name);
+        }
+        return sb.toString();
+    }
 }
