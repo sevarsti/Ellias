@@ -315,21 +315,31 @@ public class RMDwr {
         }
     }
 
-    public String getSongByMd5(String md5, int rowindex) {
+    public List<Object> getSongByMd5(String md5, int rowindex) {
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
         JdbcTemplate jt = new JdbcTemplate(ds);
-        List<Map<String, Object>> list = jt.queryForList("select name from rm_customsong where md5 = ?", new Object[]{md5});
-        StringBuilder sb = new StringBuilder();
-        sb.append(rowindex);
-        sb.append("-");
+        List<Map<String, Object>> list = jt.queryForList("select name, author, length from rm_customsong where md5 = ?", new Object[]{md5});
+        List<Object> ret = new ArrayList<Object>();
+        ret.add(rowindex);
         for(int i = 0; i < list.size(); i++) {
             Map<String, Object> m = list.get(i);
-            String name = m.get("name").toString();
-            if(i > 0) {
-                sb.append("/");
-            }
-            sb.append(name);
+            ret.add(m);
         }
-        return sb.toString();
+        return ret;
+    }
+
+    public Map<String, Object> getImdByMd5(String mp3md5, String imdmd5, int rowindex) {
+        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
+        List<Map<String, Object>> list = jt.queryForList("select a.name, a.author, a.length, b.key, b.level, b.difficulty, b.totalkey from rm_customsong a, rm_customsongimd b where a.id = b.songid and a.md5 = ? and b.imdmd5 = ?", new Object[]{mp3md5, imdmd5});
+        if(list.size() != 1) {
+            throw new RuntimeException("≥ˆœ÷÷ÿ∏¥IMD:mp3 md5=[" + mp3md5 + "],imd md5=[" + imdmd5 + "]");
+        }
+        if(list.size() == 0) {
+            return null;
+        }
+        Map<String, Object> m = list.get(0);
+        m.put("rowindex", rowindex);
+        return m;
     }
 }
