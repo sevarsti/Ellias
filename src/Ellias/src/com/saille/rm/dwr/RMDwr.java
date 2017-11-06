@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,25 @@ import com.saille.util.UtilFunctions;
  */
 public class RMDwr {
     private final static Logger LOGGER = Logger.getLogger(RMDwr.class);
+    public String testFile(InputStream is) {
+        try {
+            byte[] bytes = new byte[10];
+            is.read(bytes);
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < bytes.length; i++) {
+                int v = bytes[i] & 0xff;
+                String s = Integer.toHexString(v);
+                if(s.length() < 2) {
+                    s = "0" + s;
+                }
+                sb.append(s).append(" ");
+            }
+            return sb.toString().trim();
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            return "";
+        }
+    }
     public void fullKeyDetail() {
         DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
         JdbcTemplate jt = new JdbcTemplate(ds);
