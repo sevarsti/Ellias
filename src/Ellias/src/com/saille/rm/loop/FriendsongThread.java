@@ -139,7 +139,8 @@ public class FriendsongThread extends BaseThread {
 
                     c.add(Calendar.DATE, -1);
                     jt.update("update rm_friendsong set enddate = ? where enddate is null", new Object[]{sdf.format(c.getTime())});
-                    SendSMSUtils.sendSMS("58057113bb06414092b915a71b562978", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                    SendSMSUtils.sendSMS("节奏大师好友闯关发生更新，更新时间：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//                    SendSMSUtils.sendSMS("58057113bb06414092b915a71b562978", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                 } else {
                     LOGGER.info("好友闯关没有更新");
                 }
@@ -160,7 +161,8 @@ public class FriendsongThread extends BaseThread {
                     }
                 }
                 LOGGER.info("好友闯关更新完毕");
-                SendSMSUtils.sendSMS("58057113bb06414092b915a71b562978", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                SendSMSUtils.sendSMS("节奏大师好友闯关发生更新，更新时间：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//                SendSMSUtils.sendSMS("58057113bb06414092b915a71b562978", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             }
         } catch(Exception ex) {
             ex.printStackTrace();

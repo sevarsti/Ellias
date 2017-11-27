@@ -6,6 +6,7 @@ import com.saille.baidu.bos.SynchronizeExcel;
 import com.saille.aliyun.OssUtils;
 import com.saille.sys.BaseThread;
 import com.saille.sys.Setting;
+import com.saille.util.SendSMSUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -50,6 +51,12 @@ public class GlobalContext implements ApplicationContextAware, InitializingBean 
             String accessKeySecret = Setting.getSettingString("OSS_ACCESSKEYSECRET");
             OssUtils.init(accessKeyId, accessKeySecret);
             LOGGER.info("∞¢¿Ô‘∆OSS√‹‘øº”‘ÿÕÍ±œ");
+        }
+
+        {
+            String accessKeySecret = Setting.getSettingString("MONYUN_APPKEY");
+            SendSMSUtils.init(accessKeySecret);
+            LOGGER.info("∂Ã–≈√‹‘øº”‘ÿÕÍ±œ");
         }
 
         {

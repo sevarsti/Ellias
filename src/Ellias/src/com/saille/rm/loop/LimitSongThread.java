@@ -73,7 +73,8 @@ public class LimitSongThread extends BaseThread {
         } else {
             LOGGER.info("限时歌曲发生变化，需要更新");
             update(newSongs);
-            SendSMSUtils.sendSMS("6fe2cc63746b4f7db93a9d3138dd8a50", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            SendSMSUtils.sendSMS("节奏大师限时歌曲发生更新，更新时间：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//            SendSMSUtils.sendSMS("6fe2cc63746b4f7db93a9d3138dd8a50", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         }
         return 0;
     }

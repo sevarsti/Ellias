@@ -137,7 +137,8 @@ public class StarmallExchangeThread extends BaseThread {
                     }
 //                    c.add(Calendar.DATE, 7);
                 }
-                SendSMSUtils.sendSMS("a09c3a5bfec541b4b6078ea6f56de6b8", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//                SendSMSUtils.sendSMS("a09c3a5bfec541b4b6078ea6f56de6b8", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                SendSMSUtils.sendSMS("节奏大师星值歌曲发生更新，更新时间：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             } else {
                 LOGGER.info("星值兑换没有变化");
             }

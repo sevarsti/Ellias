@@ -21,9 +21,11 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class SendSMSUtils {
-    private final static String APPKEY = "09412191ee0644db8ece67dbe3648c26";
+    private static String APPKEY;
     private final static Logger LOGGER = Logger.getLogger(SendSMSUtils.class);
-
+    public static void init(String appkey) {
+        APPKEY = appkey;
+    }
     public static void sendSMS(String templateId, String param) {
         try {
             HttpPost pm = new HttpPost("http://v1.avatardata.cn/Sms/Send");
@@ -39,6 +41,25 @@ public class SendSMSUtils {
 //            System.out.println(ret);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             LOGGER.info(sdf.format(new Date()) + "\t发送短信，模板ID=" + templateId);
+            LOGGER.info("发送结果：" + ret);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public static void sendSMS(String msg) {
+        try {
+            HttpPost pm = new HttpPost("http://api01.monyun.cn:7901/sms/v2/std/single_send");
+            ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("apikey", APPKEY));
+            params.add(new BasicNameValuePair("mobile", "13818207760"));
+            params.add(new BasicNameValuePair("content", msg));
+            pm.setEntity(new UrlEncodedFormEntity(params, "GB2312"));
+            DefaultHttpClient client = new DefaultHttpClient();
+            CloseableHttpResponse resp = client.execute(pm);
+            String ret = CommonUtils.getString(resp.getEntity().getContent(), "GB2312");
+//            System.out.println(ret);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            LOGGER.info(sdf.format(new Date()) + "\t发送短信：" + msg);
             LOGGER.info("发送结果：" + ret);
         } catch(Exception ex) {
             ex.printStackTrace();
