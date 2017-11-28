@@ -64,13 +64,13 @@
             conn = jt.getDataSource().getConnection();
             conn.setAutoCommit(false);
             BaseJdbcDao dao = (BaseJdbcDao) GlobalContext.getContextBean(EmployeeDao.class);
-            int id = dao.getId("RM_CUSTOMSONG");
-            PreparedStatement ps = conn.prepareStatement("insert into rm_customstage(id, name) values(?, ?)");
+            int id = dao.getId("RM_CUSTOMSTAGE");
+            PreparedStatement ps = conn.prepareStatement("insert into rm_customstage(id, stagename, removetag) values(?, ?, 0)");
             ps.setInt(1, id);
             ps.setString(2, name);
             ps.executeUpdate();
             ps.close();
-            ps = conn.prepareStatement("insert into rm_customstagedetail(stageid, index, songid, imdid, targettype, targetnumber) values(?,?,?,?,?,?)");
+            ps = conn.prepareStatement("insert into rm_customstagedetail(stageid, `index`, songid, imdid, targettype, targetnumber) values(?,?,?,?,?,?)");
             ps.setInt(1, id);
             for(int i = 0; i < songids.length; i++) {
                 ps.setInt(2, i + 1);
@@ -81,6 +81,7 @@
                 ps.executeUpdate();
             }
             conn.commit();
+            out.println("done<br/>");
         } catch (Exception ex) {
             conn.rollback();
             ex.printStackTrace();
