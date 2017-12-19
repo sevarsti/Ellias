@@ -35,7 +35,7 @@ public class LimitSongThread extends BaseThread {
         List<MrockSongClientAndroid> list = MrockSongClientAndroid.getFromUrl(false);
 
         for(MrockSongClientAndroid obj : list) {
-            if(obj.getM_szSongName().indexOf("【限时】") >= 0) {
+            if(obj.getM_szSongName().contains("【限时】") && obj.getM_bIsReward() == 0) {
                 newSongs.add(new String[]{obj.getM_ushSongID() + "", obj.getM_szSongName().substring(obj.getM_szSongName().indexOf("【限时】") + "【限时】".length())});
             }
         }
