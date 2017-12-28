@@ -36,7 +36,7 @@ public class LoginUtils {
     }
     public static DefaultHttpClient login(String id, String pwd) {
         try {
-            String userkey = UtilFunctions.getJsByFile(GlobalConstant.DISKPATH + "js\\sina_ssologin.js", "encode", new Object[]{id});
+            String userkey = UtilFunctions.getJsByFile(new String[]{GlobalConstant.DISKPATH + "js\\sina_ssologin.js"}, "encode", new Object[]{id});
 
             DefaultHttpClient client = new DefaultHttpClient();
             HttpGet gm = new HttpGet("http://login.sina.com.cn/sso/prelogin.php?entry=wanwan&callback=sinaSSOController.preloginCallBack&su=" + URLEncoder.encode(userkey) +
@@ -56,7 +56,7 @@ public class LoginUtils {
 //            String pubkey = "EB2A38568661887FA180BDDB5CABD5F21C7BFD59C090CB2D245A87AC253062882729293E5506350508E7F9AA3BB77F4333231490F915F6D63C55FE2F08A49B353F444AD3993CACC02DB784ABBB8E42A9B1BBFFFB38BE18D78E87A0E41B9B8F73A928EE0CCEE1F6739884B9777E4FE9E88A1BBE495927AC4A799B3181D6442443";
 //            String nonce = "29UK7L";
 //            pwd = UtilFunctions.getJsByFile(GlobalConstant.DISKPATH + "js\\rsa_all.js", "cpRSAEncrypt", new Object[]{servertime + "\t"+nonce + "\n"+pwd, pubkey});
-            pwd = UtilFunctions.getJsByFile(GlobalConstant.DISKPATH + "js\\sina_ssoconfig.js", "make", new Object[]{servertime ,nonce ,pwd, pubkey});
+            pwd = UtilFunctions.getJsByFile(new String[]{GlobalConstant.DISKPATH + "js\\sina_ssoconfig.js"}, "make", new Object[]{servertime ,nonce ,pwd, pubkey});
             System.out.println(pwd);
             HttpPost pm = new HttpPost("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)&_=" + new Date().getTime());
             List<NameValuePair> params = new ArrayList<NameValuePair>();

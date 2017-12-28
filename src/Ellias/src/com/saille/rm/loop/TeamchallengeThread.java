@@ -55,6 +55,7 @@ public class TeamchallengeThread extends BaseThread {
 //                RMUtils.printBytes(bytes, 0, 4, false);
                 System.out.print(totalIndex + "\t");
                 System.out.print(songId + "\t");
+                System.out.print(targetType + "\t");
 //                RMUtils.printBytes(bytes, 4, 4, false);
                 RMUtils.printBytes(bytes, 8, 4, true);
             }

@@ -331,7 +331,7 @@ public class CheckAllTopThread extends Thread{
             String server = serverparams[3];
             String gameurl = "http://s" + server + ".kof.sports.sina.com";
 
-            String userkey = UtilFunctions.getJsByFile("D:\\js\\sina_ssologin.js", "encode", new Object[]{email});
+            String userkey = UtilFunctions.getJsByFile(new String[]{"D:\\js\\sina_ssologin.js"}, "encode", new Object[]{email});
             DefaultHttpClient client = new DefaultHttpClient();
             client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 25000);
             client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 25000);
@@ -348,7 +348,7 @@ public class CheckAllTopThread extends Thread{
             String rsakv = json.getString("rsakv");
             String pubkey = json.getString("pubkey");
             String servertime = json.getString("servertime");
-            pwd = UtilFunctions.getJsByFile("D:\\js\\sina_ssoconfig.js", "make", new Object[]{servertime ,nonce ,pwd, pubkey});
+            pwd = UtilFunctions.getJsByFile(new String[]{"D:\\js\\sina_ssoconfig.js"}, "make", new Object[]{servertime ,nonce ,pwd, pubkey});
             HttpPost pm = new HttpPost("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)&_=" + new Date().getTime());
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("entry", "wanwan"));
@@ -574,7 +574,7 @@ public class CheckAllTopThread extends Thread{
                 client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 25000);
                 client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 25000);
                 String key = "CC48B04975F355A4CF863A26D26D9CCC6CF98EF3E5241EB7B5C5DCE7D0384AB4595B9B9088F9F1D3BE7AC30F2D20EF0504CCEB6A6DA45E220B60E8FF3DC453E06C47DE35BDFDFA1A6689C3178BB6F96DF6EB433764E8036581594AC67B528B35BCECCBE35BA36B38A77E859F7F6D3AEA80D36C16EDE4E98B97821BE00DF4393F";
-                pwd = UtilFunctions.getJsByFile("D:\\js\\rsa_all.js", "cpRSAEncrypt", new Object[]{pwd, key});
+                pwd = UtilFunctions.getJsByFile(new String[]{"D:\\js\\rsa_all.js"}, "cpRSAEncrypt", new Object[]{pwd, key});
 
                 HttpPost pm = new HttpPost("https://passport.wanlitong.com/pass-info/oauth2/loginPassport.shtml");
                 ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();

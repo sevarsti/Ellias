@@ -133,18 +133,22 @@ public class UtilFunctions {
         return sb.toString();
     }
 
-    public static String getJsByFile(String filename, String funcName, Object... params) {
+    public static String getJsByFile(String[] filename, String funcName, Object... params) {
         try {
-            File f = new File(filename);
-            FileReader fr = new FileReader(f);
-            BufferedReader br = new BufferedReader(fr);
-            StringBuffer sb = new StringBuffer();
-            String tmp;
-            while((tmp = br.readLine()) != null) {
-                sb.append(tmp).append("\r\n");
+            StringBuilder sb = new StringBuilder();
+            for(String fname : filename) {
+                File f = new File(fname);
+                FileInputStream fis = new FileInputStream(f);
+                InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+                BufferedReader br = new BufferedReader(isr);
+                String tmp;
+                while((tmp = br.readLine()) != null) {
+                    sb.append(tmp).append("\r\n");
+                }
+                br.close();
+                isr.close();
+                fis.close();
             }
-            br.close();
-            fr.close();
             ScriptEngineManager sem = new ScriptEngineManager();
             ScriptEngine se = sem.getEngineByName("js");
             se.eval(sb.toString());

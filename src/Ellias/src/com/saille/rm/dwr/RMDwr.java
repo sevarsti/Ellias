@@ -3,6 +3,7 @@ package com.saille.rm.dwr;
 import com.saille.rm.util.ImdUtils;
 import com.saille.sys.Setting;
 import org.apache.log4j.Logger;
+import org.directwebremoting.io.FileTransfer;
 import servlet.GlobalContext;
 
 import javax.sql.DataSource;
@@ -17,6 +18,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import com.saille.util.UtilFunctions;
+import sun.misc.BASE64Encoder;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +28,33 @@ import com.saille.util.UtilFunctions;
  * To change this template use File | Settings | File Templates.
  */
 public class RMDwr {
+    private static String[] send;
+    private static String recv;
     private final static Logger LOGGER = Logger.getLogger(RMDwr.class);
+    public String fromClient(String filename, int length, FileTransfer transfer) throws Exception {
+        byte[] bytes = new byte[(int) transfer.getSize()];
+        InputStream is = transfer.getInputStream();
+        is.read(bytes);
+        is.close();
+        String msg = new BASE64Encoder().encode(bytes);
+        recv = null;
+        send = new String[]{filename, msg};
+        while(recv == null) {
+            Thread.sleep(1000);
+        }
+        return recv;
+    }
+    public String[] fromServer(String in) {
+        if(in != null) {
+            recv = in;
+        }
+        if(send != null) {
+            String[] tosend = send;
+            send = null;
+            return tosend;
+        }
+        return null;
+    }
     public String testFile(InputStream is) {
         try {
             byte[] bytes = new byte[10];
