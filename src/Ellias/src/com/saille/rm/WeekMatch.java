@@ -135,7 +135,11 @@ public class WeekMatch {
             case 11:
                 return "GOOD不超过" + number + "个";
             case 14:
-                return "歌曲达到All Combo";
+                if(number == 0) {
+                    return "歌曲达到All Combo";
+                } else {
+                    return "歌曲达到All Perfect";
+                }
             case 15:
                 return "不死过关";
             case 16:

@@ -34,7 +34,7 @@
         switch (t) {
             case 7:
                 return rate.indexOf(number) + 1;
-            case 14:
+//            case 14:
             case 18:
                 return 0;
             default:
