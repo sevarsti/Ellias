@@ -102,6 +102,18 @@ public class LoginFilter implements Filter {
 
     private void doLog(HttpServletRequest request) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
+        if(request.getRequestURI().endsWith("/dwr/call/plaincall/RMDwr.fromServer.dwr")) {
+            return;
+        }
+        if(request.getRequestURI().endsWith(".ico")) {
+            return;
+        }
+        if(request.getRequestURI().endsWith(".gif")) {
+            return;
+        }
+        if(request.getRequestURI().endsWith(".js")) {
+            return;
+        }
         String msg = sdf.format(new Date()) + request.getRemoteAddr() + "\t" +request.getScheme() + "://" + request.getServerName() + ":" + request.getLocalPort() + request.getRequestURI();
         if(request.getParameterMap() != null && request.getParameterMap().size() > 0) {
             Set keys = request.getParameterMap().keySet();
