@@ -67,23 +67,23 @@
         Map<String, Object> m = songs.get(i);
 %>
     <tr class="row<%=i % 2 + 1%>">
-        <td><%=m.get("name")%></td>
-        <td><%=m.get("path")%></td>
-        <td><%=m.get("author")%></td>
-        <td value="<%=((Number) m.get("length")).intValue()%>"><%=RMUtils.convertLength(((Number) m.get("length")).intValue())%></td>
-        <td value="<%=((Number)m.get("BPM")).doubleValue()%>"><%=df.format(((Number)m.get("BPM")).doubleValue())%></td>
-        <td><%=m.get("md5")%></td>
-        <td><%=m.get("key")%></td>
+        <td><%=m.get("name").toString()%></td>
+        <td><%=m.get("path").toString()%></td>
+        <td><%=m.get("author").toString()%></td>
+        <td value="<%=((Number) m.get("length")).intValue() + ""%>"><%=RMUtils.convertLength(((Number) m.get("length")).intValue())%></td>
+        <td value="<%=((Number)m.get("BPM")).doubleValue() + ""%>"><%=df.format(((Number) m.get("BPM")).doubleValue())%></td>
+        <td><%=m.get("md5").toString()%></td>
+        <td><%=m.get("key").toString()%></td>
         <td><%=convertLevel(((Number)m.get("level")).intValue())%></td>
-        <td><%=m.get("rank")%></td>
-        <td><%=m.get("difficulty")%></td>
-        <td><%=m.get("totalkey")%></td>
-        <td><%=m.get("imdmd5")%></td>
-        <td><%=m.get("k0") == null ? "" : m.get("k0")%></td>
-        <td><%=m.get("k1") == null ? "" : m.get("k1")%></td>
-        <td><%=m.get("k2") == null ? "" : m.get("k2")%></td>
-        <td><%=m.get("k61") == null ? "" : (((Number) m.get("k61")).intValue() + ((Number) m.get("k62")).intValue())%></td>
-        <td><%=m.get("ka1") == null ? "" : m.get("ka1")%></td>
+        <td><%=m.get("rank").toString()%></td>
+        <td><%=m.get("difficulty").toString()%></td>
+        <td><%=m.get("totalkey").toString()%></td>
+        <td><%=m.get("imdmd5").toString()%></td>
+        <td><%=m.get("k0") == null ? "" : m.get("k0").toString()%></td>
+        <td><%=m.get("k1") == null ? "" : m.get("k1").toString()%></td>
+        <td><%=m.get("k2") == null ? "" : m.get("k2").toString()%></td>
+        <td><%=m.get("k61") == null ? "" : (((Number) m.get("k61")).intValue() + ((Number) m.get("k62")).intValue() + "")%></td>
+        <td><%=m.get("ka1") == null ? "" : m.get("ka1").toString()%></td>
     </tr>
 <%
     }

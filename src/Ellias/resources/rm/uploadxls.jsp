@@ -43,7 +43,7 @@
         out = pageContext.pushBody();
         return;
     }
-    if(request.getContentType() != null && request.getContentType().contains("multipart/form-data")) {
+    if(request.getContentType() != null && request.getContentType().indexOf("multipart/form-data") >= 0) {
         DiskFileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         List fileItems = upload.parseRequest(request);
