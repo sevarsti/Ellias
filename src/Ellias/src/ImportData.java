@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,91 +23,134 @@ import java.sql.ResultSet;
 public class ImportData {
     public static void main(String[] args) {
         try {
+            String mushpath = "f:\\game\\mushclient";
             Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:D:\\ellias\\mushclient\\data\\pkuxkx.db");
-//            PreparedStatement ps = conn.prepareStatement("select count(1) from place");
-//            ResultSet rs = ps.executeQuery();
-//            if(rs.next()) {
-//                System.out.println(rs.getInt(1));
-//            }
-//            PreparedStatement ps3 = conn.prepareStatement("select area_name from area limit 1");
-//            ResultSet rs = ps3.executeQuery();
-//            rs.next();
-//            System.out.println(rs.getString(1));
-            PreparedStatement ps = conn.prepareStatement("insert into `triggers`(module,`group`,name,`text`,`command`,`enabled`,regex,expand,ignorecase,gag,sendto,callback,matchlines) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            File dir = new File("D:\\ellias\\mushclient\\lua");
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:" + mushpath + "\\data\\pkuxkx.db");
+            File dir = new File(mushpath + "\\lua");
             File[] files = dir.listFiles();
+            List<String> modules = new ArrayList<String>();
             for(File f : files) {
-                if(f.getName().toLowerCase().endsWith(".xlsx")) {
-                    String module = f.getName().substring(0, f.getName().length() - 5);
-                    if(module.equalsIgnoreCase("dati") || module.equalsIgnoreCase("newbie")) {
+                String name = f.getName();
+                if(name.startsWith("~")) {
+                    continue;
+                }
+                if(name.getBytes("GBK").length != name.length()) {
+                    continue;
+                }
+                if(name.toLowerCase().endsWith(".xlsx")) {
+                    String module = name.substring(0, name.length() - 5);
+                    if(module.equalsIgnoreCase("dati")) {
                         continue;
                     }
-                    System.out.println("读取excel文件: " + f.getName());
-                    PreparedStatement ps2 = conn.prepareStatement("delete from `triggers` where module = ?");
-                    ps2.setBytes(1, module.getBytes());
-                    ps2.executeUpdate();
-                    ps2.close();
-                    FileInputStream fis = new FileInputStream(f);
-                    XSSFWorkbook workbook = new XSSFWorkbook(fis);
-                    XSSFSheet sheet = workbook.getSheetAt(0);
-                    int count = (int)sheet.getRow(0).getCell(0).getNumericCellValue();
-                    for(int i = 2;;i++) {
-                        System.out.println((i-1) + "/" + count);
-                        XSSFRow row = sheet.getRow(i);
-                        if(row == null) {
-                            break;
-                        }
-                        XSSFCell cell = row.getCell(0);
-                        if(cell == null) {
-                            break;
-                        }
-                        String group = cell.getRichStringCellValue().getString();
-                        String text = row.getCell(1).getRichStringCellValue().getString();
-                        String command = row.getCell(2) == null ? "" : row.getCell(2).getRichStringCellValue().getString();
-                        cell = row.getCell(3);
-                        int enabled = cell == null ? 0 : (int)cell.getNumericCellValue();
-                        cell = row.getCell(4);
-                        int regex = cell == null ? 0 : (int)cell.getNumericCellValue();
-                        cell = row.getCell(5);
-                        int expand = cell == null ? 0 : (int)cell.getNumericCellValue();
-                        cell = row.getCell(6);
-                        int ignorecase = cell == null ? 0 : (int)cell.getNumericCellValue();
-                        cell = row.getCell(7);
-                        int gag = cell == null ? 0 : (int)cell.getNumericCellValue();
-                        String name = row.getCell(8).getRichStringCellValue().getString();
-                        int sendto = (int)row.getCell(9).getNumericCellValue();
-                        cell = row.getCell(10);
-                        String callback = cell == null ? "" : cell.getRichStringCellValue().getString();
-                        cell = row.getCell(11);
-                        int matchlines = cell == null ? 0 : (int)cell.getNumericCellValue();
-//                        ps.setString(1, module);
-                        ps.setBytes(1, module.getBytes("GBK"));
-//                        ps.setString(2, group);
-                        ps.setBytes(2, group.getBytes("GBK"));
-//                        ps.setString(3, name);
-                        ps.setBytes(3, name.getBytes("GBK"));
-//                        ps.setString(4, text);
-                        ps.setBytes(4, text.getBytes("GBK"));
-//                        ps.setString(5, command);
-                        ps.setBytes(5, command.getBytes("GBK"));
-                        ps.setInt(6, enabled);
-                        ps.setInt(7, regex);
-                        ps.setInt(8, expand);
-                        ps.setInt(9, ignorecase);
-                        ps.setInt(10, gag);
-                        ps.setInt(11, sendto);
-//                        ps.setString(12, callback);
-                        ps.setBytes(12, callback.getBytes("GBK"));
-                        ps.setInt(13, matchlines);
-                        ps.executeUpdate();
-                    }
+                    modules.add(module);
                 }
             }
-            ps.close();
+            for(int i = 0; i < modules.size(); i++) {
+                String module = modules.get(i);
+                System.out.println("(" + i + "/" + modules.size() + ")读取excel文件: " + module);
+                FileInputStream fis = new FileInputStream(new File(mushpath + "\\lua\\" + module + ".xlsx"));
+                XSSFWorkbook workbook = new XSSFWorkbook(fis);
+                System.out.println("导入trigger");
+                XSSFSheet sheet = workbook.getSheetAt(0);
+                importTrigger(module, sheet, conn);
+                System.out.println("导入alias");
+                sheet = workbook.getSheetAt(1);
+                if(sheet != null) {
+                    importAlias(module, sheet, conn);
+                }
+
+            }
             conn.close();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static void importAlias(String module, XSSFSheet sheet, Connection conn) throws Exception {
+        PreparedStatement ps2 = conn.prepareStatement("delete from `alias` where module = ?");
+        ps2.setBytes(1, module.getBytes());
+        ps2.executeUpdate();
+        ps2.close();
+        PreparedStatement ps = conn.prepareStatement("insert into `alias`(`module`,`group`,`name`,`text`,`command`,`sendto`) values(?,?,?,?,?,?)");
+        int count = (int)sheet.getRow(0).getCell(0).getNumericCellValue();
+        for(int i = 2;;i++) {
+            System.out.println((i-1) + "/" + count);
+            XSSFRow row = sheet.getRow(i);
+            if(row == null) {
+                break;
+            }
+            XSSFCell cell = row.getCell(0);
+            if(cell == null) {
+                break;
+            }
+            String group = cell.getRichStringCellValue().getString();
+            String text = row.getCell(1).getRichStringCellValue().getString();
+            String command = row.getCell(2).getRichStringCellValue().getString();
+            String name = row.getCell(3).getRichStringCellValue().getString();
+            int sendto = (int)row.getCell(4).getNumericCellValue();
+            ps.setBytes(1, module.getBytes("GBK"));
+            ps.setBytes(2, group.getBytes("GBK"));
+            ps.setBytes(3, name.getBytes("GBK"));
+            ps.setBytes(4, text.getBytes("GBK"));
+            ps.setBytes(5, command.getBytes("GBK"));
+            ps.setInt(6, sendto);
+            ps.executeUpdate();
+        }
+    }
+
+    private static void importTrigger(String module, XSSFSheet sheet, Connection conn) throws Exception {
+        PreparedStatement ps2 = conn.prepareStatement("delete from `triggers` where module = ?");
+        ps2.setBytes(1, module.getBytes());
+        ps2.executeUpdate();
+        ps2.close();
+
+        PreparedStatement ps = conn.prepareStatement("insert into `triggers`(module,`group`,name,`text`,`command`,`enabled`,regex,expand,ignorecase,gag,sendto,callback,matchlines) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        int count = (int)sheet.getRow(0).getCell(0).getNumericCellValue();
+        for(int i = 2;;i++) {
+            System.out.println((i-1) + "/" + count);
+            XSSFRow row = sheet.getRow(i);
+            if(row == null) {
+                break;
+            }
+            XSSFCell cell = row.getCell(0);
+            if(cell == null) {
+                break;
+            }
+            String group = cell.getRichStringCellValue().getString();
+            String text = row.getCell(1).getRichStringCellValue().getString();
+            String command = row.getCell(2) == null ? "" : row.getCell(2).getRichStringCellValue().getString();
+            cell = row.getCell(3);
+            int enabled = cell == null ? 0 : (int)cell.getNumericCellValue();
+            cell = row.getCell(4);
+            int regex = cell == null ? 0 : (int)cell.getNumericCellValue();
+            cell = row.getCell(5);
+            int expand = cell == null ? 0 : (int)cell.getNumericCellValue();
+            cell = row.getCell(6);
+            int ignorecase = cell == null ? 0 : (int)cell.getNumericCellValue();
+            cell = row.getCell(7);
+            int gag = cell == null ? 0 : (int)cell.getNumericCellValue();
+            String name = row.getCell(8).getRichStringCellValue().getString();
+            int sendto = (int)row.getCell(9).getNumericCellValue();
+            cell = row.getCell(10);
+            String callback = cell == null ? "" : cell.getRichStringCellValue().getString();
+            cell = row.getCell(11);
+            int matchlines = cell == null ? 0 : (int)cell.getNumericCellValue();
+            ps.setBytes(1, module.getBytes("GBK"));
+            ps.setBytes(2, group.getBytes("GBK"));
+            ps.setBytes(3, name.getBytes("GBK"));
+            ps.setBytes(4, text.getBytes("GBK"));
+            ps.setBytes(5, command.getBytes("GBK"));
+            ps.setInt(6, enabled);
+            ps.setInt(7, regex);
+            ps.setInt(8, expand);
+            ps.setInt(9, ignorecase);
+            ps.setInt(10, gag);
+            ps.setInt(11, sendto);
+//                        ps.setString(12, callback);
+            ps.setBytes(12, callback.getBytes("GBK"));
+            ps.setInt(13, matchlines);
+            ps.executeUpdate();
+        }
+        ps.close();
     }
 }
