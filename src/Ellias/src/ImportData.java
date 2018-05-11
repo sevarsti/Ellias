@@ -3,8 +3,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,44 +22,55 @@ import java.util.List;
 public class ImportData {
     public static void main(String[] args) {
         try {
-            String mushpath = "f:\\game\\mushclient";
+            String mushpath = "D:\\Ellias\\mushclient";
             Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:" + mushpath + "\\data\\pkuxkx.db");
-            File dir = new File(mushpath + "\\lua");
-            File[] files = dir.listFiles();
-            List<String> modules = new ArrayList<String>();
-            for(File f : files) {
-                String name = f.getName();
-                if(name.startsWith("~")) {
-                    continue;
-                }
-                if(name.getBytes("GBK").length != name.length()) {
-                    continue;
-                }
-                if(name.toLowerCase().endsWith(".xlsx")) {
-                    String module = name.substring(0, name.length() - 5);
-                    if(module.equalsIgnoreCase("dati")) {
-                        continue;
+
+            while(true) {
+                System.out.print("请输入需要导入的excel(不含.xlsx)：");
+                String m = readLine();
+                List<String> modules = new ArrayList<String>();
+                if(m == null || m.length() == 0) {
+                    File dir = new File(mushpath + "\\lua");
+                    File[] files = dir.listFiles();
+                    for(File f : files) {
+                        String name = f.getName();
+                        if(name.startsWith("~")) {
+                            continue;
+                        }
+                        if(name.getBytes("GBK").length != name.length()) {
+                            continue;
+                        }
+                        if(name.toLowerCase().endsWith(".xlsx")) {
+                            String module = name.substring(0, name.length() - 5);
+                            if(module.equalsIgnoreCase("dati")) {
+                                continue;
+                            }
+                            modules.add(module);
+                        }
                     }
-                    modules.add(module);
-                }
-            }
-            for(int i = 0; i < modules.size(); i++) {
-                String module = modules.get(i);
-                System.out.println("(" + i + "/" + modules.size() + ")读取excel文件: " + module);
-                FileInputStream fis = new FileInputStream(new File(mushpath + "\\lua\\" + module + ".xlsx"));
-                XSSFWorkbook workbook = new XSSFWorkbook(fis);
-                System.out.println("导入trigger");
-                XSSFSheet sheet = workbook.getSheetAt(0);
-                importTrigger(module, sheet, conn);
-                System.out.println("导入alias");
-                sheet = workbook.getSheetAt(1);
-                if(sheet != null) {
-                    importAlias(module, sheet, conn);
+                } else {
+                    modules.add(m);
                 }
 
+                Connection conn = DriverManager.getConnection("jdbc:sqlite:" + mushpath + "\\data\\pkuxkx.db");
+                for(int i = 0; i < modules.size(); i++) {
+                    String module = modules.get(i);
+                    System.out.println("(" + i + "/" + modules.size() + ")读取excel文件: " + module);
+                    FileInputStream fis = new FileInputStream(new File(mushpath + "\\lua\\" + module + ".xlsx"));
+                    XSSFWorkbook workbook = new XSSFWorkbook(fis);
+                    System.out.println("导入trigger");
+                    XSSFSheet sheet = workbook.getSheetAt(0);
+                    importTrigger(module, sheet, conn);
+                    System.out.println("导入alias");
+                    sheet = workbook.getSheetAt(1);
+                    if(sheet != null) {
+                        importAlias(module, sheet, conn);
+                    }
+                    fis.close();
+
+                }
+                conn.close();
             }
-            conn.close();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
@@ -152,5 +162,12 @@ public class ImportData {
             ps.executeUpdate();
         }
         ps.close();
+    }
+
+    public static String readLine() throws IOException {
+        InputStreamReader isr = new InputStreamReader(System.in);
+        BufferedReader br = new BufferedReader(isr);
+        String ret = br.readLine();
+        return ret;
     }
 }
