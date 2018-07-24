@@ -38,6 +38,14 @@ public class FullmeUtils {
         return keys;
     }
 
+    public boolean doFullme(String url, String value) {
+        if(FULLME.containsKey(url)) {
+            FULLME.put(url, value);
+            return true;
+        }
+        return false;
+    }
+
     private static void clearExpired() {
         long now = System.currentTimeMillis();
         List<String> keys = new ArrayList<String>(FULLME.keySet());

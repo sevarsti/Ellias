@@ -50,6 +50,10 @@
             <param name="class" value="com.saille.ogzq.OgzqDwr"/>
         </create>
 
+        <create creator="new" javascript="FullmeDwr">
+            <param name="class" value="com.saille.pkuxkx.FullmeUtils"/>
+        </create>
+
         <!--<create creator="new" javascript="PampersDwr">-->
             <!--<param name="class" value="com.saille.pampers.PampersDwr"/>-->
         <!--</create>-->

@@ -1,12 +1,5 @@
-<%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="org.apache.http.impl.client.DefaultHttpClient" %>
-<%@ page import="org.apache.http.client.methods.HttpGet" %>
-<%@ page import="org.apache.http.HttpResponse" %>
-<%@ page import="java.io.InputStream" %>
-<%@ page import="com.saille.util.CommonUtils" %>
-<%@ page import="java.util.regex.Pattern" %>
-<%@ page import="java.util.regex.Matcher" %>
 <%@ page import="com.saille.pkuxkx.FullmeUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%--
   Created by IntelliJ IDEA.
   User: Ellias

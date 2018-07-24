@@ -15,20 +15,22 @@
   Time: 00:06
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="../include/include.jsp"%>
+<script type='text/javascript' src='<%=request.getContextPath()%>/dwr/engine.js'> </script>
+<script type='text/javascript' src='<%=request.getContextPath()%>/dwr/util.js'> </script>
+<script type='text/javascript' src='<%=request.getContextPath()%>/dwr/interface/FullmeDwr.js'></script>
 <html>
 <head>
     <title>Fullme</title>
 </head>
-<%
-//    Map<String, String> map = FullmeUtils.FULLME;
-//    List<String> keys = new ArrayList<String>(map.keySet());
-//    Collections.sort(keys);
-    List<String> keys = FullmeUtils.getUnfinished();
-%>
 <body>
 <table border="0" cellpadding="1" cellspacing="1" bgcolor="black" id="table">
+    <tr class="head">
+        <td>图片</td>
+        <td>OCR</td>
+    </tr>
     <%
+        List<String> keys = FullmeUtils.getUnfinished();
         Random r = new Random();
         Pattern p = Pattern.compile("^.+/b2evo_captcha_([A-F0-9]+)\\.jpg.+\\n.+$");
         DefaultHttpClient client = new DefaultHttpClient();
@@ -70,7 +72,7 @@ outer:
             %>
         </td>
         <td>
-            <input type="text" name="<%=key%>"/><input type="button" value="保存"/>
+            <input type="text" name="<%=key%>"/><input type="button" value="保存" onclick="doFullme('<%=key%>', document.getElementsByName('<%=key%>')[0].value)"/>
         </td>
     </tr>
     <%
@@ -78,4 +80,21 @@ outer:
     %>
 </table>
 </body>
+<script type="text/javascript">
+    function doFullme(url, value)
+    {
+        FullmeDwr.doFullme(url, value, after);
+    }
+    function after(done)
+    {
+        if(done)
+        {
+            alert('fullme成功');
+        }
+        else
+        {
+            alert('fullme失败');
+        }
+    }
+</script>
 </html>
