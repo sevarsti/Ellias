@@ -24,10 +24,10 @@
     <title>Fullme</title>
 </head>
 <body>
-<table border="0" cellpadding="1" cellspacing="1" bgcolor="black" id="table">
+<table border="0" cellpadding="1" cellspacing="1" bgcolor="black" id="table" width="100%">
     <tr class="head">
-        <td>Í¼Æ¬</td>
-        <td>OCR</td>
+        <td width="80%">Í¼Æ¬</td>
+        <td width="20%">OCR</td>
     </tr>
     <%
         List<String> keys = FullmeUtils.getUnfinished();
@@ -65,14 +65,15 @@ outer:
             <%
                 for(int j = 0; j < 3; j++) {
             %>
-            <img src="http://pkuxkx.com/antirobot/b2evo_captcha_tmp/b2evo_captcha_<%=urls[j]%>.jpg?"/>
+            <img src="http://pkuxkx.com/antirobot/b2evo_captcha_tmp/b2evo_captcha_<%=urls[j]%>.jpg" style="max-height: 100%;max-width: 100%"/>
             <br/>
             <%
                 }
             %>
         </td>
         <td>
-            <input type="text" name="<%=key%>"/><input type="button" value="±£´æ" onclick="doFullme('<%=key%>', document.getElementsByName('<%=key%>')[0].value)"/>
+            <input type="text" name="<%=key%>" style="font-size: 20px;"/><br/>
+            <input type="button" style="font-size: 20px;" value="±£´æ" onclick="doFullme('<%=key%>', document.getElementsByName('<%=key%>')[0].value)"/>
         </td>
     </tr>
     <%

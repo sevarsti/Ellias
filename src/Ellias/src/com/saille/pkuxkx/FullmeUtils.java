@@ -1,7 +1,9 @@
 package com.saille.pkuxkx;
 
+import com.saille.util.SendSMSUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -15,6 +17,7 @@ public class FullmeUtils {
         clearExpired();
         FULLME.put(url, "");
         FULLMETIME.put(url, System.currentTimeMillis());
+        SendSMSUtils.sendSMS("fullme—È÷§¬Î£∫" + url);
     }
 
     public static String getValue(String url) {
@@ -27,6 +30,7 @@ public class FullmeUtils {
     }
 
     public static List<String> getUnfinished() {
+        clearExpired();
         List<String> keys = new ArrayList<String>(FULLME.keySet());
         for(int i = keys.size() - 1; i >= 0; i--) {
             String value = FULLME.get(keys.get(i));
@@ -39,6 +43,7 @@ public class FullmeUtils {
     }
 
     public boolean doFullme(String url, String value) {
+        clearExpired();
         if(FULLME.containsKey(url)) {
             FULLME.put(url, value);
             return true;
