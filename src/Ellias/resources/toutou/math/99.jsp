@@ -13,15 +13,15 @@
 <body>
 <table width="100%" border="0" cellpadding="1" cellspacing="1">
     <tr>
-        <td style="font-size:50pt;">正确率：</td>
+        <td style="font-size:50pt;">题号：</td>
         <td style="font-size:50pt;" id="ratio">0/0</td>
     </tr>
     <tr>
         <td colspan="2" align="center" id="content" style="font-size: 200px;">
-            <input style="font-size: 200px;" value="开始" type="button" onclick="begin();">
+            <input style="font-size: 200px;" value="开始" type="button" onclick="total = 0;correct = 0;begindate = new Date();begin();">
         </td>
     </tr>
-    <tr><td colspan="2" align="center">
+    <tr id="r1"><td colspan="2" align="center">
         <input type="button" name="1" value="1" style="width:230px;height: 230px;font-size: 100px;font-weight: bold;" onclick="addvalue(1);"/>
         <input type="button" name="2" value="2" style="width:230px;height: 230px;font-size: 100px;font-weight: bold;" onclick="addvalue(2);"/>
         <input type="button" name="3" value="3" style="width:230px;height: 230px;font-size: 100px;font-weight: bold;" onclick="addvalue(3);"/>
@@ -46,10 +46,14 @@
 <script type="text/javascript">
     var a, b;
     var correct = 0, total=0;
+    var begindate;
+    var errors = new Array();
     function begin()
     {
         a = parseInt(Math.random() * 9, 10) + 1;
         b = parseInt(Math.random() * 9, 10) + 1;
+        total++;
+        document.getElementById("ratio").innerHTML = total + "/10";
         document.getElementById("content").innerHTML = a + "×" + b + "=" +
                 "<input id=\"result\" type=\"text\" size=\"2\" maxlength=\"2\" style=\"text-align:right;font-size: 200px;width: 250px;\"/>"
     }
@@ -81,9 +85,43 @@
         {
             correct++;
         }
-        total++;
-        document.getElementById("ratio").innerHTML = correct + "/" + total;
-        begin();
+        else
+        {
+            var idx = errors.length;
+            errors[idx] = new Array();
+            errors[idx][0] = a;
+            errors[idx][1] = b;
+        }
+        if(total >= 10)
+        {
+            var now = new Date();
+            var sec = now - begindate;
+            document.getElementById('content').style.fontSize = "100px";
+            var input = "<input type=\"button\" style=\"font-size: 100px;color: red;\" value=\"再来一次\" onclick=\"total = 0;correct = 0;begindate = new Date();begin();\"/>";
+            document.getElementById('content').innerHTML = "一共答对" + correct + "/" + total + "题，用时" + sec / 1000 + "秒" + input;
+            recordError();
+        }
+        else
+        {
+            begin();
+        }
+    }
+
+    function recordError()
+    {
+        var sendstr = '';
+        if(errors.length > 0)
+        {
+            for(var i = 0; i < errors.length; i++)
+            {
+                if(i > 0) {
+                    sendstr = sendstr + ",";
+                }
+                sendstr += errors[i][0] + "-" + errors[i][1];
+            }
+            HMFDwr.recordMath99Error(sendstr);
+        }
+        errors = new Array();
     }
 </script>
 </html>

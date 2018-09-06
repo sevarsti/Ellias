@@ -34,4 +34,5 @@
 <script type='text/javascript' src='<%=request.getContextPath()%>/dwr/engine.js'> </script>
 <script type='text/javascript' src='<%=request.getContextPath()%>/dwr/util.js'> </script>
 <script type='text/javascript' src='<%=request.getContextPath()%>/dwr/interface/RMDwr.js'></script>
-<script type='text/javascript' src='../scripts/tablesort.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath()%>/dwr/interface/HMFDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath()%>/scripts/tablesort.js'></script>
