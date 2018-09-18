@@ -1,5 +1,6 @@
 package com.saille.toutou;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import servlet.GlobalContext;
 
@@ -18,6 +19,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class HMFDwr {
+    private final static Logger LOGGER = Logger.getLogger(HMFDwr.class);
     public void recordMath99Error(String str) {
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -48,11 +50,23 @@ public class HMFDwr {
             obj[0] = m.get("english");
             obj[1] = m.get("chinese");
             List<Map<String, String>> errors = jt.queryForList(errorsql, new Object[]{obj[0]});
+            String logstr = "";
             for(int j = 0; j < 3; j++) {
                 obj[j + 2] = errors.get(j).get("chinese");
+                logstr += "/"+obj[j + 2];
             }
+            LOGGER.info(obj[0] +"/"+obj[1]+logstr);
             ret.add(obj);
         }
         return ret;
+    }
+
+    public void recordEnglishe2cResult(List<String> obj) {
+        for(int i = 0; i < obj.size(); i++) {
+            String[] parts = obj.get(i).split("_");
+            String english = parts[0];
+            String correct = parts[1];
+            String answer = parts[2];
+        }
     }
 }
