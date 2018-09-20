@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import servlet.GlobalContext;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,11 +63,19 @@ public class HMFDwr {
     }
 
     public void recordEnglishe2cResult(List<String> obj) {
+        String sql = "insert into hmf_englishresult(english, answer, myanswer, correct, updatetime) values(?,?,?,?,now())";
+        DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+        JdbcTemplate jt = new JdbcTemplate(ds);
         for(int i = 0; i < obj.size(); i++) {
             String[] parts = obj.get(i).split("_");
             String english = parts[0];
-            String correct = parts[1];
-            String answer = parts[2];
+            String answer = parts[1];
+            String myanswer = parts[2];
+            int correct = 0;
+            if(answer.equals(myanswer)) {
+                correct = 1;
+            }
+            jt.update(sql, new Object[]{english, answer, myanswer, correct});
         }
     }
 }

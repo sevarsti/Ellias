@@ -25,16 +25,16 @@
     <tr><td>&nbsp;</td></tr>
     <tr><td>&nbsp;</td></tr>
     <tr id="c1" style="display: none;"><td colspan="2" align="center">
-        <input id="cc1" type="button" value="星期一" style="width:700px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(0);"/>
+        <input id="cc1" type="button" value="星期一" style="width:900px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(0);"/>
     </td></tr>
     <tr id="c2" style="display: none;"><td colspan="2" align="center">
-        <input id="cc2" type="button" value="星期一" style="width:700px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(1);"/>
+        <input id="cc2" type="button" value="星期一" style="width:900px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(1);"/>
     </td></tr>
     <tr id="c3" style="display: none;"><td colspan="2" align="center">
-        <input id="cc3" type="button" value="星期一星期一" style="width:700px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(2);"/>
+        <input id="cc3" type="button" value="星期一星期一" style="width:900px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(2);"/>
     </td></tr>
     <tr id="c4" style="display: none;"><td colspan="2" align="center">
-        <input id="cc4" type="button" value="星期一" style="width:700px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(3);"/>
+        <input id="cc4" type="button" value="星期一" style="width:900px;height: 200px;font-size: 100px;background-color: #808080;" onclick="checkresult(3);"/>
     </td></tr>
 </table>
 </body>
