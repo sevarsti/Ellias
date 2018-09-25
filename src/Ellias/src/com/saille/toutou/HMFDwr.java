@@ -41,7 +41,8 @@ public class HMFDwr {
         if(count <= 0) {
             count = 10;
         }
-        String sql = "select english, chinese from hmf_english order by rand() limit " + count;
+//        String sql = "select english, chinese from hmf_english order by rand() limit " + count;
+        String sql = "select aa.*, aa.correct / aa.c as rate, (case when aa.c = 0 then 1 else 1.2-aa.correct / aa.c end) * rand() as rate from (select a.id, a.english, a.chinese, case when b.c is null then 0 else b.c end as c, case when b.correct is null then 0 else b.correct end as correct from hmf_english a left join (select english, sum(correct) as correct, count(1) as c from hmf_englishresult group by english) b on a.english = b.english) aa order by 7 desc limit " + count;
         String errorsql = "select chinese from hmf_english where english <> ? order by rand() limit 3";
         List<Map<String, String>> list = jt.queryForList(sql);
         List<String[]> ret = new ArrayList<String[]>();
@@ -76,6 +77,34 @@ public class HMFDwr {
                 correct = 1;
             }
             jt.update(sql, new Object[]{english, answer, myanswer, correct});
+        }
+    }
+
+    public boolean saveEnglishWord(int id, String english, String chinese) {
+        try {
+            DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+            JdbcTemplate jt = new JdbcTemplate(ds);
+            if(id > 0) {
+                jt.update("update hmf_english set chinese = ?, english = ? where id = ?", new Object[]{chinese, english, id});
+            } else {
+                jt.update("insert into hmf_english (chinese, english) values(?, ?)", new Object[]{chinese, english});
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteEnglishWord(int id) {
+        try {
+            DataSource ds = (DataSource) GlobalContext.getSpringContext().getBean("mysql_ds");
+            JdbcTemplate jt = new JdbcTemplate(ds);
+            jt.update("delete from hmf_english where id = ?", new Object[]{id});
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
         }
     }
 }

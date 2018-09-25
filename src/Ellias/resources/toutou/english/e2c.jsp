@@ -47,7 +47,7 @@
     var answers = new Array();
     function begin()
     {
-        HMFDwr.getEnglishRandomWords(5, afterGetQuestion);
+        HMFDwr.getEnglishRandomWords(10, afterGetQuestion);
     }
     function afterGetQuestion(list)
     {
