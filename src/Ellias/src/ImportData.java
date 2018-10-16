@@ -42,9 +42,9 @@ public class ImportData {
                         }
                         if(name.toLowerCase().endsWith(".xlsx")) {
                             String module = name.substring(0, name.length() - 5);
-                            if(module.equalsIgnoreCase("dati")) {
-                                continue;
-                            }
+//                            if(module.equalsIgnoreCase("dati")) {
+//                                continue;
+//                            }
                             modules.add(module);
                         }
                     }
@@ -52,11 +52,23 @@ public class ImportData {
                     modules.add(m);
                 }
 
-                Connection conn = DriverManager.getConnection("jdbc:sqlite:" + mushpath + "\\data\\pkuxkx.db");
+                Connection conn;
+                boolean is17 = false;
+                if(modules.get(0).startsWith("17")) {
+                    conn = DriverManager.getConnection("jdbc:sqlite:" + mushpath + "\\17mud\\17mud.db");
+                    is17 = true;
+                } else {
+                    conn = DriverManager.getConnection("jdbc:sqlite:" + mushpath + "\\data\\pkuxkx.db");
+                }
                 for(int i = 0; i < modules.size(); i++) {
                     String module = modules.get(i);
                     System.out.println("(" + i + "/" + modules.size() + ")读取excel文件: " + module);
-                    FileInputStream fis = new FileInputStream(new File(mushpath + "\\lua\\" + module + ".xlsx"));
+                    FileInputStream fis;
+                    if(is17) {
+                        fis = new FileInputStream(new File(mushpath + "\\17mud\\" + module + ".xlsx"));
+                    } else {
+                        fis = new FileInputStream(new File(mushpath + "\\lua\\" + module + ".xlsx"));
+                    }
                     XSSFWorkbook workbook = new XSSFWorkbook(fis);
                     System.out.println("导入trigger");
                     XSSFSheet sheet = workbook.getSheetAt(0);
