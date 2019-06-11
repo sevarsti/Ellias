@@ -95,6 +95,15 @@
             IDUtils.ids.get(id).put("lv", lv);
             IDUtils.ids.get(id).put("money", money);
             IDUtils.ids.get(id).put("updatetime", updatetime);
+
+            Map map = request.getParameterMap();
+            Map<String, Integer> skills = new HashMap<String, Integer>();
+            for(Object k : map.keySet()) {
+                if(k.toString().startsWith("skill_")) {
+                    skills.put(k.toString().substring(6), Integer.parseInt(((String[])map.get(k))[0].toString()));
+                }
+            }
+            IDUtils.skills.put(id, skills);
             out.print("done");
             return;
         }
@@ -126,6 +135,17 @@
         content = content + "," + IDUtils.ids.get(id).get("lv");
         content = content + "," + IDUtils.ids.get(id).get("money");
         content = content + "," + IDUtils.ids.get(id).get("updatetime");
+        content += ",";
+        Map<String, Integer> skills = IDUtils.skills.get(id);
+        StringBuilder sb = new StringBuilder();
+        for(String k : skills.keySet()) {
+            Integer v = skills.get(k);
+            if(sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(k).append("=").append(v);
+        }
+        content += sb.toString();
         out.print(content);
         return;
     }

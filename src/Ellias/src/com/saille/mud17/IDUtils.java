@@ -12,5 +12,5 @@ import java.util.Map;
  */
 public class IDUtils {
     public static Map<String, Map<String, String>> ids = new HashMap<String, Map<String, String>>();
-
+    public static Map<String, Map<String, Integer>> skills = new HashMap<String, Map<String, Integer>>();
 }
