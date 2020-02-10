@@ -101,6 +101,7 @@ public class StarmallExchangeThread extends BaseThread {
             JdbcTemplate jt = new JdbcTemplate(ds);
             List<String> keys = getKeys(newList);
             boolean allExact = true;
+            StringBuilder desc = new StringBuilder();
             for(int i = 0; i < keys.size(); i++) {
                 String key = keys.get(i);
                 List<Map> list = jt.queryForList("select `type` from rm_starmall where totalindex = ? and `type` > 3 order by startdate desc", new Object[]{key});
@@ -109,6 +110,8 @@ public class StarmallExchangeThread extends BaseThread {
                     String current = ((Integer)list.get(0).get("type")).intValue() + "";
                     if(current.equals(newListSong.get(key))) {
                         exact = true;
+                    } else {
+                        desc.append(",").append(key).append("=").append(current).append("/").append(newListSong.get(key));
                     }
                 }
                 if(exact) {
@@ -119,7 +122,7 @@ public class StarmallExchangeThread extends BaseThread {
                 }
             }
             if(!allExact) {
-                LOGGER.info("星值兑换发生变化！");
+                LOGGER.info("星值兑换发生变化！" + desc.toString());
                 List<List<StarmallExchange>> saveList = sortSaveList(newList, keys);
                 List<Map> maxdates = jt.queryForList("select max(startdate) as startdate from rm_starmall");
                 String maxdate = maxdates.get(0).get("startdate").toString();
@@ -162,9 +165,12 @@ public class StarmallExchangeThread extends BaseThread {
 
             }
         }
-        if(start && begin == -1) {
+        if(begin == -1) {
             begin = 0;
         }
+//        if(start && begin == -1) {
+//            begin = 0;
+//        }
         if(begin >= 0) {
             boolean end = false;
             for(int i = begin; i < dates.size(); i++) {
